@@ -1,2 +1,2 @@
-# rd-judicial-api
-Judicial reference data service
+# rd-judicial-data-load
+Judicial reference data load
