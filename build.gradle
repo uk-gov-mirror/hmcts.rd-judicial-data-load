@@ -251,6 +251,8 @@ dependencies {
 
     compile group: 'com.google.guava', name: 'guava', version: '27.0-jre'
 
+    compile group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: '2.18.0'
+
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     testCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
