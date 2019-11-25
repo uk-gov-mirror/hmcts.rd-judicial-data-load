@@ -1,5 +1,12 @@
 package uk.gov.hmcts.reform.judicialapi.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchProviderException;
+import java.security.Security;
 import lombok.extern.slf4j.Slf4j;
 import name.neuhalfen.projects.crypto.bouncycastle.openpgp.BouncyGPG;
 import name.neuhalfen.projects.crypto.bouncycastle.openpgp.keys.callbacks.KeyringConfigCallbacks;
@@ -11,14 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.judicialapi.configuration.GpgConfig;
 import uk.gov.hmcts.reform.judicialapi.service.FileDecryptionService;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchProviderException;
-import java.security.Security;
 
 @Service
 @Slf4j
