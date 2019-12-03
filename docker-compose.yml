@@ -1,15 +1,15 @@
 version: '2.1'
 
 services:
-  rd-judicial-api:
+  rd-judicial-data-load:
     build:
       context: .
       args:
         - http_proxy
         - https_proxy
         - no_proxy
-    image: hmcts/rd-judicial-api
-    container_name: rd-judicial-api
+    image: hmcts/rd-judicial-data-load
+    container_name: rd-judicial-data-load
     environment:
       - JAVA_OPTS=-Dhttps.proxyHost=proxyout.reform.hmcts.net -Dhttps.proxyPort=8080
       - POSTGRES_USERNAME=dbjuddata
