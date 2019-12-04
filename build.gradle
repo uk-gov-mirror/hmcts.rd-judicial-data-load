@@ -103,7 +103,10 @@ configurations {
     integrationTestRuntime.extendsFrom testRuntime
     functionalTestCompile.extendsFrom testCompile
     functionalTestRuntime.extendsFrom testRuntime
+
 }
+
+
 
 checkstyle {
     maxWarnings = 0
@@ -209,12 +212,12 @@ repositories {
 
 dependencies {
     compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
-    //compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: versions.springBoot
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: versions.springBoot
-    //compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: versions.springHystrix
     compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.1.RELEASE'
@@ -238,18 +241,39 @@ dependencies {
     compile(group: 'uk.gov.hmcts.reform.auth', name: 'auth-checker-lib', version: '2.1.3') {
         // TODO remove when auth-checker-lib upgrades its dependency to spring boot 2.0.x
         exclude group: 'uk.gov.hmcts.reform', module: 'java-logging-spring'
-        
+
     }
 
-    compile group: 'com.microsoft.azure', name: 'azure-storage-spring-boot-starter', version: '2.2.0'
+    //compile group: 'com.microsoft.azure', name: 'azure-storage-spring-boot-starter', version: '2.2.0'
+    compile group: 'com.microsoft.azure', name: 'azure-storage-blob', version: '10.0.1-Preview'
+   // compile group: 'com.microsoft.azure', name: 'azure-storage-blob', version: '11.0.0'
     compile group: 'name.neuhalfen.projects.crypto.bouncycastle.openpgp', name: 'bouncy-gpg', version: '2.0.1'
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.64'
 
-    //compile group: 'org.flywaydb', name: 'flyway-core', version: '5.2.4'
-    //compile group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
+    compile group: 'org.flywaydb', name: 'flyway-core', version: '5.2.4'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
 
 
     compile group: 'com.google.guava', name: 'guava', version: '27.0-jre'
+
+    compile group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: '2.24.2'
+    compile group: 'org.apache.camel', name: 'camel-csv-starter', version: '2.24.2'
+    compile group: 'org.apache.camel', name: 'camel-csv', version: '2.24.2'
+    compile group: 'org.apache.camel', name: 'camel-sql', version: '2.24.2'
+    compile group: 'org.apache.camel', name: 'camel-quartz', version: '2.24.2'
+
+   // compile group: 'org.apache.camel', name: 'camel-azure', version: '2.20.0'
+    compile group: 'org.apache.camel', name: 'camel-azure-starter', version: '2.24.2'
+    compile group: 'org.apache.camel', name: 'camel-bindy-starter', version: '2.24.2'
+    compile group: 'org.apache.camel', name: 'camel-jdbc-starter', version: '2.24.2'
+
+
+  //  compile group: 'org.apache.jclouds.provider', name: 'azureblob', version: '2.2.0'
+  //  compile group: 'com.microsoft.azure', name: 'azure-storage', version: '8.4.0'
+
+
+
+
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
