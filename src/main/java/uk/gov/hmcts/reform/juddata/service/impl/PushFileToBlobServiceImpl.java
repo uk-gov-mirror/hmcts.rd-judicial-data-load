@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.AsynchronousFileChannel;
+import java.nio.channels.FileChannel;
 import java.security.InvalidKeyException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,21 +36,22 @@ public class PushFileToBlobServiceImpl implements PushFileService {
         final File sourceFile = new File(this.getClass().getClassLoader().getResource(SOURCE_FILE).getFile());
         ServiceURL serviceUrl = createServiceUrl();
         ContainerURL containerUrl = serviceUrl.createContainerURL(azureBlobConfig.getContainerName());
-        final BlockBlobURL blockBlobUrl = containerUrl.createBlockBlobURL(SOURCE_FILE);
+        final BlockBlobURL blockBlobUrl = containerUrl.createBlockBlobURL("/");
         uploadFile(blockBlobUrl, sourceFile);
 
     }
 
     public void uploadFile(BlockBlobURL blob, File sourceFile) throws IOException {
         log.info("Start uploading file ... " + sourceFile.getName());
-        final AsynchronousFileChannel fileChannel = AsynchronousFileChannel.open(sourceFile.toPath());
+      // final AsynchronousFileChannel fileChannel = AsynchronousFileChannel.open(sourceFile.toPath());
 
-        TransferManager.uploadFileToBlockBlob(fileChannel, blob, 8 * 1024 * 1024, null)
+        TransferManager.uploadFileToBlockBlob(FileChannel.open(sourceFile.toPath()), blob, 8 * 1024 * 1024, null)
                 .ignoreElement()
                 .doOnComplete(() -> log.info("File " + sourceFile.getName() + " is uploaded"))
                 .doOnError(error -> log.error("Failed to upload file " + sourceFile.getName() + " with error ", sourceFile, error.getMessage()))
                 .blockingAwait();
     }
+
 
     public ServiceURL createServiceUrl() throws InvalidKeyException,
             MalformedURLException {
