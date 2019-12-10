@@ -12,6 +12,7 @@ public class JudicialOfficeAppointmentProcessorRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
+        /*
                 from("azure-blob://rddemo/jrdtest/judicial_office_appointment.csv?credentials=#credsreg")
                 .to("file://blobdirectory2").end();
 
@@ -26,6 +27,8 @@ public class JudicialOfficeAppointmentProcessorRoute extends RouteBuilder {
                 .to("sql:insert into judicial_office_appointment(sno,firstName,LastName,Circuit,Area) values(#, #, #, #, #)?dataSource=dataSource")
                 .to ("log:test?showAll=true")
                 .end();
+
+         */
 
 
     }

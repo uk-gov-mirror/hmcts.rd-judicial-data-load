@@ -2,14 +2,16 @@ package uk.gov.hmcts.reform.judicialapi.camel;
 
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.spring.SpringRouteBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JudicialOfficeAuthorisationrRoute extends RouteBuilder {
+public class JudicialOfficeAuthorisationrRoute extends SpringRouteBuilder {
 
 
     @Override
     public void configure() throws Exception {
+        /*
 
                 from("azure-blob://rddemo/jrdtest/judicial_office_authorization.csv?credentials=#credsreg")
                 .to("file://blobdirectory3").end();
@@ -32,6 +34,8 @@ public class JudicialOfficeAuthorisationrRoute extends RouteBuilder {
                 .to ("log:test?showAll=true")
                 .end();
 
+
+         */
 
     }
 

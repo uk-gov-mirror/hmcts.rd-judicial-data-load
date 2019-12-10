@@ -38,6 +38,8 @@ public class JudicialUserFileProcessorRoute extends RouteBuilder {
                 .to("azure-blob://rddemo/jrdtest/blob1?credentials=#credsreg")
                 .to("log:test?showAll=true");*/
 
+             /*
+
                 from("azure-blob://rddemo/jrdtest/judicial_userprofile.csv?credentials=#credsreg")
                  .to("file://blobdirectory?noop=true").end();
 
@@ -58,6 +60,8 @@ public class JudicialUserFileProcessorRoute extends RouteBuilder {
                 .to("sql:insert into judicial_user (sno,firstName,LastName,Circuit,Area) values(#, #, #, #, #)?dataSource=dataSource")
                 .to ("log:test?showAll=true");
 
+
+              */
 
     }
 
