@@ -18,7 +18,6 @@ import name.neuhalfen.projects.crypto.bouncycastle.openpgp.keys.callbacks.Keyrin
 import name.neuhalfen.projects.crypto.bouncycastle.openpgp.keys.keyrings.KeyringConfig;
 import name.neuhalfen.projects.crypto.bouncycastle.openpgp.keys.keyrings.KeyringConfigs;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +35,13 @@ public class FileDecryptionServiceImpl implements FileDecryptionService {
     @Autowired
     private FileDeletionService fileDeletionService;
 
+    /**
+     * Decrypts files.
+     * @param files files needs to be decrypted
+     * @return List of decrypted files
+     * @throws IOException IOException
+     * @throws NoSuchProviderException  NoSuchProviderException
+     */
     @Override
     public List<File> decrypt(List<File> files) throws IOException, NoSuchProviderException {
 
@@ -59,6 +65,14 @@ public class FileDecryptionServiceImpl implements FileDecryptionService {
         return decryptedFiles;
     }
 
+    /**
+     * Creates KeyringConfig.
+     * @param publicKeyFile public key file
+     * @param privateKeyFile private key file
+     * @param passphrase passphrase to decrypt
+     * @return KeyringConfig
+     * @throws IOException IOException
+     */
     public KeyringConfig keyringConfigInMemoryForKeys(final File publicKeyFile, final File privateKeyFile, final String passphrase) throws IOException {
         final KeyringConfig keyringConfig = KeyringConfigs
                 .withKeyRingsFromFiles(
@@ -69,6 +83,14 @@ public class FileDecryptionServiceImpl implements FileDecryptionService {
         return keyringConfig;
     }
 
+    /**
+     * Creates temp file.
+     * @param inputStream file input stream
+     * @param fileName file name
+     * @param fileExt file ext
+     * @return temp file
+     * @throws IOException IOException
+     */
     public File createTempFile(InputStream inputStream, String fileName, String fileExt) throws IOException {
         File tempFile = new File(fileName + fileExt);
         FileUtils.copyInputStreamToFile(inputStream, tempFile);
