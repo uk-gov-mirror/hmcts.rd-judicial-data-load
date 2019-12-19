@@ -1706,4 +1706,60 @@
         <packageUrl regex="true">^pkg:maven/io\.netty/netty\-resolver@.*$</packageUrl>
         <cve>CVE-2019-16869</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: bcpg-jdk15on-1.56.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.bouncycastle/bcpg\-jdk15on@.*$</packageUrl>
+        <cpe>cpe:/a:pgp:openpgp</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: bcpg-jdk15on-1.56.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.bouncycastle/bcpg\-jdk15on@.*$</packageUrl>
+        <cpe>cpe:/a:pgp:pgp</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: bcpg-jdk15on-1.56.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.bouncycastle/bcpg\-jdk15on@.*$</packageUrl>
+        <cve>CVE-2001-0265</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: bcpg-jdk15on-1.56.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.bouncycastle/bcpg\-jdk15on@.*$</packageUrl>
+        <cve>CVE-2001-0381</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: netty-codec-http-4.1.34.Final.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-codec\-http@.*$</packageUrl>
+        <cpe>cpe:/a:netty:netty</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: netty-codec-http-4.1.34.Final.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-codec\-http@.*$</packageUrl>
+        <cve>CVE-2019-16869</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: netty-common-4.1.34.Final.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-common@.*$</packageUrl>
+        <cpe>cpe:/a:netty:netty</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: netty-common-4.1.34.Final.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-common@.*$</packageUrl>
+        <cve>CVE-2019-16869</cve>
+    </suppress>
 </suppressions>
