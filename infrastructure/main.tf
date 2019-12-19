@@ -97,7 +97,7 @@ module "db-judicial-ref-data" {
   common_tags = "${var.common_tags}"
 }
 
-module "rd_judicial_api" {
+module "rd_judicial_data_load" {
   source = "git@github.com:hmcts/cnp-module-webapp?ref=master"
   product = "${var.product}-${var.component}"
   location = "${var.location}"

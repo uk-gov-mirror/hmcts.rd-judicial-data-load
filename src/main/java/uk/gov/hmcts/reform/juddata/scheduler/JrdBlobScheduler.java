@@ -1,11 +1,10 @@
 package uk.gov.hmcts.reform.juddata.scheduler;
 
+import com.microsoft.azure.storage.StorageException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchProviderException;
-
-import com.microsoft.azure.storage.StorageException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
