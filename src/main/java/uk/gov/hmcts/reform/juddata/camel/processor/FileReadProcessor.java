@@ -24,6 +24,5 @@ public class FileReadProcessor implements Processor {
         CamelContext context = exchange.getContext();
         ConsumerTemplate consumer = context.createConsumerTemplate();
         exchange.getMessage().setBody(consumer.receiveBody(blobFilePath, fileReadTimeOut));
-        log.info("::FileReadProcessor ends::");
     }
 }
