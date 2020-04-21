@@ -34,7 +34,7 @@ public class ExceptionProcessor implements Processor {
             exchange.getContext().getGlobalOptions().put(SCHEDULER_STATUS, FAILURE);
             exchange.getContext().getGlobalOptions().put(IS_EXCEPTION_HANDLED, TRUE.toString());
             //check mail flag and send mail
-            emailService.sendEmail(exception.getMessage());
+            emailService.process(exchange);
         }
     }
 }
