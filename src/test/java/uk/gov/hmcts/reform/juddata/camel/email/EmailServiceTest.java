@@ -30,33 +30,40 @@ public class EmailServiceTest extends CamelTestSupport {
 
     @Mock
     JavaMailSender mailSender;
-
+    String mailFrom;
+    String mailTo;
+    String mailsubject;
+    String messageBody;
+    String filename;
+    Boolean mailEnabled = true;
     @Mock
     private MimeMessage mimeMessage;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
+        mockData();
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
 
     }
 
-    @Test
-    public void sendEmail() {
-
-        String mailFrom = "no-reply@reform.hmcts.net";
-        String mailTo = "sushant.choudhari@hmcts.net,abhijit.diwan@hmcts.net";
-        String mailsubject = "Test mail";
-        final String  messageBody = "Test";
-        final String  filename = "File1.csv";
+    private void mockData() {
+        mailFrom = "no-reply@reform.hmcts.net";
+        mailTo = "sushant.choudhari@hmcts.net,abhijit.diwan@hmcts.net";
+        mailsubject = "Test mail";
+        messageBody = "Test";
+        filename = "File1.csv";
+        mailEnabled = true;
         setField(emailService, "mailFrom", mailFrom);
         setField(emailService, "mailTo", mailTo);
         setField(emailService, "mailsubject", mailsubject);
         setField(emailService, "mailEnabled", Boolean.TRUE);
+    }
+
+    @Test
+    public void sendEmail() {
         doNothing().when(mailSender).send(any(MimeMessage.class));
-
         emailService.sendEmail(messageBody, filename);
-
         assertEquals("Test", messageBody);
         assertEquals("File1.csv", filename);
 
@@ -66,16 +73,8 @@ public class EmailServiceTest extends CamelTestSupport {
     @Test(expected = EmailFailureException.class)
     public void sendEmailException() {
 
-        String mailFrom = "no-reply@reform.hmcts.net";
-        String mailTo = "sushant.choudhari@hmcts.net,abhijit.diwan@hmcts.net";
-        String mailsubject = "Test mail";
-        final Boolean mailEnabled = true;
-        final EmailFailureException emailFailureException = new EmailFailureException(new Throwable());
+        EmailFailureException emailFailureException = new EmailFailureException(new Throwable());
 
-        setField(emailService, "mailFrom", mailFrom);
-        setField(emailService, "mailTo", mailTo);
-        setField(emailService, "mailsubject", mailsubject);
-        setField(emailService, "mailEnabled", mailEnabled);
         doThrow(emailFailureException).when(mailSender).send(any(MimeMessage.class));
 
         emailService.sendEmail("Test", "File1.csv");
@@ -83,10 +82,9 @@ public class EmailServiceTest extends CamelTestSupport {
 
     @Test
     public void process() throws Exception {
-        String filename = "File1.csv";
         CamelContext context = new DefaultCamelContext();
         Exchange exchange = createExchangeWithBody(context, "body");
-        exchange.setProperty(EXCEPTION_CAUGHT, new Exception());
+        exchange.setProperty(EXCEPTION_CAUGHT, new Exception("Test Message"));
         exchange.setProperty(FILE_NAME, filename);
         emailService.process(exchange);
 

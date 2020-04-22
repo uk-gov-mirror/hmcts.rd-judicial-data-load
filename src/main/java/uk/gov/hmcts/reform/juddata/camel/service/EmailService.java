@@ -43,7 +43,6 @@ public class EmailService implements Processor {
             try {
                 //check mail flag and send mail
                 MimeMessage message = mailSender.createMimeMessage();
-
                 MimeMessageHelper mimeMsgHelperObj = new MimeMessageHelper(message, true);
                 String[] split = mailTo.split(",");
                 mimeMsgHelperObj.setTo(split);
@@ -51,10 +50,9 @@ public class EmailService implements Processor {
                 mimeMsgHelperObj.setText(messageBody);
                 mimeMsgHelperObj.setFrom(mailFrom);
                 mailSender.send(mimeMsgHelperObj.getMimeMessage());
-                log.info("::::  sending mail ::::",mailTo);
 
             } catch (MailException | MessagingException e) {
-                log.error("::::MailException  while  sending mail ::::" + e.toString());
+                log.error("::::Exception  while  sending mail ::::" + e.toString());
                 throw new EmailFailureException(e);
             }
         }
