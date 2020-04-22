@@ -5,6 +5,8 @@ import static org.apache.camel.Exchange.FILE_NAME;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -87,6 +89,9 @@ public class EmailServiceTest extends CamelTestSupport {
         exchange.setProperty(EXCEPTION_CAUGHT, new Exception("Test Message"));
         exchange.setProperty(FILE_NAME, filename);
         emailService.process(exchange);
-
+        assertEquals("no-reply@reform.hmcts.net", mailFrom);
+        assertEquals("example1@hmcts.net,example2@hmcts.net", mailTo);
+        assertEquals("Test mail", mailsubject);
+        assertTrue(mailEnabled);
     }
 }
