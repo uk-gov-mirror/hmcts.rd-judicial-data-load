@@ -49,7 +49,7 @@ public class EmailServiceTest extends CamelTestSupport {
 
     private void mockData() {
         mailFrom = "no-reply@reform.hmcts.net";
-        mailTo = "sushant.choudhari@hmcts.net,abhijit.diwan@hmcts.net";
+        mailTo = "example1@hmcts.net,example2@hmcts.net";
         mailsubject = "Test mail";
         messageBody = "Test";
         filename = "File1.csv";

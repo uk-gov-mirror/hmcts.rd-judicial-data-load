@@ -27,16 +27,16 @@ public class EmailService implements Processor {
     JavaMailSender mailSender;
 
     @Value("${spring.mail.from}")
-    String mailFrom;
+    private String mailFrom;
 
     @Value("${spring.mail.to}")
-    String mailTo;
+    private String mailTo;
 
     @Value("${spring.mail.subject}")
-    String mailsubject;
+    private String mailsubject;
 
     @Value("${spring.mail.enabled}")
-    boolean mailEnabled;
+    private boolean mailEnabled;
 
     public void sendEmail(String messageBody, String filename) {
         if (mailEnabled) {
