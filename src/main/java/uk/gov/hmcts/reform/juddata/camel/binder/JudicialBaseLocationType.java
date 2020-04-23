@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.juddata.camel.binder;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.camel.dataformat.bindy.annotation.CsvRecord;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class JudicialBaseLocationType {
 
     @DataField(pos = 1, columnName = "base_location_id")
-    @NotEmpty
+    @NotBlank
     String baseLocationId;
 
     @DataField(pos = 2, columnName = "court_name")
