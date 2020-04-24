@@ -5,8 +5,6 @@ import static org.apache.camel.Exchange.FILE_NAME;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -63,7 +61,7 @@ public class EmailServiceTest extends CamelTestSupport {
     }
 
     @Test
-    public void sendEmail() {
+    public void testSendEmail() {
         doNothing().when(mailSender).send(any(MimeMessage.class));
         emailService.sendEmail(messageBody, filename);
         assertEquals("Test", messageBody);
@@ -80,10 +78,14 @@ public class EmailServiceTest extends CamelTestSupport {
         doThrow(emailFailureException).when(mailSender).send(any(MimeMessage.class));
 
         emailService.sendEmail("Test", "File1.csv");
+        assertEquals("Test", messageBody);
+        assertEquals("File1.csv", filename);
+        assertTrue(mailEnabled);
+
     }
 
     @Test
-    public void process() throws Exception {
+    public void testProcess() throws Exception {
         CamelContext context = new DefaultCamelContext();
         Exchange exchange = createExchangeWithBody(context, "body");
         exchange.setProperty(EXCEPTION_CAUGHT, new Exception("Test Message"));

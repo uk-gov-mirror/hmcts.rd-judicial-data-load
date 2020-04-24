@@ -52,7 +52,7 @@ public class EmailService implements Processor {
                 mailSender.send(mimeMsgHelperObj.getMimeMessage());
 
             } catch (MailException | MessagingException e) {
-                log.error("::::Exception  while  sending mail ::::" + e.toString());
+                log.error("::::Exception  while  sending mail ::::" + e.getMessage());
                 throw new EmailFailureException(e);
             }
         }
