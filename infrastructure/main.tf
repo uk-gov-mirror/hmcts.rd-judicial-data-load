@@ -94,10 +94,10 @@ module "rd_judicial_data_load" {
     LOGBACK_REQUIRE_ALERT_LEVEL = false
     LOGBACK_REQUIRE_ERROR_CODE = false
 
-    POSTGRES_HOST = "${data.azurerm_key_vault_secret.POSTGRES_HOST}"
-    POSTGRES_PORT = "${data.azurerm_key_vault_secret.POSTGRES_PORT}"
-    POSTGRES_USERNAME = "${data.azurerm_key_vault_secret.POSTGRES-USER}"
-    POSTGRES_PASSWORD = "${data.azurerm_key_vault_secret.POSTGRES-PASS}"
+    POSTGRES_HOST = "${data.azurerm_key_vault_secret.POSTGRES_HOST.value}"
+    POSTGRES_PORT = "${data.azurerm_key_vault_secret.POSTGRES_PORT.value}"
+    POSTGRES_USERNAME = "${data.azurerm_key_vault_secret.POSTGRES-USER.value}"
+    POSTGRES_PASSWORD = "${data.azurerm_key_vault_secret.POSTGRES-PASS.value}"
     POSTGRES_CONNECTION_OPTIONS = "?"
 
     ACCOUNT_NAME = "${data.azurerm_key_vault_secret.ACCOUNT_NAME.value}"
