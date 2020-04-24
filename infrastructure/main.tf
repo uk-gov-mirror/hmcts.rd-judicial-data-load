@@ -50,6 +50,30 @@ resource "azurerm_resource_group" "rg" {
   }
 }
 
+data "azurerm_key_vault_secret" "POSTGRES-USER" {
+  name      = "judicial-api-POSTGRES-USER"
+  key_vault_id = "${data.azurerm_key_vault.rd_key_vault.id}"
+}
+
+data "azurerm_key_vault_secret" "POSTGRES-PASS" {
+  name      = "judicial-api-POSTGRES-PASS"
+  key_vault_id = "${data.azurerm_key_vault.rd_key_vault.id}"
+}
+
+data "azurerm_key_vault_secret" "POSTGRES_HOST" {
+
+  name      = "judicial-api-POSTGRES-HOST"
+  key_vault_id = "${data.azurerm_key_vault.rd_key_vault.id}"
+}
+
+data "azurerm_key_vault_secret" "POSTGRES_PORT" {
+  name      = "judicial-api-POSTGRES-PORT"
+  value     = "5432"
+  key_vault_id = "${data.azurerm_key_vault.rd_key_vault.id}"
+}
+
+
+
 module "rd_judicial_data_load" {
   source = "git@github.com:hmcts/cnp-module-webapp?ref=master"
   product = "${var.product}-${var.component}"
@@ -69,6 +93,12 @@ module "rd_judicial_data_load" {
   app_settings = {
     LOGBACK_REQUIRE_ALERT_LEVEL = false
     LOGBACK_REQUIRE_ERROR_CODE = false
+
+    POSTGRES_HOST = "${data.azurerm_key_vault_secret.POSTGRES_HOST}"
+    POSTGRES_PORT = "${data.azurerm_key_vault_secret.POSTGRES_PORT}"
+    POSTGRES_USERNAME = "${data.azurerm_key_vault_secret.POSTGRES-USER}"
+    POSTGRES_PASSWORD = "${data.azurerm_key_vault_secret.POSTGRES-PASS}"
+    POSTGRES_CONNECTION_OPTIONS = "?"
 
     ACCOUNT_NAME = "${data.azurerm_key_vault_secret.ACCOUNT_NAME.value}"
     ACCOUNT_KEY = "${data.azurerm_key_vault_secret.ACCOUNT_KEY.value}"
