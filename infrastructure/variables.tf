@@ -62,5 +62,5 @@ variable "managed_identity_object_id" {
 }
 
 variable "enable_ase" {
-  default = false
+  default = true
 }
