@@ -68,7 +68,6 @@ data "azurerm_key_vault_secret" "POSTGRES_HOST" {
 
 data "azurerm_key_vault_secret" "POSTGRES_PORT" {
   name      = "judicial-api-POSTGRES-PORT"
-  value     = "5432"
   key_vault_id = "${data.azurerm_key_vault.rd_key_vault.id}"
 }
 
