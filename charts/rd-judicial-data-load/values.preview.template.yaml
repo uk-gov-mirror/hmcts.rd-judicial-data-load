@@ -25,11 +25,11 @@ java:
     BLOB_SERVICE_ENDPOINT:
       secretRef: storage-secret-{{ .Release.Name }}
       key: primaryBlobServiceEndPoint
-    blobstorage:
-      resourceGroup: rd-aks
-      teamName: "RD"
-      location: uksouth
-      setup:
-        containers:
-          - jud-ref-data
-      enabled: true
+blobstorage:
+  resourceGroup: rd-aks
+  teamName: "RD"
+  location: uksouth
+  setup:
+    containers:
+    - jud-ref-data
+  enabled: true
