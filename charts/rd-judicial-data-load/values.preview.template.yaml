@@ -26,7 +26,7 @@ java:
       secretRef: storage-secret-{{ .Release.Name }}
       key: primaryBlobServiceEndPoint
 blobstorage:
-  resourceGroup: rd-aks
+  resourceGroup: rd
   teamName: "RD"
   location: uksouth
   setup:
