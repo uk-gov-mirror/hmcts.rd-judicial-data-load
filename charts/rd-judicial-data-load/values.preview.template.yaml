@@ -15,6 +15,11 @@ java:
     postgresqlDatabase: dbjuddata
     #Whether to deploy the Postgres Chart or not
     enabled: true
+  keyVaults:
+    rd:
+      secrets:
+        - CONTAINER-NAME
+        - BLOB-URL-SUFFIX
   secrets:
     BLOB_ACCOUNT_NAME:
       secretRef: storage-secret-{{ .Release.Name }}
