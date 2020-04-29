@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.juddata.camel.service;
 
 import static org.apache.camel.Exchange.EXCEPTION_CAUGHT;
-import static org.apache.camel.Exchange.FILE_NAME;
+import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.FILE_NAME;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -62,7 +62,6 @@ public class EmailService implements Processor {
     public void process(Exchange exchange) {
         Exception exception = (Exception) exchange.getProperty(EXCEPTION_CAUGHT);
         String fileName = (String) exchange.getProperty(FILE_NAME);
-        log.error("::::exception in getting file Name processing::::" + fileName);
         sendEmail(exception.getMessage(), fileName);
     }
 }
