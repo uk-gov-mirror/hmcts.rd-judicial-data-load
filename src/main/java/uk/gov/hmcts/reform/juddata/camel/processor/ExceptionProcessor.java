@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.juddata.camel.processor;
 import static java.lang.Boolean.TRUE;
 import static java.util.Objects.isNull;
 import static org.apache.camel.Exchange.EXCEPTION_CAUGHT;
+import static org.apache.camel.Exchange.FILE_NAME;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.FAILURE;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.IS_EXCEPTION_HANDLED;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_STATUS;
@@ -34,6 +35,7 @@ public class ExceptionProcessor implements Processor {
             exchange.getContext().getGlobalOptions().put(SCHEDULER_STATUS, FAILURE);
             exchange.getContext().getGlobalOptions().put(IS_EXCEPTION_HANDLED, TRUE.toString());
             //check mail flag and send mail
+            log.error("::::exception in getting file Name in ExceptionProcessor::::" , (String) exchange.getProperty(FILE_NAME));
             emailService.process(exchange);
         }
     }
