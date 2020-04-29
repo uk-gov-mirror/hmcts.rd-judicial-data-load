@@ -62,6 +62,7 @@ public class EmailService implements Processor {
     public void process(Exchange exchange) {
         Exception exception = (Exception) exchange.getProperty(EXCEPTION_CAUGHT);
         String fileName = (String) exchange.getProperty(FILE_NAME);
+        log.error("::::exception in getting file Name processing::::" + fileName);
         sendEmail(exception.getMessage(), fileName);
     }
 }
