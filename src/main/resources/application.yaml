@@ -48,6 +48,10 @@ spring:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5456}/${POSTGRES_NAME:dbjuddata}${POSTGRES_CONNECTION_OPTIONS:}
     username: ${POSTGRES_USERNAME:dbjuddata}
     password: ${POSTGRES_PASSWORD:dbjuddata}
+    min-idle: 1
+    max-life: 600000
+    idle-timeout: 30000
+    maximum-pool-size: 5
     properties:
       charSet: UTF-8
     tomcat:
@@ -75,8 +79,8 @@ spring:
 
 # Scheduler configuration
 scheduler:
-  camel-route-config: 0 0 22 * * ?
-  camel-leaf-router-config: 0 0 21 * * ?
+  camel-route-config: 0 0/7 * * * ?
+  camel-leaf-router-config: 0 0/5 * * * ?
 
 azure:
   storage:
