@@ -37,4 +37,5 @@ blobstorage:
   setup:
     containers:
     - jud-ref-data
+    - jud-ref-data-archive
   enabled: true
