@@ -3,11 +3,9 @@ server:
 
 management:
   endpoints:
-    jmx:
-      exposure:
-        include: 'health'
     web:
       base-path: "/"
+
   endpoint:
     health:
       show-details: "always"
@@ -23,6 +21,8 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+  batch:
+    initialize-schema: always
   jackson.date-format: yyyy-MM-dd
   flyway:
     enabled: ${FLYWAY_ENABLED:true}
