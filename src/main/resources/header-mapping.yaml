@@ -1,0 +1,6 @@
+judicialUserProfile : elinks_id,Personal_Code,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date
+judicialOfficeAppointment : elinks_Id,Role_Id,Contract_Type_Id,Base_Location_Id,Region_Id,Is_Principal_Appointment,Start_Date,End_Date,Active_Flag,Extracted_Date
+judicialUserRoleType : RoleID, Role
+judicialContractType : ContractID, ContractDescription
+judicialRegionType : LocationID, LocationDescription
+judicialBaseLocationType : CourtID, Court/Bench, CourtType, Circuit, Area
