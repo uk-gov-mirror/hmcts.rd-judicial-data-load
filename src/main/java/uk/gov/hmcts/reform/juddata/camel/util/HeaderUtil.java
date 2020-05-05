@@ -91,7 +91,7 @@ public class HeaderUtil {
         }
         if (header.size() < originalHeader.size()) {
             List<String> invalidHeaderLess = originalHeader.stream().sorted().filter(o -> (header.stream().sorted().filter(f -> f.equalsIgnoreCase(o)).count()) < 1).collect(Collectors.toList());
-            exceptionMsg = "Invalid column(s) : " + invalidHeaderLess.toString().replace(", ]", "]") + ". Please remove invalid column(s) from file.";
+            exceptionMsg = "Missing column(s) : " + invalidHeaderLess.toString().replace(", ]", "]") + ". Please add column(s) from file.";
         }
         return exceptionMsg;
     }

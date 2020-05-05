@@ -54,10 +54,7 @@ public class HeaderValidationProcessor implements Processor {
         if (!exceptionMsg.isEmpty()) {
             HeaderUtil.checkHeader(exchange, routeProperties, exceptionMsg);
         }
-
         InputStream inputStream = new ByteArrayInputStream(csv.getBytes(Charset.forName("UTF-8")));
-
         exchange.getMessage().setBody(inputStream);
     }
-
 }
