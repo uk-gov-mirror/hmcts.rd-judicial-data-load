@@ -3,10 +3,10 @@ package uk.gov.hmcts.reform.juddata.camel.binder;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.DATE_PATTERN;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.DATE_PATTERN_TIMESTAMP;
 
-
 import java.io.Serializable;
 
 import javax.validation.constraints.NotEmpty;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.camel.dataformat.bindy.annotation.CsvRecord;

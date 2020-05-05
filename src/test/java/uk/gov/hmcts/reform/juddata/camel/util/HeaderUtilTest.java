@@ -40,40 +40,40 @@ public class HeaderUtilTest {
 
     @Test
     public void testGetJrdHeaderValue() throws Exception {
-        String ss="elinks_id,Personal_Code,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date";
-        List<String> headers= Arrays.asList(ss.split(","));
-        String result = headerUtil.getInvalidJrdHeader(JudicialUserProfile.class, headers , "judicialUserProfile");
+        String header = "elinks_id,Personal_Code,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date";
+        List<String> headers = Arrays.asList(header.split(","));
+        String result = headerUtil.getInvalidJrdHeader(JudicialUserProfile.class, headers, "judicialUserProfile");
 
     }
 
     @Test
     public void testGetJrdHeaderValueMoreHeader() throws Exception {
-        String ss="dfads,elinks_id,Personal_Code,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date";
-        List<String> headers= Arrays.asList(ss.split(","));
+        String header = "dfads,elinks_id,Personal_Code,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date";
+        List<String> headers = Arrays.asList(header.split(","));
         String result = headerUtil.getInvalidJrdHeader(JudicialUserProfile.class, headers, "judicialUserProfile");
 
     }
 
     @Test
     public void testGetJrdHeaderValueLessHeader() throws Exception {
-        String ss="Personal_Code,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date";
-        List<String> headers= Arrays.asList(ss.split(","));
+        String header = "Personal_Code,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date";
+        List<String> headers = Arrays.asList(header.split(","));
         String result = headerUtil.getInvalidJrdHeader(JudicialUserProfile.class, headers, "judicialUserProfile");
 
     }
 
     @Test
     public void testGetJrdHeaderValueDifferentOrdee() throws Exception {
-        String ss="Personal_Code,elinks_id,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date";
-        List<String> headers= Arrays.asList(ss.split(","));
+        String header = "Personal_Code,elinks_id,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date";
+        List<String> headers = Arrays.asList(header.split(","));
         String result = headerUtil.getInvalidJrdHeader(JudicialUserProfile.class, headers, "judicialUserProfile");
 
     }
 
     @Test
     public void testreadYmlAsMap() throws Exception {
-        Map readYmlAsMap=HeaderUtil.readYmlAsMap("header-mapping.yaml");
-        String judicialUserProfile= (String) readYmlAsMap.get("judicialUserProfile");
+        Map readYmlAsMap = HeaderUtil.readYmlAsMap("header-mapping.yaml");
+        String judicialUserProfile = (String) readYmlAsMap.get("judicialUserProfile");
     }
 }
 

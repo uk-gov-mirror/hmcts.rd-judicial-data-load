@@ -1,43 +1,23 @@
 package uk.gov.hmcts.reform.juddata.camel.processor;
 
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.HEADER_EXCEPTION;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ROUTE_DETAILS;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_NAME;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_START_TIME;
 
 import com.opencsv.CSVReader;
-
-import com.opencsv.bean.CsvBindByName;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.lang.reflect.Field;
 import java.nio.charset.Charset;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import java.util.stream.Collectors;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ComparatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import uk.gov.hmcts.reform.juddata.camel.annotation.JrdHeader;
-import uk.gov.hmcts.reform.juddata.camel.exception.RouteFailedException;
 import uk.gov.hmcts.reform.juddata.camel.route.beans.RouteProperties;
 import uk.gov.hmcts.reform.juddata.camel.util.HeaderUtil;
 
@@ -71,8 +51,9 @@ public class HeaderValidationProcessor implements Processor {
         CSVReader reader = new CSVReader(new StringReader(csv));
         String[] header = reader.readNext();
         String exceptionMsg = HeaderUtil.getInvalidJrdHeader(applicationContext.getBean(routeProperties.getBinder()).getClass(),Arrays.asList(header),routeProperties.getBinder());
-        if (!exceptionMsg.isEmpty())
-        HeaderUtil.checkHeader(exchange,routeProperties,exceptionMsg);
+        if (!exceptionMsg.isEmpty()) {
+            HeaderUtil.checkHeader(exchange, routeProperties, exceptionMsg);
+        }
 
         InputStream inputStream = new ByteArrayInputStream(csv.getBytes(Charset.forName("UTF-8")));
 
