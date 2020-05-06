@@ -135,5 +135,6 @@ public class HeaderUtilTest extends CamelTestSupport {
     public void testreadYmlAsMap() throws Exception {
         Map readYmlAsMap = headerUtil.readYmlAsMap("header-mapping.yaml");
         String judicialUserProfile = (String) readYmlAsMap.get("judicialUserProfile");
+        assertEquals("elinks_id,Personal_Code,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date", judicialUserProfile);
     }
 }
