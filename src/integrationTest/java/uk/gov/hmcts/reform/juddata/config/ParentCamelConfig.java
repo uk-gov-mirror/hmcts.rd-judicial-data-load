@@ -31,6 +31,7 @@ import uk.gov.hmcts.reform.juddata.camel.route.ParentOrchestrationRoute;
 import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
 import uk.gov.hmcts.reform.juddata.camel.service.EmailService;
 import uk.gov.hmcts.reform.juddata.camel.util.DataLoadUtil;
+import uk.gov.hmcts.reform.juddata.camel.util.HeaderUtil;
 import uk.gov.hmcts.reform.juddata.camel.validator.JsrValidatorInitializer;
 
 @Configuration
@@ -180,6 +181,11 @@ public class ParentCamelConfig {
     @Bean
     public DataLoadUtil dataLoadUtil() {
         return new DataLoadUtil();
+    }
+
+    @Bean
+    public HeaderUtil headerUtil() {
+        return new HeaderUtil();
     }
 
     @Bean
