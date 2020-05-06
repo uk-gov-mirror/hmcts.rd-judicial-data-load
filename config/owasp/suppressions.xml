@@ -20,6 +20,7 @@
    ]]></notes>
         <gav regex="true">^org\.codehaus\.groovy:groovy-json:.*$</gav>
         <cpe>cpe:/a:apache:logging</cpe>
+        <cve>CVE-2016-6497</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
