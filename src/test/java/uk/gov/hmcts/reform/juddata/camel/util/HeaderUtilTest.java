@@ -17,7 +17,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.ExchangeBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.test.junit4.ExchangeTestSupport;
+import org.apache.camel.test.junit4.CamelTestSupport;
 import org.apache.camel.test.spring.CamelSpringRunner;
 
 import org.junit.Before;
@@ -27,39 +27,33 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 
-import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserProfile;
 import uk.gov.hmcts.reform.juddata.camel.exception.RouteFailedException;
 import uk.gov.hmcts.reform.juddata.camel.route.beans.RouteProperties;
 
 @RunWith(CamelSpringRunner.class)
 @Configuration()
-@ContextConfiguration(classes = {HeaderUtilTest.class,DataLoadUtil.class})
-public class HeaderUtilTest extends ExchangeTestSupport {
-    @Mock
-    ApplicationContext applicationContext;
+public class HeaderUtilTest extends CamelTestSupport {
+
     @Mock
     CamelContext camelContext;
 
     @InjectMocks
     JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    DataLoadUtil dataLoadUtil;
+    @Value("${invalid-header-sql}")
+    String invalidHeaderSql;
 
-    @Value("${judicialUserProfile.header}")
-    private String header;
+    @InjectMocks
+    HeaderUtil headerUtil;
 
-    private JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+    JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
 
     PlatformTransactionManager platformTransactionManager = mock(PlatformTransactionManager.class);
 
@@ -71,11 +65,9 @@ public class HeaderUtilTest extends ExchangeTestSupport {
     private String schedulerInsertSql;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        setField(HeaderUtil.class, "jdbcTemplate", mockJdbcTemplate);
-        setField(HeaderUtil.class, "platformTransactionManager", platformTransactionManager);
-        readYmlAsMap = HeaderUtil.readYmlAsMap("test-header.yaml");
+        readYmlAsMap = headerUtil.readYmlAsMap("test-header.yaml");
     }
 
     @Test(expected = RouteFailedException.class)
@@ -85,17 +77,18 @@ public class HeaderUtilTest extends ExchangeTestSupport {
         Exchange exchange = ExchangeBuilder.anExchange(new DefaultCamelContext())
             .withBody(" ")
             .build();
-        Map<String, String> globalOptions = camelContext.getGlobalOptions();
+        exchange.getContext().start();
+        Map<String, String> globalOptions = exchange.getContext().getGlobalOptions();
         globalOptions.put(SCHEDULER_NAME, "judicial_leaf_scheduler");
         globalOptions.put(SCHEDULER_START_TIME, String.valueOf(new Date().getTime()));
         exchange.getContext().setGlobalOptions(globalOptions);
-        setField(HeaderUtil.class, "camelContext", exchange.getContext());
+        setField(headerUtil, "camelContext", exchange.getContext());
 
         when(mockJdbcTemplate.update((PreparedStatementCreator) any(),any())).thenReturn(1);
         when(platformTransactionManager.getTransaction(any())).thenReturn(transactionStatus);
         doNothing().when(platformTransactionManager).commit(transactionStatus);
 
-        HeaderUtil.checkHeader(exchange, routeProperties, "exceptionMsg");
+        headerUtil.checkHeader(exchange, routeProperties, "exceptionMsg");
 
         assertNull(routeProperties.getBinder());
         assertEquals("Test.csv", routeProperties.getFileName());
@@ -108,7 +101,7 @@ public class HeaderUtilTest extends ExchangeTestSupport {
     public void testGetJrdHeaderValue() throws Exception {
         String  header = (String) ((Map) readYmlAsMap.get("judicialUserProfile")).get("header");
         List<String> headers = Arrays.asList(header.split(","));
-        String result = HeaderUtil.getInvalidJrdHeader(JudicialUserProfile.class, headers, "judicialUserProfile");
+        String result = headerUtil.getInvalidJrdHeader(headers, "judicialUserProfile");
         assertEquals("", result);
 
     }
@@ -117,7 +110,7 @@ public class HeaderUtilTest extends ExchangeTestSupport {
     public void testGetJrdHeaderValueMoreHeader() throws Exception {
         String  header = (String) ((Map) readYmlAsMap.get("judicialUserProfile")).get("extra-header");
         List<String> headers = Arrays.asList(header.split(","));
-        String result = HeaderUtil.getInvalidJrdHeader(JudicialUserProfile.class, headers, "judicialUserProfile");
+        String result = headerUtil.getInvalidJrdHeader(headers, "judicialUserProfile");
         assertEquals("Invalid column(s) : [dfads]. Please remove invalid column(s) from file.", result);
 
     }
@@ -126,7 +119,7 @@ public class HeaderUtilTest extends ExchangeTestSupport {
     public void testGetJrdHeaderValueLessHeader() throws Exception {
         String  header = (String) ((Map) readYmlAsMap.get("judicialUserProfile")).get("less-header");
         List<String> headers = Arrays.asList(header.split(","));
-        String result = HeaderUtil.getInvalidJrdHeader(JudicialUserProfile.class, headers, "judicialUserProfile");
+        String result = headerUtil.getInvalidJrdHeader(headers, "judicialUserProfile");
         assertEquals("Missing column(s) : [elinks_id]. Please add column(s) from file.", result);
     }
 
@@ -134,13 +127,13 @@ public class HeaderUtilTest extends ExchangeTestSupport {
     public void testGetJrdHeaderValueDifferentOrdee() throws Exception {
         String  header = (String) ((Map) readYmlAsMap.get("judicialUserProfile")).get("unordered-header");
         List<String> headers = Arrays.asList(header.split(","));
-        String result = HeaderUtil.getInvalidJrdHeader(JudicialUserProfile.class, headers, "judicialUserProfile");
+        String result = headerUtil.getInvalidJrdHeader(headers, "judicialUserProfile");
         assertEquals("", result);
     }
 
     @Test
     public void testreadYmlAsMap() throws Exception {
-        Map readYmlAsMap = HeaderUtil.readYmlAsMap("header-mapping.yaml");
+        Map readYmlAsMap = headerUtil.readYmlAsMap("header-mapping.yaml");
         String judicialUserProfile = (String) readYmlAsMap.get("judicialUserProfile");
     }
 }

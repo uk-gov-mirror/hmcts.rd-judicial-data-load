@@ -7,23 +7,19 @@ import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_
 
 import java.io.InputStream;
 import java.sql.Timestamp;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import lombok.experimental.UtilityClass;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -33,12 +29,8 @@ import org.yaml.snakeyaml.Yaml;
 import uk.gov.hmcts.reform.juddata.camel.exception.RouteFailedException;
 import uk.gov.hmcts.reform.juddata.camel.route.beans.RouteProperties;
 
-
-@UtilityClass
+@Service
 public class HeaderUtil {
-
-    @Autowired
-    ApplicationContext applicationContext;
 
     @Autowired
     CamelContext camelContext;
@@ -50,12 +42,11 @@ public class HeaderUtil {
     @Value("${invalid-header-sql}")
     String invalidHeaderSql;
 
-    List<String> originalHeader = new ArrayList<>();
-
     @Autowired
     @Qualifier("springJdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
+    private  List<String> originalHeader;
 
     public void checkHeader(Exchange exchange, RouteProperties routeProperties, String exceptionMsg) {
         exchange.getIn().setHeader(HEADER_EXCEPTION, HEADER_EXCEPTION);
@@ -67,16 +58,16 @@ public class HeaderUtil {
         String schedulerTime = camelContext.getGlobalOptions().get(SCHEDULER_START_TIME);
         String schedulerName = camelContext.getGlobalOptions().get(SCHEDULER_NAME);
         Object[] params = new Object[]{routeProperties.getFileName(), new Timestamp(Long.valueOf(schedulerTime)),
-            schedulerName, "Mismatch headers in csv for ::" + routeProperties.getBinder(), new Timestamp(new Date().getTime())};
+            schedulerName, exceptionMsg + routeProperties.getBinder(), new Timestamp(new Date().getTime())};
         jdbcTemplate.update(invalidHeaderSql, params);
         TransactionStatus status = platformTransactionManager.getTransaction(def);
         platformTransactionManager.commit(status);
         throw new RouteFailedException(exceptionMsg + routeProperties.getFileName());
     }
 
-    public static String getInvalidJrdHeader(Class binderClass, List<String> header, String binder) {
+    public String getInvalidJrdHeader(List<String> header, String binder) {
         String exceptionMsg = "";
-        Map headerMap = HeaderUtil.readYmlAsMap("header-mapping.yaml");
+        Map headerMap = readYmlAsMap("header-mapping.yaml");
         String headers = (String) headerMap.get(binder);
         originalHeader = Arrays.asList(headers.split(","));
 
@@ -96,7 +87,7 @@ public class HeaderUtil {
         return exceptionMsg;
     }
 
-    public static Map readYmlAsMap(String yamlFile) {
+    public Map readYmlAsMap(String yamlFile) {
         Yaml yaml = new Yaml();
         InputStream inputStream = HeaderUtil.class.getClassLoader().getResourceAsStream(yamlFile);
         Map<String, Object> obj = yaml.load(inputStream);
