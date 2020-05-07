@@ -12,6 +12,9 @@ public interface ParentIntegrationTestSupport extends IntegrationTestSupport {
 
     String[] fileWithInvalidHeader = {"classpath:sourceFiles/parent/judicial_userprofile.csv", "classpath:sourceFiles/parent/judicial_appointments_invalidheader.csv"};
 
+    String[] fileWithInvalidHeaderOrder = {"classpath:sourceFiles/parent/judicial_userprofile.csv", "classpath:sourceFiles/parent/judicial_appointments_invalidheader_order.csv"};
+
+
     String[] fileWithInvalidJsr = {"classpath:sourceFiles/parent/judicial_userprofile_jsr.csv", "classpath:sourceFiles/parent/judicial_appointments_jsr.csv"};
 
     String[] fileWithInvalidJsrExceedsThreshold = {"classpath:sourceFiles/parent/judicial_userprofile_jsr.csv", "classpath:sourceFiles/parent/judicial_appointments_jsr_exccedthreshold.csv"};

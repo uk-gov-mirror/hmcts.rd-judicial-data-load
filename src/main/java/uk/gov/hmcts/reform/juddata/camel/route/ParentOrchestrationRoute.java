@@ -16,6 +16,7 @@ import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ORCHESTRAT
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.PROCESSOR;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ROUTE;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ROUTE_DETAILS;
+import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ROUT_HEADER;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.TABLE_NAME;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.TRUNCATE_SQL;
 
@@ -226,6 +227,10 @@ public class ParentOrchestrationRoute {
                     ROUTE + "." + child + "." + FILE_NAME));
             properties.setTableName(environment.getProperty(
                     ROUTE + "." + child + "." + TABLE_NAME));
+            properties.setRouteHeader(environment.getProperty(
+            ROUTE + "." + child + "." + ROUT_HEADER));
+
+
             routePropertiesList.add(index, properties);
             index++;
         }

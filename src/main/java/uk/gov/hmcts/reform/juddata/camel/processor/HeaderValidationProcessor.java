@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -53,6 +54,7 @@ public class HeaderValidationProcessor implements Processor {
     @Qualifier("springJdbcTransactionManager")
     PlatformTransactionManager platformTransactionManager;
 
+
     @Override
     public void process(Exchange exchange) throws Exception {
 
@@ -60,18 +62,13 @@ public class HeaderValidationProcessor implements Processor {
         String csv = exchange.getIn().getBody(String.class);
         CSVReader reader = new CSVReader(new StringReader(csv));
         String[] header = reader.readNext();
-        Field[] allFields = applicationContext.getBean(routeProperties.getBinder())
-                .getClass().getDeclaredFields();
-        List<Field> csvFields = new ArrayList<>();
 
-        for (Field field : allFields) {
-            if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
-                csvFields.add(field);
-            }
-        }
+        System.out.println(routeProperties.getRouteHeader());
+        List<String> routHeader= Arrays.asList(routeProperties.getRouteHeader().split(","));
+        List<String> fileHeader= Arrays.asList(header);
 
         //Auditing in database if headers are missing
-        if (header.length > csvFields.size()) {
+        if (!routHeader.equals(fileHeader)) {
             exchange.getIn().setHeader(HEADER_EXCEPTION, HEADER_EXCEPTION);
             //separate transaction manager required for auditing as it is independent form route
             //Transaction
@@ -85,7 +82,7 @@ public class HeaderValidationProcessor implements Processor {
             jdbcTemplate.update(invalidHeaderSql, params);
             TransactionStatus status = platformTransactionManager.getTransaction(def);
             platformTransactionManager.commit(status);
-            throw new RouteFailedException("Mismatch headers in csv for ::" + routeProperties.getFileName());
+            throw new RouteFailedException("Header count mismatch ::" + routeProperties.getFileName());
         }
 
         InputStream inputStream = new ByteArrayInputStream(csv.getBytes(Charset.forName("UTF-8")));

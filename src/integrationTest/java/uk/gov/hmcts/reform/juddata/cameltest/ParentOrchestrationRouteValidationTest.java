@@ -6,6 +6,7 @@ import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.JUDICIAL_U
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ORCHESTRATED_ROUTE;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.IntegrationTestSupport.setSourcePath;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidHeader;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidHeaderOrder;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidJsr;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidJsrExceedsThreshold;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.setSourceData;
@@ -80,6 +81,29 @@ public class ParentOrchestrationRouteValidationTest extends ParentRouteAbstractT
         assertNotNull(exceptionList.get(0).get("updated_timestamp"));
         assertEquals(exceptionList.size(), 1);
     }
+
+    @Test
+    @Sql(scripts = {"/testData/truncate-parent.sql","/testData/truncate-exception.sql","/testData/default-leaf-load.sql"})
+    public void testParentOrchestrationInvalidHeaderOrderRollback() throws Exception {
+        setSourceData(fileWithInvalidHeaderOrder);
+        parentRoute.startRoute();
+        producerTemplate.sendBody(startRoute, "test JRD orchestration");
+
+        List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
+        assertEquals(judicialUserProfileList.size(), 0);
+
+        List<Map<String, Object>> judicialAppointmentList = jdbcTemplate.queryForList(sqlChild1);
+        assertEquals(judicialAppointmentList.size(), 0);
+
+        List<Map<String, Object>> exceptionList = jdbcTemplate.queryForList(exceptionQuery);
+        assertNotNull(exceptionList.get(0).get("file_name"));
+        assertNotNull(exceptionList.get(0).get("scheduler_start_time"));
+        assertNotNull(exceptionList.get(0).get("error_description"));
+        assertNotNull(exceptionList.get(0).get("updated_timestamp"));
+        assertEquals(exceptionList.size(), 1);
+    }
+
+
 
     @Test
     @Sql(scripts = {"/testData/truncate-parent.sql","/testData/truncate-exception.sql","/testData/default-leaf-load.sql"})

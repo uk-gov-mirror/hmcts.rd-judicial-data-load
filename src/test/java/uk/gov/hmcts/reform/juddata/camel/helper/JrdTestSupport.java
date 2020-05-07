@@ -1,12 +1,22 @@
 package uk.gov.hmcts.reform.juddata.camel.helper;
 
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.DATE_FORMAT;
+import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_NAME;
+import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_START_TIME;
 
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.camel.Exchange;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialBaseLocationType;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialContractType;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAppointment;
@@ -69,6 +79,7 @@ public class JrdTestSupport {
         routeProperties.setRouteName("routeName");
         routeProperties.setSql("sql");
         routeProperties.setTruncateSql("truncateSql");
+        routeProperties.setFileName("Test.csv");
         return routeProperties;
     }
 
@@ -127,5 +138,17 @@ public class JrdTestSupport {
         String datTime = dateTime.toString().replace("T", " ");
         String tail = datTime.substring(datTime.lastIndexOf(".")).concat("000000");
         return datTime.substring(0, datTime.lastIndexOf(".")) + tail;
+    }
+
+    public static Map<String, String> createMockGlobalOptions(Exchange exchange) {
+        Map<String, String> globalOptions = new HashMap<>();
+        globalOptions.put(SCHEDULER_NAME, "judicial_leaf_scheduler");
+        globalOptions.put(SCHEDULER_START_TIME, String.valueOf(new Date().getTime()));
+        exchange.getContext().setGlobalOptions(globalOptions);
+        return globalOptions;
+    }
+    public static InputStream getInputStreamOfFile(String fileName) throws FileNotFoundException {
+        File initialFile = new File(fileName);
+        return new FileInputStream(initialFile);
     }
 }
