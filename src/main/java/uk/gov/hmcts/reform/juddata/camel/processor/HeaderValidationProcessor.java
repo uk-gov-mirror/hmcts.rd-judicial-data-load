@@ -59,7 +59,6 @@ public class HeaderValidationProcessor implements Processor {
         CSVReader reader = new CSVReader(new StringReader(csv));
         String[] header = reader.readNext();
 
-        System.out.println(routeProperties.getRouteHeader());
         List<String> routHeader = Arrays.asList(routeProperties.getRouteHeader().split(","));
         List<String> fileHeader = Arrays.asList(header);
 
