@@ -30,11 +30,11 @@ spring:
 
   mail:
     from: no-reply@reform.hmcts.net
-    to:  Praveen.Saxena@HMCTS.NET
+    to:  sushant.choudhari@HMCTS.NET
     subject:  Exception received at Rout
     host: mta.reform.hmcts.net
     port: 25
-    enabled: false
+    enabled: true
     properties:
       mail-smtp:
         starttls:
