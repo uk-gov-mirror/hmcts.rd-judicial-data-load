@@ -1,0 +1,7 @@
+judicialUserProfile :
+  header : elinks_id,Personal_Code,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date
+  extra-header: dfads,elinks_id,Personal_Code,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date
+  less-header : Personal_Code,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date
+  unordered-header: elinks_id,Personal_Code,Title,Known_As,Surname,Full_Name,Post_Nominals,Contract_Type_Id,Work_Pattern,Email_Id,Joining_Date,Last_Working_Date,Active_Flag,Extracted_Date
+
+

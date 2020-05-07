@@ -4,7 +4,6 @@ import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.DATE_FORMA
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_NAME;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_START_TIME;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,10 +12,12 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.camel.Exchange;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.TestPropertySource;
+import org.yaml.snakeyaml.Yaml;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialBaseLocationType;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialContractType;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAppointment;
@@ -25,7 +26,14 @@ import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserProfile;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserRoleType;
 import uk.gov.hmcts.reform.juddata.camel.route.beans.RouteProperties;
 
+@TestPropertySource(properties = {"spring.config.location=classpath:application-integration.yml"})
 public class JrdTestSupport {
+
+    @Value("${route.judicial-user-profile-orchestration.route-header}")
+    public static String fileHeader;
+
+    public static Map readYmlAsMap = readYmlAsMap("test-header.yaml");
+
 
     private JrdTestSupport() {
 
@@ -69,7 +77,6 @@ public class JrdTestSupport {
     }
 
     public static RouteProperties createRoutePropertiesMock() {
-
         RouteProperties routeProperties = new RouteProperties();
         routeProperties.setBinder("Binder");
         routeProperties.setBlobPath("Blobpath");
@@ -80,6 +87,7 @@ public class JrdTestSupport {
         routeProperties.setSql("sql");
         routeProperties.setTruncateSql("truncateSql");
         routeProperties.setFileName("Test.csv");
+        routeProperties.setRouteHeader((String) ((Map) readYmlAsMap.get("judicialUserProfile")).get("header"));
         return routeProperties;
     }
 
@@ -147,8 +155,15 @@ public class JrdTestSupport {
         exchange.getContext().setGlobalOptions(globalOptions);
         return globalOptions;
     }
+
     public static InputStream getInputStreamOfFile(String fileName) throws FileNotFoundException {
         File initialFile = new File(fileName);
         return new FileInputStream(initialFile);
+    }
+
+    public static Map<String, Object> readYmlAsMap(String yamlFile) {
+        Yaml yaml = new Yaml();
+        InputStream inputStream = JrdTestSupport.class.getClassLoader().getResourceAsStream(yamlFile);
+        return yaml.load(inputStream);
     }
 }

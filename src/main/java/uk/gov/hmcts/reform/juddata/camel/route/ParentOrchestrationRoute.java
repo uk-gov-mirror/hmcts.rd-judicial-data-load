@@ -228,9 +228,7 @@ public class ParentOrchestrationRoute {
             properties.setTableName(environment.getProperty(
                     ROUTE + "." + child + "." + TABLE_NAME));
             properties.setRouteHeader(environment.getProperty(
-            ROUTE + "." + child + "." + ROUT_HEADER));
-
-
+                    ROUTE + "." + child + "." + ROUT_HEADER));
             routePropertiesList.add(index, properties);
             index++;
         }

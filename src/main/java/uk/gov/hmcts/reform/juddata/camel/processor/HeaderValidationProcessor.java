@@ -6,18 +6,14 @@ import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_START_TIME;
 
 import com.opencsv.CSVReader;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -64,8 +60,8 @@ public class HeaderValidationProcessor implements Processor {
         String[] header = reader.readNext();
 
         System.out.println(routeProperties.getRouteHeader());
-        List<String> routHeader= Arrays.asList(routeProperties.getRouteHeader().split(","));
-        List<String> fileHeader= Arrays.asList(header);
+        List<String> routHeader = Arrays.asList(routeProperties.getRouteHeader().split(","));
+        List<String> fileHeader = Arrays.asList(header);
 
         //Auditing in database if headers are missing
         if (!routHeader.equals(fileHeader)) {
