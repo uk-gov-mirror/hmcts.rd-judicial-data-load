@@ -9,6 +9,7 @@ import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.DIRECT_ROU
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.FILE_NAME;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ID;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.INSERT_SQL;
+import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.LEAF_HEADER;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.LEAF_ROUTE;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.LEAF_ROUTE_NAMES;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.MAPPER;
@@ -222,7 +223,7 @@ public class LeafTableRoute {
             properties.setTableName(environment.getProperty(
                     LEAF_ROUTE + "." + child + "." + TABLE_NAME));
             properties.setRouteHeader(environment.getProperty(
-                    LEAF_ROUTE + "." + child + "." + ROUT_HEADER));
+                    LEAF_ROUTE + "." + child + "." + LEAF_HEADER));
             routePropertiesList.add(index, properties);
             index++;
         }

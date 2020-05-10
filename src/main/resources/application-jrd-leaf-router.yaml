@@ -20,7 +20,7 @@ leaf-route:
     processor-class: JudicialUserRoleTypeProcessor
     mapper-class: JudicialRoleTypeRowMapper
     csv-binder-object: JudicialUserRoleType
-    route-header: RoleID,Role
+    leaf-header: RoleID,Role
 
   judicial-contract-type:
     id: judicial-contract-type
@@ -34,7 +34,7 @@ leaf-route:
     processor-class: JudicialContractTypeProcessor
     mapper-class: JudicialContractTypeRowMapper
     csv-binder-object: JudicialContractType
-    route-header: ContractID,ContractDescription
+    leaf-header: ContractID,ContractDescription
 
   judicial-region-type:
     id: judicial-region-type
@@ -48,7 +48,7 @@ leaf-route:
     processor-class: JudicialRegionTypeProcessor
     mapper-class: JudicialRegionTypeRowMapper
     csv-binder-object: JudicialRegionType
-    route-header: LocationID,LocationDescription
+    leaf-header: LocationID,LocationDescription
 
   judicial-base-location_type:
     id: judicial-base-location_type

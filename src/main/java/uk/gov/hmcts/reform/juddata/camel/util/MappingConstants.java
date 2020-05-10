@@ -23,6 +23,8 @@ public class MappingConstants {
 
     public static final String ROUT_HEADER = "route-header";
 
+    public static final String LEAF_HEADER = "leaf-header";
+
     public static final String LEAF_ROUTE = "leaf-route";
 
     public static final String LEAF_ROUTE_NAMES = "leaf-route-names";
