@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication(scanBasePackages = "uk.gov.hmcts.reform.juddata")
+@SpringBootApplication(scanBasePackages = "uk.gov.hmcts.reform")
 @EnableScheduling
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
 public class JudicialApplication implements ApplicationRunner {
