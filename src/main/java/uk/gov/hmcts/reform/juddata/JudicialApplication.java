@@ -33,6 +33,8 @@ public class JudicialApplication implements ApplicationRunner {
         ApplicationContext context = SpringApplication.run(JudicialApplication.class);
         int exitCode = SpringApplication.exit(context);
         log.info("Judicial Application exiting with exit code " + exitCode);
+        System.exit(exitCode);
+        log.info("exiting from application");
     }
 
 
