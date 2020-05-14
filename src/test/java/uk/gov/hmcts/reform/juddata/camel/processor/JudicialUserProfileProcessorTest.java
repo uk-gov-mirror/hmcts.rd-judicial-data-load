@@ -40,9 +40,9 @@ public class JudicialUserProfileProcessorTest {
 
     LocalDateTime dateTime = LocalDateTime.now();
 
-    private JudicialUserProfile judicialUserProfileMock1 = createJudicialUserProfileMock(currentDate, dateTime);
+    private JudicialUserProfile judicialUserProfileMock1;
 
-    private JudicialUserProfile judicialUserProfileMock2 = createJudicialUserProfileMock(currentDate, dateTime);
+    private JudicialUserProfile judicialUserProfileMock2;
 
     private JudicialUserProfileProcessor judicialUserProfileProcessor;
 
@@ -54,6 +54,9 @@ public class JudicialUserProfileProcessorTest {
 
     @Before
     public void setup() {
+
+        judicialUserProfileMock1 = createJudicialUserProfileMock(currentDate, dateTime);
+        judicialUserProfileMock2 = createJudicialUserProfileMock(currentDate, dateTime);
 
         judicialUserProfileProcessor = new JudicialUserProfileProcessor();
         judicialUserProfileJsrValidatorInitializer
