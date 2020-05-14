@@ -429,26 +429,6 @@ file name: postgresql-1.12.5.jar
     </suppress>
     <suppress>
         <notes><![CDATA[
-   file name: jruby-complete-1.7.26.jar: bcprov-jdk15on-1.54.jar
-   ]]></notes>
-        <sha1>1acdedeb89f1d950d67b73d481eb7736df65eedb</sha1>
-        <cpe>cpe:/a:bouncycastle:legion-of-the-bouncy-castle-java-crytography-api</cpe>
-        <cve>CVE-2016-1000338</cve>
-        <cve>CVE-2016-1000339</cve>
-        <cve>CVE-2016-1000340</cve>
-        <cve>CVE-2016-1000341</cve>
-        <cve>CVE-2016-1000342</cve>
-        <cve>CVE-2016-1000343</cve>
-        <cve>CVE-2016-1000344</cve>
-        <cve>CVE-2016-1000345</cve>
-        <cve>CVE-2016-1000346</cve>
-        <cve>CVE-2016-1000352</cve>
-        <cve>CVE-2017-13098</cve>
-        <cve>CVE-2018-1000180</cve>
-        <cve>CVE-2018-1000613</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
    file name: jruby-complete-1.7.26.jar: readline.jar
    ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.jruby/readline@.*$</packageUrl>
