@@ -217,15 +217,9 @@ repositories {
 
 dependencies {
     compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
-//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot
-//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
-//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: versions.springBoot
-//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: versions.springBoot
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
-//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot
-//    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: versions.springHystrix
-//    compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.5.RELEASE'
+
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: versions.springBoot
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: versions.springBoot
 
@@ -262,11 +256,8 @@ dependencies {
 
     compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
 
-//    compile group: 'name.neuhalfen.projects.crypto.bouncycastle.openpgp', name: 'bouncy-gpg', version: '2.0.1'
- //   compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.64'
     compile group: 'org.apache.commons', name: 'commons-vfs2', version: '2.4.1'
     compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
-    //GPG
 
     compile group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: versions.camel
     compile group: 'org.apache.camel', name: 'camel-csv-starter', version: versions.camel
@@ -281,13 +272,10 @@ dependencies {
     compile group: 'org.apache.camel', name: 'camel-bean-validator', version: versions.camel
     compile group: 'org.apache.camel', name: 'camel-spring-boot-starter', version: versions.camel
 
-
     compile group: 'org.apache.camel', name: 'camel-core', version: versions.camel
     compile group: 'org.apache.camel', name: 'spi-annotations', version: '3.0.0'
 
     compile group: 'com.opencsv', name: 'opencsv', version: '3.7'
-
-//    providedCompile group: 'org.apache.camel', name: 'camel-spring-boot-dependencies', version: versions.camel, ext: 'pom'
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok

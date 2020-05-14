@@ -248,28 +248,12 @@ file name: postgresql-1.12.5.jar
     </suppress>
     <suppress>
         <notes><![CDATA[
-   file name: groovy-xml-2.5.9.jar
+   file name: groovy-*-*.jar
    ]]></notes>
-        <sha1>dc96b317b6d922cdbf8966a465d1769c6e7c0080</sha1>
+        <gav regex="true">org\.codehaus\.groovy:groovy-*.*</gav>
         <cpe>cpe:/a:apache:groovy</cpe>
-        <cve>CVE-2016-6497</cve>
     </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: groovy-json-2.5.9.jar
-   ]]></notes>
-        <sha1>5be9ac3081d348f5d4a6caaf067aa8828d9ab7d9</sha1>
-        <cpe>cpe:/a:apache:groovy</cpe>
-        <cve>CVE-2016-6497</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: groovy-2.5.9.jar
-   ]]></notes>
-        <sha1>04222eafca660d01a44682c3fe4c629005728973</sha1>
-        <cpe>cpe:/a:apache:groovy</cpe>
-        <cve>CVE-2016-6497</cve>
-    </suppress>
+
     <suppress>
         <notes><![CDATA[
    file name: commons-beanutils-core-1.8.3.jar
@@ -429,15 +413,6 @@ file name: postgresql-1.12.5.jar
     </suppress>
     <suppress>
         <notes><![CDATA[
-   file name: jruby-complete-1.7.26.jar: readline.jar
-   ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.jruby/readline@.*$</packageUrl>
-        <cpe>cpe:/a:jruby:jruby</cpe>
-        <cve>CVE-2010-1330</cve>
-        <cve>CVE-2011-4838</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
    file name: cucumber-jvm-deps-1.0.6.jar (shaded: com.thoughtworks.xstream:xstream:1.4.7)
    ]]></notes>
         <packageUrl regex="true">^pkg:maven/com\.thoughtworks\.xstream/xstream@.*$</packageUrl>
@@ -515,11 +490,10 @@ file name: postgresql-1.12.5.jar
     </suppress>
     <suppress>
         <notes><![CDATA[
-   file name: bcpg-jdk15on-1.56.jar
+   file name: bcpg-jdk15on-*.jar
    ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.bouncycastle/bcpg\-jdk15on@.*$</packageUrl>
         <cpe>cpe:/a:openpgp:openpgp</cpe>
-        <cve>CVE-2005-0366</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -564,12 +538,21 @@ file name: postgresql-1.12.5.jar
         <filePath regex="true">.*\bflexmark-ext-gitlab-0.34.30\.jar</filePath>
         <cpe>cpe:/a:gitlab:gitlab</cpe>
     </suppress>
+
     <suppress>
         <notes><![CDATA[
-   file name: javax.websocket-api-1.1.jar
+   file name: jruby-complete-1.7.26.jar: readline.jar
    ]]></notes>
-        <packageUrl regex="true">^pkg:maven/javax\.websocket/javax\.websocket\-api@.*$</packageUrl>
-        <cpe>cpe:/a:java-websocket_project:java-websocket</cpe>
-        <cve>CVE-2020-11050</cve>
+        <packageUrl regex="true">^pkg:maven/org\.jruby/readline@.*$</packageUrl>
+        <cpe>cpe:/a:jruby:jruby</cpe>
     </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+   file name: jruby-complete-1.7.26.jar: readline.jar
+   ]]></notes>
+        <filePath regex="true">.*\bbcprov-jdk15on-1.54\.jar</filePath>
+        <cpe>cpe:/a:bouncycastle:legion-of-the-bouncy-castle-java-crytography-api</cpe>
+    </suppress>
+
 </suppressions>
