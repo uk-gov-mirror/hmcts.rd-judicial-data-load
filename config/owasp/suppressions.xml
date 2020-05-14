@@ -435,8 +435,6 @@ file name: postgresql-1.12.5.jar
         <packageUrl regex="true">^pkg:maven/org\.eclipse\.jetty/jetty\-jmx@.*$</packageUrl>
         <cpe>cpe:/a:eclipse:jetty</cpe>
         <cpe>cpe:/a:jetty:jetty</cpe>
-        <cve>CVE-2019-10241</cve>
-        <cve>CVE-2019-10247</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -445,16 +443,12 @@ file name: postgresql-1.12.5.jar
         <packageUrl regex="true">^pkg:maven/org\.eclipse\.jetty/jetty\-security@.*$</packageUrl>
         <cpe>cpe:/a:eclipse:jetty</cpe>
         <cpe>cpe:/a:jetty:jetty</cpe>
-        <cve>CVE-2019-10241</cve>
-        <cve>CVE-2019-10247</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
    file name: jetty-repacked-9.4.12.v20180830.jar (shaded: org.eclipse.jetty:jetty-server:9.4.12.v20180830)
    ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.eclipse\.jetty/jetty\-server@.*$</packageUrl>
-        <cpe>cpe:/a:eclipse:jetty</cpe>
-        <cpe>cpe:/a:jetty:jetty</cpe>
         <cve>CVE-2019-10241</cve>
         <cve>CVE-2019-10247</cve>
     </suppress>
@@ -465,8 +459,6 @@ file name: postgresql-1.12.5.jar
         <packageUrl regex="true">^pkg:maven/org\.eclipse\.jetty/jetty\-servlet@.*$</packageUrl>
         <cpe>cpe:/a:eclipse:jetty</cpe>
         <cpe>cpe:/a:jetty:jetty</cpe>
-        <cve>CVE-2019-10241</cve>
-        <cve>CVE-2019-10247</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -475,8 +467,6 @@ file name: postgresql-1.12.5.jar
         <packageUrl regex="true">^pkg:maven/org\.eclipse\.jetty/jetty\-util@.*$</packageUrl>
         <cpe>cpe:/a:eclipse:jetty</cpe>
         <cpe>cpe:/a:jetty:jetty</cpe>
-        <cve>CVE-2019-10241</cve>
-        <cve>CVE-2019-10247</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -485,8 +475,6 @@ file name: postgresql-1.12.5.jar
         <packageUrl regex="true">^pkg:maven/org\.eclipse\.jetty/jetty\-xml@.*$</packageUrl>
         <cpe>cpe:/a:eclipse:jetty</cpe>
         <cpe>cpe:/a:jetty:jetty</cpe>
-        <cve>CVE-2019-10241</cve>
-        <cve>CVE-2019-10247</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -501,7 +489,6 @@ file name: postgresql-1.12.5.jar
    ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.dom4j/dom4j@.*$</packageUrl>
         <cpe>cpe:/a:dom4j_project:dom4j</cpe>
-        <cve>CVE-2020-10683</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
