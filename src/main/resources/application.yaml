@@ -27,6 +27,7 @@ spring:
   flyway:
     enabled: ${FLYWAY_ENABLED:true}
     locations: classpath:db/migration,classpath:db/postgres
+    schemas: dbjuddata
 
   mail:
     from: no-reply@reform.hmcts.net
@@ -75,13 +76,6 @@ spring:
     include:
       - jrd-router
       - jrd-leaf-router
-
-
-# Scheduler configuration
-scheduler:
-
-  camel-route-config: 0 0 22 * * ?
-  camel-leaf-router-config: 0 0 21 * * ?
 
 azure:
   storage:
