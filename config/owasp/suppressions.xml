@@ -584,4 +584,12 @@ file name: postgresql-1.12.5.jar
         <filePath regex="true">.*\bflexmark-ext-gitlab-0.34.30\.jar</filePath>
         <cpe>cpe:/a:gitlab:gitlab</cpe>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: javax.websocket-api-1.1.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/javax\.websocket/javax\.websocket\-api@.*$</packageUrl>
+        <cpe>cpe:/a:java-websocket_project:java-websocket</cpe>
+        <cve>CVE-2020-11050</cve>
+    </suppress>
 </suppressions>
