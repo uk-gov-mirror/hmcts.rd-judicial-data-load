@@ -122,10 +122,6 @@
         <cpe>cpe:/a:apache:tomcat</cpe>
         <cpe>cpe:/a:apache_software_foundation:tomcat</cpe>
         <cpe>cpe:/a:apache_tomcat:apache_tomcat</cpe>
-        <cve>CVE-2019-17569</cve>
-        <cve>CVE-2020-1745</cve>
-        <cve>CVE-2020-1935</cve>
-        <cve>CVE-2020-1938</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -135,10 +131,6 @@
         <cpe>cpe:/a:apache:tomcat</cpe>
         <cpe>cpe:/a:apache_software_foundation:tomcat</cpe>
         <cpe>cpe:/a:apache_tomcat:apache_tomcat</cpe>
-        <cve>CVE-2019-17569</cve>
-        <cve>CVE-2020-1745</cve>
-        <cve>CVE-2020-1935</cve>
-        <cve>CVE-2020-1938</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -182,8 +174,8 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-file name: postgresql-1.12.5.jar
-]]></notes>
+    file name: postgresql-1.12.5.jar
+    ]]></notes>
         <filePath regex="true">.*\bpostgresql-1.12.5\.jar</filePath>
         <cpe>cpe:/a:postgresql:postgresql</cpe>
     </suppress>
@@ -303,17 +295,7 @@ file name: postgresql-1.12.5.jar
         <cpe>cpe:/a:htmlunit_project:htmlunit</cpe>
         <cve>CVE-2020-5529</cve>
     </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: flexmark-ext-xwiki-macros-0.34.30.jar
-   ]]></notes>
-        <packageUrl regex="true">^pkg:maven/com\.vladsch\.flexmark/flexmark\-ext\-xwiki\-macros@.*$</packageUrl>
-        <cpe>cpe:/a:xwiki:xwiki</cpe>
-        <cve>CVE-2007-4898</cve>
-        <cve>CVE-2010-4641</cve>
-        <cve>CVE-2010-4642</cve>
-        <cve>CVE-2018-16277</cve>
-    </suppress>
+
     <suppress>
         <notes><![CDATA[
    file name: openhtmltopdf-jsoup-dom-converter-0.0.1-RC13.jar
@@ -508,23 +490,7 @@ file name: postgresql-1.12.5.jar
         <vulnerabilityName>Disallow calling helperMissing and blockHelperMissing directly</vulnerabilityName>
         <vulnerabilityName>Prototype pollution</vulnerabilityName>
     </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: bcpg-jdk15on-1.56.jar
-   ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.bouncycastle/bcpg\-jdk15on@.*$</packageUrl>
-        <cpe>cpe:/a:pgp:openpgp</cpe>
-        <cpe>cpe:/a:pgp:pgp</cpe>
-        <cve>CVE-2001-0265</cve>
-        <cve>CVE-2001-0381</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: flexmark-ext-gitlab-0.34.30.jar
-   ]]></notes>
-        <filePath regex="true">.*\bflexmark-ext-gitlab-0.34.30\.jar</filePath>
-        <cpe>cpe:/a:gitlab:gitlab</cpe>
-    </suppress>
+
 
     <suppress>
         <notes><![CDATA[
