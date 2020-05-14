@@ -168,23 +168,8 @@
         <notes><![CDATA[
    file name: selenium-opera-driver-3.141.59.jar
    ]]></notes>
-        <sha1>6b11ed01182bfd8bb62ddeae34cf9eadd3cfc7ff</sha1>
+        <filePath regex="true">.*\bselenium-opera-driver-3.141.59.jar</filePath>
         <cpe>cpe:/a:opera:opera</cpe>
-        <cve>CVE-2003-1561</cve>
-        <cve>CVE-2008-1761</cve>
-        <cve>CVE-2008-1764</cve>
-        <cve>CVE-2008-3079</cve>
-        <cve>CVE-2008-3172</cve>
-        <cve>CVE-2008-4293</cve>
-        <cve>CVE-2008-4695</cve>
-        <cve>CVE-2008-4696</cve>
-        <cve>CVE-2008-4794</cve>
-        <cve>CVE-2008-4795</cve>
-        <cve>CVE-2008-5679</cve>
-        <cve>CVE-2009-0915</cve>
-        <cve>CVE-2010-5227</cve>
-        <cve>CVE-2015-8960</cve>
-        <cve>CVE-2019-19788</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -197,41 +182,10 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-   file name: postgresql-1.12.5.jar
-   ]]></notes>
-        <sha1>63d989e245505da88f732d69f7267d4a6e400c4d</sha1>
+file name: postgresql-1.12.5.jar
+]]></notes>
+        <filePath regex="true">.*\bpostgresql-1.12.5\.jar</filePath>
         <cpe>cpe:/a:postgresql:postgresql</cpe>
-        <cve>CVE-2007-2138</cve>
-        <cve>CVE-2010-0733</cve>
-        <cve>CVE-2014-0060</cve>
-        <cve>CVE-2014-0061</cve>
-        <cve>CVE-2014-0062</cve>
-        <cve>CVE-2014-0063</cve>
-        <cve>CVE-2014-0064</cve>
-        <cve>CVE-2014-0065</cve>
-        <cve>CVE-2014-0066</cve>
-        <cve>CVE-2014-0067</cve>
-        <cve>CVE-2014-8161</cve>
-        <cve>CVE-2015-0241</cve>
-        <cve>CVE-2015-0242</cve>
-        <cve>CVE-2015-0243</cve>
-        <cve>CVE-2015-0244</cve>
-        <cve>CVE-2015-3165</cve>
-        <cve>CVE-2015-3166</cve>
-        <cve>CVE-2015-3167</cve>
-        <cve>CVE-2015-5288</cve>
-        <cve>CVE-2015-5289</cve>
-        <cve>CVE-2016-0766</cve>
-        <cve>CVE-2016-0768</cve>
-        <cve>CVE-2016-0773</cve>
-        <cve>CVE-2016-5423</cve>
-        <cve>CVE-2016-5424</cve>
-        <cve>CVE-2016-7048</cve>
-        <cve>CVE-2017-14798</cve>
-        <cve>CVE-2017-7484</cve>
-        <cve>CVE-2018-1115</cve>
-        <cve>CVE-2019-10210</cve>
-        <cve>CVE-2019-10211</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -627,97 +581,7 @@
         <notes><![CDATA[
    file name: flexmark-ext-gitlab-0.34.30.jar
    ]]></notes>
-        <packageUrl regex="true">^pkg:maven/com\.vladsch\.flexmark/flexmark\-ext\-gitlab@.*$</packageUrl>
+        <filePath regex="true">.*\bflexmark-ext-gitlab-0.34.30\.jar</filePath>
         <cpe>cpe:/a:gitlab:gitlab</cpe>
-        <cve>CVE-2013-4580</cve>
-        <cve>CVE-2013-4581</cve>
-        <cve>CVE-2017-0919</cve>
-        <cve>CVE-2017-0921</cve>
-        <cve>CVE-2017-12426</cve>
-        <cve>CVE-2017-8778</cve>
-        <cve>CVE-2018-10379</cve>
-        <cve>CVE-2018-12606</cve>
-        <cve>CVE-2018-12607</cve>
-        <cve>CVE-2018-14364</cve>
-        <cve>CVE-2018-14602</cve>
-        <cve>CVE-2018-14603</cve>
-        <cve>CVE-2018-14604</cve>
-        <cve>CVE-2018-14605</cve>
-        <cve>CVE-2018-14606</cve>
-        <cve>CVE-2018-18640</cve>
-        <cve>CVE-2018-18643</cve>
-        <cve>CVE-2018-18645</cve>
-        <cve>CVE-2018-19495</cve>
-        <cve>CVE-2018-19580</cve>
-        <cve>CVE-2018-19856</cve>
-        <cve>CVE-2018-20229</cve>
-        <cve>CVE-2018-8971</cve>
-        <cve>CVE-2019-10108</cve>
-        <cve>CVE-2019-10109</cve>
-        <cve>CVE-2019-10110</cve>
-        <cve>CVE-2019-10111</cve>
-        <cve>CVE-2019-10112</cve>
-        <cve>CVE-2019-10113</cve>
-        <cve>CVE-2019-10114</cve>
-        <cve>CVE-2019-10115</cve>
-        <cve>CVE-2019-10116</cve>
-        <cve>CVE-2019-10117</cve>
-        <cve>CVE-2019-10640</cve>
-        <cve>CVE-2019-11000</cve>
-        <cve>CVE-2019-13003</cve>
-        <cve>CVE-2019-15575</cve>
-        <cve>CVE-2019-15576</cve>
-        <cve>CVE-2019-15577</cve>
-        <cve>CVE-2019-15580</cve>
-        <cve>CVE-2019-15584</cve>
-        <cve>CVE-2019-15589</cve>
-        <cve>CVE-2019-15591</cve>
-        <cve>CVE-2019-15592</cve>
-        <cve>CVE-2019-15594</cve>
-        <cve>CVE-2019-15726</cve>
-        <cve>CVE-2019-15736</cve>
-        <cve>CVE-2019-15737</cve>
-        <cve>CVE-2019-18447</cve>
-        <cve>CVE-2019-18448</cve>
-        <cve>CVE-2019-18449</cve>
-        <cve>CVE-2019-18450</cve>
-        <cve>CVE-2019-18463</cve>
-        <cve>CVE-2019-19257</cve>
-        <cve>CVE-2019-19260</cve>
-        <cve>CVE-2019-5486</cve>
-        <cve>CVE-2019-5487</cve>
-        <cve>CVE-2019-6240</cve>
-        <cve>CVE-2019-6781</cve>
-        <cve>CVE-2019-6784</cve>
-        <cve>CVE-2019-6791</cve>
-        <cve>CVE-2019-6794</cve>
-        <cve>CVE-2019-6795</cve>
-        <cve>CVE-2019-6796</cve>
-        <cve>CVE-2019-6797</cve>
-        <cve>CVE-2019-9170</cve>
-        <cve>CVE-2019-9171</cve>
-        <cve>CVE-2019-9172</cve>
-        <cve>CVE-2019-9174</cve>
-        <cve>CVE-2019-9175</cve>
-        <cve>CVE-2019-9176</cve>
-        <cve>CVE-2019-9177</cve>
-        <cve>CVE-2019-9178</cve>
-        <cve>CVE-2019-9179</cve>
-        <cve>CVE-2019-9217</cve>
-        <cve>CVE-2019-9218</cve>
-        <cve>CVE-2019-9219</cve>
-        <cve>CVE-2019-9220</cve>
-        <cve>CVE-2019-9221</cve>
-        <cve>CVE-2019-9222</cve>
-        <cve>CVE-2019-9223</cve>
-        <cve>CVE-2019-9224</cve>
-        <cve>CVE-2019-9225</cve>
-        <cve>CVE-2019-9485</cve>
-        <cve>CVE-2020-10081</cve>
-        <cve>CVE-2020-10087</cve>
-        <cve>CVE-2020-10954</cve>
-        <cve>CVE-2020-11505</cve>
-        <cve>CVE-2020-7968</cve>
-        <cve>CVE-2020-7973</cve>
     </suppress>
 </suppressions>
