@@ -3,11 +3,9 @@ server:
 
 management:
   endpoints:
-    jmx:
-      exposure:
-        include: 'health'
     web:
       base-path: "/"
+
   endpoint:
     health:
       show-details: "always"
@@ -23,10 +21,13 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+  batch:
+    initialize-schema: always
   jackson.date-format: yyyy-MM-dd
   flyway:
     enabled: ${FLYWAY_ENABLED:true}
     locations: classpath:db/migration,classpath:db/postgres
+    schemas: dbjuddata
 
   mail:
     from: no-reply@reform.hmcts.net
@@ -76,16 +77,9 @@ spring:
       - jrd-router
       - jrd-leaf-router
 
-
-# Scheduler configuration
-scheduler:
-  camel-route-config: 0 0 22 * * ?
-  camel-leaf-router-config: 0 0 21 * * ?
-
 azure:
   storage:
     account-name: ${ACCOUNT_NAME:ACCOUNT_NAME}
     account-key: ${ACCOUNT_KEY:ACCOUNT_KEY}
     container-name: ${CONTAINER_NAME:CONTAINER_NAME}
     blob-url-suffix: ${BLOB_URL_SUFFIX:BLOB_URL_SUFFIX}
-
