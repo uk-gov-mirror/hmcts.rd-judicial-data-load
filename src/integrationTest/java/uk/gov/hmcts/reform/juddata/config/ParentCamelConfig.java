@@ -203,4 +203,5 @@ public class ParentCamelConfig {
     LeafRouteTask leafRouteTask() {
         return new LeafRouteTask();
     }
+
 }

@@ -1,15 +1,20 @@
 package uk.gov.hmcts.reform.juddata.configuration;
 
+import static net.logstash.logback.encoder.org.apache.commons.lang3.BooleanUtils.negate;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.SimpleJob;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
 import uk.gov.hmcts.reform.juddata.camel.task.LeafRouteTask;
 import uk.gov.hmcts.reform.juddata.camel.task.ParentRouteTask;
 
@@ -22,6 +27,9 @@ public class BatchConfig {
 
     @Autowired
     private StepBuilderFactory steps;
+
+    @Autowired
+    AuditProcessingService schedulerAuditProcessingService;
 
     @Value("${leaf-route-task}")
     String taskLeaf;
@@ -54,11 +62,17 @@ public class BatchConfig {
     }
 
     @Bean
+    @Lazy
     public Job runRoutesJob() {
-        return jobs.get(jobName)
-                .incrementer(new RunIdIncrementer())
-                .start(stepLeafRoute())
-                .next(stepOrchestration())
-                .build();
+
+        if (negate(schedulerAuditProcessingService.isAuditingCompleted())) {
+            return jobs.get(jobName)
+                    .incrementer(new RunIdIncrementer())
+                    .start(stepLeafRoute())
+                    .next(stepOrchestration())
+                    .build();
+        }
+
+        return new SimpleJob();
     }
 }

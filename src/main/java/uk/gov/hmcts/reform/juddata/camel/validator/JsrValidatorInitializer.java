@@ -49,7 +49,7 @@ public class JsrValidatorInitializer<T> {
     @Qualifier("springJdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
-    @Value("${invalid-header-sql}")
+    @Value("${invalid-exception-sql}")
     String invalidHeaderSql;
 
     @Autowired

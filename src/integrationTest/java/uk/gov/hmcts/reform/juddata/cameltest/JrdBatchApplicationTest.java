@@ -2,11 +2,13 @@ package uk.gov.hmcts.reform.juddata.cameltest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.JUDICIAL_USER_PROFILE_ORCHESTRATION;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.LEAF_ROUTE;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ORCHESTRATED_ROUTE;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.IntegrationTestSupport.setSourcePath;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.file;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithUniqueViolation;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.setSourceData;
 
 import java.util.List;
@@ -77,6 +79,9 @@ public class JrdBatchApplicationTest {
     @Value("${role-select-jrd-sql}")
     protected String roleSql;
 
+    @Value("${exception-select-query}")
+    String exceptionQuery;
+
     @BeforeClass
     public static void beforeAll() throws Exception {
         setSourcePath("classpath:archivalFiles", "archival.path");
@@ -105,5 +110,32 @@ public class JrdBatchApplicationTest {
 
         List<Map<String, Object>> judicialUserRoleType = jdbcTemplate.queryForList(roleSql);
         assertNotEquals(judicialUserRoleType.size(), 0);
+    }
+
+    @Test
+    @Sql(scripts = {"/testData/truncate-parent.sql","/testData/default-leaf-load.sql"})
+    public void testTaskletException() throws Exception {
+
+        setSourceData(fileWithUniqueViolation);
+        parentRoute.startRoute();
+
+        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
+        leafTableRoute.startRoute();
+
+        jobLauncherTestUtils.launchJob();
+
+        List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
+        assertEquals(judicialUserProfileList.size(), 0);
+
+        List<Map<String, Object>> exceptionList = jdbcTemplate.queryForList(exceptionQuery);
+
+        for (int count = 0; count < 1; count++) {
+            assertNotNull(exceptionList.get(0).get("scheduler_start_time"));
+            assertNotNull(exceptionList.get(0).get("key"));
+            assertNotNull(exceptionList.get(0).get("field_in_error"));
+            assertNotNull(exceptionList.get(0).get("error_description"));
+            assertNotNull(exceptionList.get(0).get("updated_timestamp"));
+        }
+        assertEquals(exceptionList.size(), 1);
     }
 }
