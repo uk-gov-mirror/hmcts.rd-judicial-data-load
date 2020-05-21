@@ -508,4 +508,12 @@
         <cpe>cpe:/a:bouncycastle:legion-of-the-bouncy-castle-java-crytography-api</cpe>
     </suppress>
 
+    <suppress>
+        <notes><![CDATA[
+   file name: ant*.jar: readline.jar
+   ]]></notes>
+        <filePath regex="true">.*\**\.jar</filePath>
+        <cpe>cpe:/a:apache:ant</cpe>
+    </suppress>
+
 </suppressions>

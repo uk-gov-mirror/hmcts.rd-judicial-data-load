@@ -17,6 +17,10 @@ spring:
     enabled: true
   batch:
     initialize-schema: always
+    # set batch false in integration test and run batch manually with batch runner to set dynamic test property values
+    # eg. dynamic properties ${parent.file.name}
+    job:
+      enabled: false
 
 start-route: direct:JRD
 archival-route: direct:JrdArchival
@@ -92,3 +96,5 @@ start-leaf-route: direct:leaf
 leaf-archival-file-names: Roles.csv,Contracts.csv,Locations.csv,BaseLocations.csv
 
 leaf-archival-route: direct:jrdLeafArchival
+
+truncate-audit: truncate dataload_schedular_audit

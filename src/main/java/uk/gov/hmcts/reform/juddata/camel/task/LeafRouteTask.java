@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
+import uk.gov.hmcts.reform.juddata.camel.service.EmailService;
 import uk.gov.hmcts.reform.juddata.camel.util.DataLoadUtil;
 
 @Component
@@ -34,7 +35,10 @@ public class LeafRouteTask implements Tasklet {
     private String startLeafRoute;
 
     @Autowired
-    AuditProcessingService schedulerAuditProcessingService;
+    AuditProcessingService auditProcessingService;
+
+    @Autowired
+    EmailService emailService;
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
@@ -46,10 +50,13 @@ public class LeafRouteTask implements Tasklet {
             producerTemplate.sendBody(startLeafRoute, "starting JRD leaf routes though scheduler");
             log.info("::LeafRouteTask completes::");
         } catch (Exception ex) {
+            auditProcessingService.auditException(camelContext, ex.getMessage());
             log.error("::leaf-route failed::", ex.getMessage());
+            //check mail flag and send mail
+            emailService.sendEmail(ex.getMessage());
         } finally {
             //runs Job Auditing
-            schedulerAuditProcessingService.auditSchedulerStatus(camelContext);
+            auditProcessingService.auditSchedulerStatus(camelContext);
         }
 
         return RepeatStatus.FINISHED;

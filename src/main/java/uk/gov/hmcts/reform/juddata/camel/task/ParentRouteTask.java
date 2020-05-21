@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.juddata.camel.task;
 
+import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ERROR_MESSAGE;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.IS_EXCEPTION_HANDLED;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.JUDICIAL_USER_PROFILE_ORCHESTRATION;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_STATUS;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
+import uk.gov.hmcts.reform.juddata.camel.service.EmailService;
 import uk.gov.hmcts.reform.juddata.camel.util.DataLoadUtil;
 
 @Component
@@ -34,7 +36,10 @@ public class ParentRouteTask implements Tasklet {
     DataLoadUtil dataLoadUtil;
 
     @Autowired
-    AuditProcessingService schedulerAuditProcessingService;
+    AuditProcessingService auditProcessingService;
+
+    @Autowired
+    EmailService emailService;
 
 
     @Override
@@ -48,10 +53,17 @@ public class ParentRouteTask implements Tasklet {
             producerTemplate.sendBody(startRoute, "starting JRD orchestration");
             log.info("::ParentRouteTask completes::");
         } catch (Exception ex) {
-            log.error("::judicial-user-profile-orchestration route failed::",  ex.getMessage());
+            //Camel override error stack with route failed hence grabbing exception form context
+            String errorMessage = camelContext.getGlobalOptions().get(ERROR_MESSAGE);
+
+            auditProcessingService.auditException(camelContext, errorMessage);
+            log.error("::judicial-user-profile-orchestration route failed::",  errorMessage);
+            //check mail flag and send mail
+            emailService.sendEmail(errorMessage);
         } finally {
             //runs Job Auditing
-            schedulerAuditProcessingService.auditSchedulerStatus(camelContext);
+            auditProcessingService.auditSchedulerStatus(camelContext);
+
         }
         return RepeatStatus.FINISHED;
     }

@@ -4,6 +4,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Objects.isNull;
+import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.FILE_NAME;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_NAME;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_START_TIME;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_STATUS;
@@ -81,7 +82,11 @@ public class AuditProcessingService {
         Timestamp schedulerStartTime = new Timestamp(Long.valueOf((globalOptions.get(SCHEDULER_START_TIME))));
         String schedulerName = globalOptions.get(SCHEDULER_NAME);
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-        Object[] params = new Object[]{"", schedulerStartTime, schedulerName, exceptionMessage, new Timestamp(currentTimeMillis())};
+
+        Object[] params = new Object[]{camelContext.getGlobalOptions().get(FILE_NAME),
+            schedulerStartTime, schedulerName, exceptionMessage, new Timestamp(currentTimeMillis())};
+        //separate transaction manager required for auditing as it is independent form route
+        //Transaction
         jdbcTemplate.update(invalidExceptionSql, params);
         TransactionStatus status = platformTransactionManager.getTransaction(def);
         platformTransactionManager.commit(status);
