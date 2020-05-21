@@ -1,10 +1,6 @@
 package uk.gov.hmcts.reform.juddata.cameltest;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.JUDICIAL_USER_PROFILE_ORCHESTRATION;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.LEAF_ROUTE;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ORCHESTRATED_ROUTE;
@@ -22,7 +18,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
@@ -33,7 +28,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import uk.gov.hmcts.reform.juddata.camel.service.EmailService;
 import uk.gov.hmcts.reform.juddata.camel.util.MappingConstants;
 import uk.gov.hmcts.reform.juddata.cameltest.testsupport.JrdBatchIntegrationSupport;
 import uk.gov.hmcts.reform.juddata.cameltest.testsupport.LeafIntegrationTestSupport;
@@ -101,27 +95,27 @@ public class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
         assertEquals(dataLoadSchedulerAudit.get(0).get(DB_SCHEDULER_STATUS), MappingConstants.SUCCESS);
     }
 
-    @Test
-    public void testParentOrchestrationFailureEmail() throws Exception {
-        setSourceData(fileWithError);
-        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
-        setField(emailService, "mailEnabled", Boolean.FALSE);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
-        EmailService spy = Mockito.spy(emailService);
-        jobLauncherTestUtils.launchJob();
-        verify(spy, times(0)).sendEmail(any(String.class));
-    }
-
-    @Test
-    public void testParentOrchestrationSuccessEmail() throws Exception {
-        setSourceData(file);
-        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
-        jobLauncherTestUtils.launchJob();
-        verify(emailService, times(1)).sendEmail(any(String.class));
-    }
+//    @Test
+//    public void testParentOrchestrationFailureEmail() throws Exception {
+//        setSourceData(fileWithError);
+//        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
+//        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
+//        setField(emailService, "mailEnabled", Boolean.FALSE);
+//        leafTableRoute.startRoute();
+//        parentRoute.startRoute();
+//        EmailService spy = Mockito.spy(emailService);
+//        jobLauncherTestUtils.launchJob();
+//        verify(spy, times(0)).sendEmail(any(String.class));
+//    }
+//
+//    @Test
+//    public void testParentOrchestrationSuccessEmail() throws Exception {
+//        setSourceData(file);
+//        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
+//        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
+//        leafTableRoute.startRoute();
+//        parentRoute.startRoute();
+//        jobLauncherTestUtils.launchJob();
+//        verify(emailService, times(1)).sendEmail(any(String.class));
+//    }
 }
