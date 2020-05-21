@@ -95,27 +95,27 @@ public class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
         assertEquals(dataLoadSchedulerAudit.get(0).get(DB_SCHEDULER_STATUS), MappingConstants.SUCCESS);
     }
 
-//    @Test
-//    public void testParentOrchestrationFailureEmail() throws Exception {
-//        setSourceData(fileWithError);
-//        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-//        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
-//        setField(emailService, "mailEnabled", Boolean.FALSE);
-//        leafTableRoute.startRoute();
-//        parentRoute.startRoute();
-//        EmailService spy = Mockito.spy(emailService);
-//        jobLauncherTestUtils.launchJob();
-//        verify(spy, times(0)).sendEmail(any(String.class));
-//    }
-//
-//    @Test
-//    public void testParentOrchestrationSuccessEmail() throws Exception {
-//        setSourceData(file);
-//        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-//        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
-//        leafTableRoute.startRoute();
-//        parentRoute.startRoute();
-//        jobLauncherTestUtils.launchJob();
-//        verify(emailService, times(1)).sendEmail(any(String.class));
-//    }
+    //    @Test
+    //    public void testParentOrchestrationFailureEmail() throws Exception {
+    //        setSourceData(fileWithError);
+    //        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
+    //        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
+    //        setField(emailService, "mailEnabled", Boolean.FALSE);
+    //        leafTableRoute.startRoute();
+    //        parentRoute.startRoute();
+    //        EmailService spy = Mockito.spy(emailService);
+    //        jobLauncherTestUtils.launchJob();
+    //        verify(spy, times(0)).sendEmail(any(String.class));
+    //    }
+    //
+    //    @Test
+    //    public void testParentOrchestrationSuccessEmail() throws Exception {
+    //        setSourceData(file);
+    //        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
+    //        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
+    //        leafTableRoute.startRoute();
+    //        parentRoute.startRoute();
+    //        jobLauncherTestUtils.launchJob();
+    //        verify(emailService, times(1)).sendEmail(any(String.class));
+    //    }
 }
