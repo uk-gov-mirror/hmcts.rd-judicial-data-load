@@ -34,6 +34,7 @@ import uk.gov.hmcts.reform.juddata.camel.task.IdempotentTask;
 import uk.gov.hmcts.reform.juddata.camel.task.LeafRouteTask;
 import uk.gov.hmcts.reform.juddata.camel.task.ParentRouteTask;
 import uk.gov.hmcts.reform.juddata.camel.util.DataLoadUtil;
+import uk.gov.hmcts.reform.juddata.camel.util.JrdTask;
 import uk.gov.hmcts.reform.juddata.camel.validator.JsrValidatorInitializer;
 
 @Configuration
@@ -210,4 +211,8 @@ public class ParentCamelConfig {
         return new IdempotentTask();
     }
 
+    @Bean
+    JrdTask jrdTask() {
+        return new JrdTask();
+    }
 }

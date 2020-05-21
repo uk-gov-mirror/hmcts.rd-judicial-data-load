@@ -1,6 +1,10 @@
 package uk.gov.hmcts.reform.juddata.cameltest;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.JUDICIAL_USER_PROFILE_ORCHESTRATION;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.LEAF_ROUTE;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ORCHESTRATED_ROUTE;
@@ -26,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import uk.gov.hmcts.reform.juddata.camel.util.MappingConstants;
@@ -95,27 +100,30 @@ public class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
         assertEquals(dataLoadSchedulerAudit.get(0).get(DB_SCHEDULER_STATUS), MappingConstants.SUCCESS);
     }
 
-    //    @Test
-    //    public void testParentOrchestrationFailureEmail() throws Exception {
-    //        setSourceData(fileWithError);
-    //        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-    //        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
-    //        setField(emailService, "mailEnabled", Boolean.FALSE);
-    //        leafTableRoute.startRoute();
-    //        parentRoute.startRoute();
-    //        EmailService spy = Mockito.spy(emailService);
-    //        jobLauncherTestUtils.launchJob();
-    //        verify(spy, times(0)).sendEmail(any(String.class));
-    //    }
-    //
-    //    @Test
-    //    public void testParentOrchestrationSuccessEmail() throws Exception {
-    //        setSourceData(file);
-    //        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-    //        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
-    //        leafTableRoute.startRoute();
-    //        parentRoute.startRoute();
-    //        jobLauncherTestUtils.launchJob();
-    //        verify(emailService, times(1)).sendEmail(any(String.class));
-    //    }
+    @Test
+    @Sql(scripts = {"/testData/truncate-parent.sql", "/testData/truncate-exception.sql",
+            "/testData/default-leaf-load.sql"})
+    public void testParentOrchestrationFailureEmail() throws Exception {
+        setSourceData(fileWithError);
+        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
+        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
+        setField(emailService, "mailEnabled", Boolean.FALSE);
+        leafTableRoute.startRoute();
+        parentRoute.startRoute();
+        jobLauncherTestUtils.launchJob();
+        verify(emailService, times(1)).sendEmail(any(String.class));
+    }
+
+    @Test
+    @Sql(scripts = {"/testData/truncate-parent.sql", "/testData/truncate-exception.sql",
+            "/testData/default-leaf-load.sql"})
+    public void testParentOrchestrationSuccessEmail() throws Exception {
+        setSourceData(file);
+        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
+        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
+        leafTableRoute.startRoute();
+        parentRoute.startRoute();
+        jobLauncherTestUtils.launchJob();
+        verify(emailService, times(0)).sendEmail(any(String.class));
+    }
 }
