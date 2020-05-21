@@ -165,7 +165,7 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
 
 
     @Test
-    @Sql(scripts = {"/testData/truncate-leaf.sql", "/testData/truncate-audit.sql"})
+    @Sql(scripts = {"/testData/truncate-leaf.sql"})
     public void testAllLeafs() throws Exception {
         setSourceData(file);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
