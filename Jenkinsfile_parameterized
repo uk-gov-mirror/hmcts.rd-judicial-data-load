@@ -44,7 +44,7 @@ withParameterizedPipeline(type, product, component, 'sandbox', 'sandbox') {
 
     enableDbMigration()
     enableDockerBuild()
-    installCharts()
+
 
 
     after('functionalTest:preview') {
