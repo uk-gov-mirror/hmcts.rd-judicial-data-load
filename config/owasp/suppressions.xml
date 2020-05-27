@@ -510,7 +510,7 @@
 
     <suppress>
         <notes><![CDATA[
-   file name: ant*.jar: readline.jar
+   file name: ant*.jar
    ]]></notes>
         <filePath regex="true">.*\**\.jar</filePath>
         <cpe>cpe:/a:apache:ant</cpe>
