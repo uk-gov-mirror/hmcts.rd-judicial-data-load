@@ -9,7 +9,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import org.apache.camel.CamelContext;
 import org.junit.Test;
-import uk.gov.hmcts.reform.juddata.camel.route.ParentOrchestrationRoute;
+import uk.gov.hmcts.reform.juddata.camel.route.LoadRoutes;
 import uk.gov.hmcts.reform.juddata.camel.route.initializer.JrdUserProfileDataLoadStarter;
 
 public class JrdUserProfileDataLoadStarterTest {
@@ -20,11 +20,11 @@ public class JrdUserProfileDataLoadStarterTest {
         JrdUserProfileDataLoadStarter jrdUserProfileDataLoadStarter = new JrdUserProfileDataLoadStarter();
 
         CamelContext camelContext = mock(CamelContext.class);
-        ParentOrchestrationRoute parentOrchestrationRoute = mock(ParentOrchestrationRoute.class);
+        LoadRoutes loadRoutes = mock(LoadRoutes.class);
 
         setField(jrdUserProfileDataLoadStarter, "camelContext", camelContext);
-        setField(jrdUserProfileDataLoadStarter, "parentOrchestrationRoute", parentOrchestrationRoute);
-        doNothing().when(parentOrchestrationRoute).startRoute();
+        setField(jrdUserProfileDataLoadStarter, "parentOrchestrationRoute", loadRoutes);
+        doNothing().when(loadRoutes).startRoute();
 
         JrdUserProfileDataLoadStarter jrdUserProfileDataLoadStarterSpy = spy(jrdUserProfileDataLoadStarter);
         jrdUserProfileDataLoadStarterSpy.postConstruct();

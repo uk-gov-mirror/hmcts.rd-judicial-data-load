@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import uk.gov.hmcts.reform.juddata.camel.processor.ExceptionProcessor;
 import uk.gov.hmcts.reform.juddata.camel.route.LeafTableRoute;
-import uk.gov.hmcts.reform.juddata.camel.route.ParentOrchestrationRoute;
+import uk.gov.hmcts.reform.juddata.camel.route.LoadRoutes;
 import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
 import uk.gov.hmcts.reform.juddata.camel.service.EmailService;
 import uk.gov.hmcts.reform.juddata.camel.util.DataLoadUtil;
@@ -25,7 +25,7 @@ public abstract class JrdBatchIntegrationSupport {
     protected JdbcTemplate jdbcTemplate;
 
     @Autowired
-    protected ParentOrchestrationRoute parentRoute;
+    protected LoadRoutes parentRoute;
 
     @Value("${start-route}")
     protected String startRoute;

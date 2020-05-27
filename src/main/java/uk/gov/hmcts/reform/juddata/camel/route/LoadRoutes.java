@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.juddata.camel.route;
 import static java.util.Arrays.copyOf;
 import static org.apache.commons.lang.WordUtils.uncapitalize;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.BLOBPATH;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.CHILD_ROUTES;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.CSVBINDER;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.DIRECT_ROUTE;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.FILE_NAME;
@@ -11,7 +10,6 @@ import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ID;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.INSERT_SQL;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.MAPPER;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.MAPPING_METHOD;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ORCHESTRATED_ROUTE;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.PROCESSOR;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ROUTE;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ROUTE_DETAILS;
@@ -47,7 +45,7 @@ import uk.gov.hmcts.reform.juddata.camel.service.EmailService;
  * This class is Judicial User Profile Router Triggers Orchestrated data loading.
  */
 @Component
-public class ParentOrchestrationRoute {
+public class LoadRoutes {
 
     @Autowired
     FileReadProcessor fileReadProcessor;
@@ -73,20 +71,9 @@ public class ParentOrchestrationRoute {
     @Autowired
     CamelContext camelContext;
 
-    @Value("${archival-path}")
-    String archivalPath;
-
-    @Value("${archival-file-names}")
-    List<String> archivalFileNames;
-
     @Autowired
     ArchiveAzureFileProcessor azureFileProcessor;
 
-    @Value("${archival-route}")
-    String archivalRoute;
-
-    @Value("${archival-cred}")
-    String archivalCred;
 
     @Autowired
     HeaderValidationProcessor headerValidationProcessor;
@@ -94,19 +81,18 @@ public class ParentOrchestrationRoute {
     @Autowired
     EmailService emailService;
 
+    @Value("${routes-to-execute}")
+    String routesToExecute;
 
     @SuppressWarnings("unchecked")
     @Transactional("txManager")
     public void startRoute() throws FailedToCreateRouteException {
 
-        String parentRouteName = camelContext.getGlobalOptions().get(ORCHESTRATED_ROUTE);
-        String childNames = ROUTE + "." + parentRouteName + "." + CHILD_ROUTES;
 
-        List<String> dependantRoutes = environment.containsProperty(childNames)
-                ? environment.getProperty(childNames, List.class) : new ArrayList<>();
-        dependantRoutes.add(0, parentRouteName);
+        List<String> routeList = environment.containsProperty(routesToExecute)
+                ? environment.getProperty(routesToExecute, List.class) : new ArrayList<>();
 
-        List<RouteProperties> routePropertiesList = getRouteProperties(dependantRoutes);
+        List<RouteProperties> routePropertiesList = getRouteProperties(routeList);
 
         try {
             camelContext.addRoutes(
@@ -121,12 +107,7 @@ public class ParentOrchestrationRoute {
                                     .markRollbackOnly()
                                     .end();
 
-                            String[] directChild = new String[dependantRoutes.size()];
-
-                            getDependents(directChild, dependantRoutes);
-                            directChild = copyOf(directChild, directChild.length + 1);
-                            //add last child route as  archival
-                            directChild[directChild.length - 1] = archivalRoute;
+                            String[] multiCastRoute = (String[]) copyOf(routeList.toArray(), routeList.size());
 
                             //Started direct route with multicast all the configured routes eg.application-jrd-router.yaml
                             //with Transaction propagation required
@@ -135,15 +116,7 @@ public class ParentOrchestrationRoute {
                                     .policy(springTransactionPolicy)
                                     .multicast()
                                     .stopOnException()
-                                    .to(directChild).end();
-
-                            //Archive Blob files
-                            from(archivalRoute)
-                                    .loop(archivalFileNames.size()).copy()
-                                    .process(azureFileProcessor)
-                                    .toD(archivalPath + "${header.filename}?" + archivalCred)
-                                    .end()
-                                    .end();
+                                    .to(multiCastRoute).end();
 
 
                             for (RouteProperties route : routePropertiesList) {
@@ -170,16 +143,7 @@ public class ParentOrchestrationRoute {
                         }
                     });
         } catch (Exception ex) {
-            throw new FailedToCreateRouteException("Judicial Data Load - ParentOrchestrationRoute failed to start", startRoute, startRoute, ex);
-        }
-    }
-
-
-    private void getDependents(String[] directChild, List<String> dependents) {
-        int index = 0;
-        for (String child : dependents) {
-            directChild[index] = (DIRECT_ROUTE).concat(child);
-            index++;
+            throw new FailedToCreateRouteException(" Data Load - failed to start for route " , startRoute, startRoute, ex);
         }
     }
 
@@ -192,31 +156,28 @@ public class ParentOrchestrationRoute {
     private List<RouteProperties> getRouteProperties(List<String> routes) {
         List<RouteProperties> routePropertiesList = new LinkedList<>();
         int index = 0;
-        for (String child : routes) {
+        for(String route :routes) {
             RouteProperties properties = new RouteProperties();
-            //only applicable for parent
-            properties.setChildNames(environment.getProperty(
-                    ROUTE + "." + child + "." + CHILD_ROUTES));
             properties.setRouteName(environment.getProperty(
-                    ROUTE + "." + child + "." + ID));
+                    route + "."  + ID));
             properties.setSql(environment.getProperty(
-                    ROUTE + "." + child + "." + INSERT_SQL));
+                    route + "."  + INSERT_SQL));
             properties.setTruncateSql(environment.getProperty(
-                    ROUTE + "." + child + "." + TRUNCATE_SQL)
+                    route + "."  + TRUNCATE_SQL)
                     == null ? "log:test" : environment.getProperty(
-                    ROUTE + "." + child + "." + TRUNCATE_SQL));
+                    route + "."  + TRUNCATE_SQL));
             properties.setBlobPath(environment.getProperty(
-                    ROUTE + "." + child + "." + BLOBPATH));
+                    route + "."  + BLOBPATH));
             properties.setMapper(uncapitalize(environment.getProperty(
-                    ROUTE + "." + child + "." + MAPPER)));
+                    route + "."  + MAPPER)));
             properties.setBinder(uncapitalize(environment.getProperty(ROUTE + "."
-                    + child + "." + CSVBINDER)));
+                     + CSVBINDER)));
             properties.setProcessor(uncapitalize(environment.getProperty(ROUTE + "."
-                    + child + "." + PROCESSOR)));
+                     + PROCESSOR)));
             properties.setFileName(environment.getProperty(
-                    ROUTE + "." + child + "." + FILE_NAME));
+                    route + "."  + FILE_NAME));
             properties.setTableName(environment.getProperty(
-                    ROUTE + "." + child + "." + TABLE_NAME));
+                    route + "."  + TABLE_NAME));
             routePropertiesList.add(index, properties);
             index++;
         }
