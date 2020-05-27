@@ -4,6 +4,8 @@ import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ERROR_MESS
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.IS_EXCEPTION_HANDLED;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_STATUS;
 
+import java.util.Map;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
@@ -33,8 +35,9 @@ public class JrdTask {
 
     public void execute(CamelContext camelContext, String schedulerName, String route) {
         try {
-            camelContext.getGlobalOptions().remove(IS_EXCEPTION_HANDLED);
-            camelContext.getGlobalOptions().remove(SCHEDULER_STATUS);
+            Map<String, String> globalOptions = camelContext.getGlobalOptions();
+            globalOptions.remove(IS_EXCEPTION_HANDLED);
+            globalOptions.remove(SCHEDULER_STATUS);
             dataLoadUtil.setGlobalConstant(camelContext, schedulerName);
             producerTemplate.sendBody(route, "starting " + schedulerName);
         } catch (Exception ex) {
