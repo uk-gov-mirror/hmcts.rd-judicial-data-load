@@ -8,6 +8,8 @@ import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.FAILURE;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.IS_EXCEPTION_HANDLED;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_STATUS;
 
+import java.util.Map;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
@@ -34,11 +36,12 @@ public class ExceptionProcessor implements Processor {
     public void process(Exchange exchange) throws Exception {
 
         if (isNull(exchange.getContext().getGlobalOptions().get(IS_EXCEPTION_HANDLED))) {
+            Map<String, String> globalOptions = exchange.getContext().getGlobalOptions();
             Exception exception = (Exception) exchange.getProperty(EXCEPTION_CAUGHT);
             log.error("::::exception in route for data processing::::" + exception);
-            exchange.getContext().getGlobalOptions().put(SCHEDULER_STATUS, FAILURE);
-            exchange.getContext().getGlobalOptions().put(IS_EXCEPTION_HANDLED, TRUE.toString());
-            exchange.getContext().getGlobalOptions().put(ERROR_MESSAGE, exception.getMessage());
+            globalOptions.put(SCHEDULER_STATUS, FAILURE);
+            globalOptions.put(IS_EXCEPTION_HANDLED, TRUE.toString());
+            globalOptions.put(ERROR_MESSAGE, exception.getMessage());
             throw exception;
         }
     }

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.juddata.cameltest;
 
+import static net.logstash.logback.encoder.org.apache.commons.lang3.BooleanUtils.negate;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -89,7 +90,9 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
         SpringRestarter.getInstance().restart();
         setSourceData(file);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        jobLauncherTestUtils.launchJob();
+        if (negate(auditProcessingService.isAuditingCompleted())) {
+            jobLauncherTestUtils.launchJob();
+        }
 
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
         assertEquals(judicialUserProfileList.size(), 2);

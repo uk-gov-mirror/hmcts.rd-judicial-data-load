@@ -458,13 +458,7 @@
         <cpe>cpe:/a:eclipse:jetty</cpe>
         <cpe>cpe:/a:jetty:jetty</cpe>
     </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: bcpg-jdk15on-*.jar
-   ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.bouncycastle/bcpg\-jdk15on@.*$</packageUrl>
-        <cpe>cpe:/a:openpgp:openpgp</cpe>
-    </suppress>
+
     <suppress>
         <notes><![CDATA[
    file name: dom4j-2.1.1.jar
@@ -510,7 +504,7 @@
 
     <suppress>
         <notes><![CDATA[
-   file name: ant*.jar: readline.jar
+   file name: ant*.jar
    ]]></notes>
         <filePath regex="true">.*\**\.jar</filePath>
         <cpe>cpe:/a:apache:ant</cpe>
