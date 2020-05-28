@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.juddata.configuration;
 
-import static net.logstash.logback.encoder.org.apache.commons.lang3.BooleanUtils.negate;
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -75,14 +73,14 @@ public class BatchConfig {
     @Lazy
     public Job runRoutesJob() {
 
-        if (negate(schedulerAuditProcessingService.isAuditingCompleted())) {
+        //if (negate(schedulerAuditProcessingService.isAuditingCompleted())) {
             return jobs.get(jobName)
                     .incrementer(new RunIdIncrementer())
-                    .start(stepLeafRoute())
-                    .next(stepOrchestration())
+                    //.start(stepLeafRoute())
+                    .start(stepOrchestration())
                     .build();
-        }
+       // }
 
-        return jobs.get(jobName).start(stepIdempotent()).build();
+        //return jobs.get(jobName).start(stepIdempotent()).build();
     }
 }

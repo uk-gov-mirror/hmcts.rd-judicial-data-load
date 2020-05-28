@@ -1,6 +1,9 @@
 package uk.gov.hmcts.reform.juddata.camel.task;
 
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.JUDICIAL_USER_PROFILE_ORCHESTRATION;
+import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ORCHESTRATED_ROUTE;
+
+import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
@@ -11,6 +14,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.juddata.camel.route.LoadRoutes;
 import uk.gov.hmcts.reform.juddata.camel.util.JrdTask;
 
 @Component
@@ -26,10 +30,18 @@ public class ParentRouteTask implements Tasklet {
     @Autowired
     JrdTask jrdTask;
 
+    @Autowired
+    LoadRoutes loadRoutes;
+
+    @Value("${routes-to-execute-orchestration}")
+    List<String> routesToExecute;
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+
         log.info("::ParentRouteTask starts::");
+        camelContext.getGlobalOptions().put(ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
+        loadRoutes.startRoute(routesToExecute);
         jrdTask.execute(camelContext, JUDICIAL_USER_PROFILE_ORCHESTRATION, startRoute);
         log.info("::ParentRouteTask completes::");
         return RepeatStatus.FINISHED;

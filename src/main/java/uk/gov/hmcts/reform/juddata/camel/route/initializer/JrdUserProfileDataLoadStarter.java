@@ -1,9 +1,5 @@
 package uk.gov.hmcts.reform.juddata.camel.route.initializer;
 
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.JUDICIAL_USER_PROFILE_ORCHESTRATION;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ORCHESTRATED_ROUTE;
-
-import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +16,10 @@ public class JrdUserProfileDataLoadStarter {
     @Autowired
     LoadRoutes loadRoutes;
 
-    @PostConstruct
-    public void postConstruct() throws Exception {
-        camelContext.start();
-        camelContext.getGlobalOptions().put(ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
-        loadRoutes.startRoute();
-    }
+//    @PostConstruct
+//    public void postConstruct() throws Exception {
+//        camelContext.start();
+//        camelContext.getGlobalOptions().put(ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
+//        loadRoutes.startRoute();
+//    }
 }

@@ -1,5 +1,4 @@
-routes-to-execute: judicial-user-profile-orchestration, judicial-office-appointment
-start-route: direct:JRD
+routes-to-execute-orchestration: judicial-user-profile-orchestration, judicial-office-appointment
 route:
   judicial-user-profile-orchestration:
     id: judicial-user-profile-orchestration

@@ -1,5 +1,4 @@
-routes-to-execute: judicial-role-type, judicial-contract-type, judicial-region-type, judicial-base-location_type
-start-route: direct:JRDLeaf
+routes-to-execute-leaf: judicial-role-type, judicial-contract-type, judicial-region-type, judicial-base-location_type
 route:
   judicial-role-type:
     id: judicial-role-type

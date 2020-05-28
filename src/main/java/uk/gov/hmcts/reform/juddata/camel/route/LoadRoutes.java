@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.juddata.camel.route;
 
-import static java.util.Arrays.copyOf;
 import static org.apache.commons.lang.WordUtils.uncapitalize;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.BLOBPATH;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.CSVBINDER;
@@ -16,7 +15,6 @@ import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ROUTE_DETA
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.TABLE_NAME;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.TRUNCATE_SQL;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -81,18 +79,12 @@ public class LoadRoutes {
     @Autowired
     EmailService emailService;
 
-    @Value("${routes-to-execute}")
-    String routesToExecute;
 
     @SuppressWarnings("unchecked")
     @Transactional("txManager")
-    public void startRoute() throws FailedToCreateRouteException {
+    public void startRoute(List<String> routesToExecute) throws FailedToCreateRouteException {
 
-
-        List<String> routeList = environment.containsProperty(routesToExecute)
-                ? environment.getProperty(routesToExecute, List.class) : new ArrayList<>();
-
-        List<RouteProperties> routePropertiesList = getRouteProperties(routeList);
+        List<RouteProperties> routePropertiesList = getRouteProperties(routesToExecute);
 
         try {
             camelContext.addRoutes(
@@ -107,7 +99,7 @@ public class LoadRoutes {
                                     .markRollbackOnly()
                                     .end();
 
-                            String[] multiCastRoute = (String[]) copyOf(routeList.toArray(), routeList.size());
+                            String[] multiCastRoute = routesToExecute.toArray(new String[0]);
 
                             //Started direct route with multicast all the configured routes eg.application-jrd-router.yaml
                             //with Transaction propagation required
@@ -156,28 +148,28 @@ public class LoadRoutes {
     private List<RouteProperties> getRouteProperties(List<String> routes) {
         List<RouteProperties> routePropertiesList = new LinkedList<>();
         int index = 0;
-        for(String route :routes) {
+        for(String routeName :routes) {
             RouteProperties properties = new RouteProperties();
             properties.setRouteName(environment.getProperty(
-                    route + "."  + ID));
+                    "route." + routeName + "."  + ID));
             properties.setSql(environment.getProperty(
-                    route + "."  + INSERT_SQL));
+                    "route." + routeName + "."  + INSERT_SQL));
             properties.setTruncateSql(environment.getProperty(
-                    route + "."  + TRUNCATE_SQL)
+                    "route." + routeName + "."  + TRUNCATE_SQL)
                     == null ? "log:test" : environment.getProperty(
-                    route + "."  + TRUNCATE_SQL));
+                    "route." + routeName + "."  + TRUNCATE_SQL));
             properties.setBlobPath(environment.getProperty(
-                    route + "."  + BLOBPATH));
+                    "route." + routeName + "."  + BLOBPATH));
             properties.setMapper(uncapitalize(environment.getProperty(
-                    route + "."  + MAPPER)));
+                    "route." + routeName + "."  + MAPPER)));
             properties.setBinder(uncapitalize(environment.getProperty(ROUTE + "."
                      + CSVBINDER)));
             properties.setProcessor(uncapitalize(environment.getProperty(ROUTE + "."
                      + PROCESSOR)));
             properties.setFileName(environment.getProperty(
-                    route + "."  + FILE_NAME));
+                    "route." + routeName + "."  + FILE_NAME));
             properties.setTableName(environment.getProperty(
-                    route + "."  + TABLE_NAME));
+                    "route." + routeName + "."  + TABLE_NAME));
             routePropertiesList.add(index, properties);
             index++;
         }

@@ -74,7 +74,7 @@ spring:
 
   profiles:
     include:
-      - jrd-router
+      - jrd-router-orchestartion
       - jrd-leaf-router
 
 azure:
@@ -107,5 +107,6 @@ start-leaf-route: direct:leaf
 leaf-route-names: judicial-role-type,judicial-contract-type,judicial-region-type,judicial-base-location_type
 scheduler-name: judicial_leaf_scheduler
 audit-enable: true
-#leaf-archival-route: direct:jrdLeafArchival
-#leaf-archival-file-names: Roles,Contracts,Locations,BaseLocations
+leaf-archival-route: direct:jrdLeafArchival
+leaf-archival-file-names: Roles,Contracts,Locations,BaseLocations
+

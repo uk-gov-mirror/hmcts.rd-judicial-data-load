@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.juddata.camel.route.initializer;
 
-import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +20,9 @@ public class JrdLeafDataLoadStarter {
     @Autowired
     AuditProcessingService schedulerAuditProcessingService;
 
-    @PostConstruct
-    public void postConstruct() throws Exception {
-        camelContext.start();
-        leafTableRoutes.startRoute();
-    }
+//    @PostConstruct
+//    public void postConstruct() throws Exception {
+//        camelContext.start();
+//        leafTableRoutes.startRoute();
+//    }
 }
