@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import uk.gov.hmcts.reform.juddata.camel.processor.ExceptionProcessor;
-import uk.gov.hmcts.reform.juddata.camel.route.LeafTableRoute;
 import uk.gov.hmcts.reform.juddata.camel.route.LoadRoutes;
 import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
 import uk.gov.hmcts.reform.juddata.camel.service.EmailService;
@@ -71,9 +70,6 @@ public abstract class JrdBatchIntegrationSupport {
 
     @Autowired
     protected AuditProcessingService auditProcessingService;
-
-    @Autowired
-    protected LeafTableRoute leafTableRoute;
 
     @Value("${base-location-select-jrd-sql}")
     protected String baseLocationSql;

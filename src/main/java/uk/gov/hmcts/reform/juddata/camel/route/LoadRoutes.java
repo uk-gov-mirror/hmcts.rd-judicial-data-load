@@ -60,9 +60,6 @@ public class LoadRoutes {
     @Autowired
     ExceptionProcessor exceptionProcessor;
 
-    @Value("${start-route}")
-    private String startRoute;
-
     @Value("${scheduler-name}")
     private String schedulerName;
 
@@ -82,7 +79,7 @@ public class LoadRoutes {
 
     @SuppressWarnings("unchecked")
     @Transactional("txManager")
-    public void startRoute(List<String> routesToExecute) throws FailedToCreateRouteException {
+    public void startRoute(String startRoute, List<String> routesToExecute) throws FailedToCreateRouteException {
 
         List<RouteProperties> routePropertiesList = getRouteProperties(routesToExecute);
 
@@ -99,7 +96,7 @@ public class LoadRoutes {
                                     .markRollbackOnly()
                                     .end();
 
-                            String[] multiCastRoute = routesToExecute.toArray(new String[0]);
+                            String[] multiCastRoute = createDirectRoutesForMulticast(routesToExecute);
 
                             //Started direct route with multicast all the configured routes eg.application-jrd-router.yaml
                             //with Transaction propagation required
@@ -135,8 +132,18 @@ public class LoadRoutes {
                         }
                     });
         } catch (Exception ex) {
-            throw new FailedToCreateRouteException(" Data Load - failed to start for route " , startRoute, startRoute, ex);
+            throw new FailedToCreateRouteException(" Data Load - failed to start for route ", startRoute, startRoute, ex);
         }
+    }
+
+    private String[] createDirectRoutesForMulticast(List<String> routeList) {
+        int index = 0;
+        String[] directRouteNameList = new String[routeList.size()];
+        for (String child : routeList) {
+            directRouteNameList[index] = (DIRECT_ROUTE).concat(child);
+            index++;
+        }
+        return directRouteNameList;
     }
 
     /**
@@ -148,28 +155,28 @@ public class LoadRoutes {
     private List<RouteProperties> getRouteProperties(List<String> routes) {
         List<RouteProperties> routePropertiesList = new LinkedList<>();
         int index = 0;
-        for(String routeName :routes) {
+        for (String routeName : routes) {
             RouteProperties properties = new RouteProperties();
             properties.setRouteName(environment.getProperty(
-                    "route." + routeName + "."  + ID));
+                    ROUTE + "." + routeName + "." + ID));
             properties.setSql(environment.getProperty(
-                    "route." + routeName + "."  + INSERT_SQL));
+                    ROUTE + "." + routeName + "." + INSERT_SQL));
             properties.setTruncateSql(environment.getProperty(
-                    "route." + routeName + "."  + TRUNCATE_SQL)
+                    ROUTE + "." + routeName + "." + TRUNCATE_SQL)
                     == null ? "log:test" : environment.getProperty(
-                    "route." + routeName + "."  + TRUNCATE_SQL));
+                    ROUTE + "." + routeName + "." + TRUNCATE_SQL));
             properties.setBlobPath(environment.getProperty(
-                    "route." + routeName + "."  + BLOBPATH));
+                    ROUTE + "." + routeName + "." + BLOBPATH));
             properties.setMapper(uncapitalize(environment.getProperty(
-                    "route." + routeName + "."  + MAPPER)));
-            properties.setBinder(uncapitalize(environment.getProperty(ROUTE + "."
-                     + CSVBINDER)));
-            properties.setProcessor(uncapitalize(environment.getProperty(ROUTE + "."
-                     + PROCESSOR)));
+                    ROUTE + "." + routeName + "." + MAPPER)));
+            properties.setBinder(uncapitalize(environment.getProperty(ROUTE + "." + routeName + "."
+                    + CSVBINDER)));
+            properties.setProcessor(uncapitalize(environment.getProperty(ROUTE + "." + routeName + "."
+                    + PROCESSOR)));
             properties.setFileName(environment.getProperty(
-                    "route." + routeName + "."  + FILE_NAME));
+                    ROUTE + "." + routeName + "." + FILE_NAME));
             properties.setTableName(environment.getProperty(
-                    "route." + routeName + "."  + TABLE_NAME));
+                    ROUTE + "." + routeName + "." + TABLE_NAME));
             routePropertiesList.add(index, properties);
             index++;
         }

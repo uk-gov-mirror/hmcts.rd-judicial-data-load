@@ -14,16 +14,10 @@ import uk.gov.hmcts.reform.juddata.camel.processor.JudicialBaseLocationProcessor
 import uk.gov.hmcts.reform.juddata.camel.processor.JudicialContractTypeProcessor;
 import uk.gov.hmcts.reform.juddata.camel.processor.JudicialRegionTypeProcessor;
 import uk.gov.hmcts.reform.juddata.camel.processor.JudicialUserRoleTypeProcessor;
-import uk.gov.hmcts.reform.juddata.camel.route.LeafTableRoute;
 import uk.gov.hmcts.reform.juddata.camel.validator.JsrValidatorInitializer;
 
 @Configuration
 public class LeafCamelConfig {
-
-    @Bean
-    LeafTableRoute leafTableRoute() {
-        return new LeafTableRoute();
-    }
 
     @Bean
     public JudicialBaseLocationProcessor judicialBaseLocationProcessor() {

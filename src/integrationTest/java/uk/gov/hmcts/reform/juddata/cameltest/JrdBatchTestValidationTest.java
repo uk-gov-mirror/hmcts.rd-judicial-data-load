@@ -76,8 +76,8 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     public void testTaskletException() throws Exception {
         setSourceData(fileWithUniqueViolation);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
+
+
 
         jobLauncherTestUtils.launchJob();
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
@@ -99,8 +99,8 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     public void testParentOrchestrationInvalidHeaderRollback() throws Exception {
         setSourceData(fileWithInvalidHeader);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
+
+
 
         jobLauncherTestUtils.launchJob();
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
@@ -122,8 +122,8 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     public void testLeafFailuresRollbackAndKeepExistingState() throws Exception {
         setSourceData(file);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
+
+
         jobLauncherTestUtils.launchJob();
 
         setSourceData(file);
@@ -150,8 +150,8 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     public void testParentOrchestrationJsrAuditTestAndPartialSuccess() throws Exception {
         setSourceData(fileWithInvalidJsr);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
+
+
         jobLauncherTestUtils.launchJob();
 
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
@@ -190,8 +190,8 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     public void testParentOrchestrationJsrExceedsThresholdAuditTest() throws Exception {
         setSourceData(fileWithInvalidJsrExceedsThreshold);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        parentRoute.startRoute();
-        leafTableRoute.startRoute();
+
+
         jobLauncherTestUtils.launchJob();
 
         List<Map<String, Object>> exceptionList = jdbcTemplate.queryForList(exceptionQuery);
@@ -206,8 +206,8 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     public void testLeafFailuresInvalidHeader() throws Exception {
         setSourceData(file);
         LeafIntegrationTestSupport.setSourceData(file_error);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
+
+
         jobLauncherTestUtils.launchJob();
 
         List<Map<String, Object>> judicialUserRoleType = jdbcTemplate.queryForList(roleSql);
@@ -235,10 +235,7 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     public void testLeafFailuresInvalidJsr() throws Exception {
         setSourceData(file);
         LeafIntegrationTestSupport.setSourceData(file_jsr_error);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
         jobLauncherTestUtils.launchJob();
-
         List<Map<String, Object>> judicialUserRoleType = jdbcTemplate.queryForList(roleSql);
         assertEquals(judicialUserRoleType.size(), 3);
         assertEquals(judicialUserRoleType.get(0).get("role_id"), "1");

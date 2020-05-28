@@ -28,7 +28,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 @Component
 public class AuditProcessingService {
 
-
     @Value("${audit-enable}")
     Boolean auditEnabled;
 

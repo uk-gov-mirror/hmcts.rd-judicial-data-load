@@ -71,8 +71,8 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
         
         setSourceData(file);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        parentRoute.startRoute();
-        leafTableRoute.startRoute();
+
+
 
         jobLauncherTestUtils.launchJob();
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
@@ -108,8 +108,6 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
 
         setSourceData(file);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        parentRoute.startRoute();
-        leafTableRoute.startRoute();
 
         jobLauncherTestUtils.launchJob();
 
@@ -138,8 +136,8 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
 
         setSourceData(fileWithError);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        parentRoute.startRoute();
-        leafTableRoute.startRoute();
+
+
 
         jobLauncherTestUtils.launchJob();
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
@@ -155,8 +153,8 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
 
         setSourceData(fileWithSingleRecord);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        parentRoute.startRoute();
-        leafTableRoute.startRoute();
+
+
 
         jobLauncherTestUtils.launchJob();
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
@@ -172,8 +170,8 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     public void testAllLeafs() throws Exception {
         setSourceData(file);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
+
+
 
         jobLauncherTestUtils.launchJob();
 

@@ -105,7 +105,7 @@ scheduler-audit-select: select count(*) from dataload_schedular_audit where date
 invalid-exception-sql: insert into dataload_exception_records(file_name,scheduler_start_time,scheduler_name,error_description,updated_timestamp) values(?, ?, ?, ?, ?)
 invalid-jsr-sql: insert into dataload_exception_records(table_name,scheduler_start_time,scheduler_name,key,field_in_error,error_description,updated_timestamp) values(?, ?, ?, ?, ?, ?, ?)
 jsr-threshold-limit: 100
-scheduler-insert-sql:  insert into dataload_schedular_audit (scheduler_name,scheduler_start_time,scheduler_end_time,scheduler_status)
+scheduler-insert-sql:  insert into dataload_schedular_audit (scheduler_name,scheduler_start_time,scheduler_end_time,scheduler_status) values(?, ?, ?, ?)
 
 start-leaf-route: direct:leaf
 leaf-route-names: judicial-role-type,judicial-contract-type,judicial-region-type,judicial-base-location_type

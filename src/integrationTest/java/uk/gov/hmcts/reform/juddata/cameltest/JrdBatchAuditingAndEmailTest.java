@@ -73,8 +73,8 @@ public class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
     public void testParentOrchestrationSchedulerFailure() throws Exception {
         setSourceData(fileWithError);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
+
+
 
         jobLauncherTestUtils.launchJob();
 
@@ -89,8 +89,8 @@ public class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
         setSourceData(file);
 
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
+
+
 
         jobLauncherTestUtils.launchJob();
 
@@ -108,8 +108,8 @@ public class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
         camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
         setField(emailService, "mailEnabled", Boolean.FALSE);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
+
+
         jobLauncherTestUtils.launchJob();
         verify(emailService, times(1)).sendEmail(any(String.class));
     }
@@ -121,8 +121,8 @@ public class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
         setSourceData(file);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
         camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
+
+
         jobLauncherTestUtils.launchJob();
         verify(emailService, times(0)).sendEmail(any(String.class));
     }
