@@ -30,7 +30,6 @@ import uk.gov.hmcts.reform.juddata.camel.processor.JudicialUserProfileProcessor;
 import uk.gov.hmcts.reform.juddata.camel.route.ParentOrchestrationRoute;
 import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
 import uk.gov.hmcts.reform.juddata.camel.service.EmailService;
-import uk.gov.hmcts.reform.juddata.camel.task.IdempotentTask;
 import uk.gov.hmcts.reform.juddata.camel.task.LeafRouteTask;
 import uk.gov.hmcts.reform.juddata.camel.task.ParentRouteTask;
 import uk.gov.hmcts.reform.juddata.camel.util.DataLoadUtil;
@@ -204,11 +203,6 @@ public class ParentCamelConfig {
     @Bean
     LeafRouteTask leafRouteTask() {
         return new LeafRouteTask();
-    }
-
-    @Bean
-    IdempotentTask idempotentTask() {
-        return new IdempotentTask();
     }
 
     @Bean
