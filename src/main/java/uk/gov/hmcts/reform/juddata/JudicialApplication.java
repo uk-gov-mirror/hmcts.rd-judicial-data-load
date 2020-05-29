@@ -45,6 +45,7 @@ public class JudicialApplication implements ApplicationRunner {
         JobParameters params = new JobParametersBuilder()
                 .addString(jobName, String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
+
         if (negate(auditProcessingService.isAuditingCompleted())) {
             jobLauncher.run(job, params);
             log.info("::Judicial Application running first time for day ::");

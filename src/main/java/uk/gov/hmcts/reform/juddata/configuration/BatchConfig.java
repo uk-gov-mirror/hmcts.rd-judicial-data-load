@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import uk.gov.hmcts.reform.juddata.camel.listener.JobResultListener;
 import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
 import uk.gov.hmcts.reform.juddata.camel.task.LeafRouteTask;
 import uk.gov.hmcts.reform.juddata.camel.task.ParentRouteTask;
@@ -44,6 +45,10 @@ public class BatchConfig {
     @Autowired
     LeafRouteTask leafRouteTask;
 
+    @Autowired
+    JobResultListener jobResultListener;
+
+
     @Bean
     public Step stepLeafRoute() {
         return steps.get(taskLeaf)
@@ -58,10 +63,12 @@ public class BatchConfig {
                 .build();
     }
 
+
     @Bean
     public Job runRoutesJob() {
         return jobs.get(jobName)
                 .incrementer(new RunIdIncrementer())
+                .listener(jobResultListener)
                 .start(stepLeafRoute())
                 .next(stepOrchestration())
                 .build();

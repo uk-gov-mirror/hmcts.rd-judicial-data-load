@@ -62,10 +62,6 @@ public class ArchiveAzureFileProcessorTest {
                 .getClass().getDeclaredField("archivalDateFormat"), "dd-MM-yyyy--HH-mm");
         FieldSetter.setField(azureFileProcessor,azureFileProcessor
                 .getClass().getDeclaredField("fileReadTimeOut"), 1000);
-        FieldSetter.setField(azureFileProcessor, azureFileProcessor
-                .getClass().getDeclaredField("leafRouteName"), "direct:leaf");
-        FieldSetter.setField(azureFileProcessor, azureFileProcessor
-                .getClass().getDeclaredField("leafArchivalFileNames"), archivalFileNames);
 
         azureFileProcessor.process(exchangeMock);
         Assert.assertNotNull(exchangeMock);
