@@ -6,7 +6,6 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -48,6 +47,9 @@ public class BatchConfig {
     @Autowired
     JobResultListener jobResultListener;
 
+    @Autowired
+    JobBuilderFactory jobBuilderFactory;
+
 
     @Bean
     public Step stepLeafRoute() {
@@ -66,11 +68,12 @@ public class BatchConfig {
 
     @Bean
     public Job runRoutesJob() {
-        return jobs.get(jobName)
-                .incrementer(new RunIdIncrementer())
-                .listener(jobResultListener)
+
+        return jobBuilderFactory.get(jobName)
                 .start(stepLeafRoute())
-                .next(stepOrchestration())
+                .listener(jobResultListener)
+                .on("*").to(stepOrchestration())
+                .end()
                 .build();
     }
 }

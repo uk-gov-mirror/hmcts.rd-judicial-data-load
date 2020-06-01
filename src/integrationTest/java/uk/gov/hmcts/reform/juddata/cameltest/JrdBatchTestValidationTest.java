@@ -202,7 +202,7 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     }
 
     @Test
-    @Sql(scripts = {"/testData/truncate-leaf.sql", "/testData/truncate-exception.sql"})
+    @Sql(scripts = {"/testData/truncate-leaf.sql", "/testData/truncate-exception.sql","/testData/default-leaf-load.sql"})
     public void testLeafFailuresInvalidHeader() throws Exception {
         setSourceData(file);
         LeafIntegrationTestSupport.setSourceData(file_error);
@@ -211,16 +211,16 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
         jobLauncherTestUtils.launchJob();
 
         List<Map<String, Object>> judicialUserRoleType = jdbcTemplate.queryForList(roleSql);
-        assertEquals(judicialUserRoleType.size(), 0);
+        assertEquals(judicialUserRoleType.size(), 1); //default leaf
 
         List<Map<String, Object>> judicialContractType = jdbcTemplate.queryForList(contractSql);
-        assertEquals(judicialContractType.size(), 0);
+        assertEquals(judicialContractType.size(), 1); 
 
         List<Map<String, Object>> judicialBaseLocationType = jdbcTemplate.queryForList(baseLocationSql);
-        assertEquals(judicialBaseLocationType.size(), 0);
+        assertEquals(judicialBaseLocationType.size(), 1);
 
         List<Map<String, Object>> judicialRegionType = jdbcTemplate.queryForList(regionSql);
-        assertEquals(judicialRegionType.size(), 0);
+        assertEquals(judicialRegionType.size(), 1);
 
         List<Map<String, Object>> exceptionList = jdbcTemplate.queryForList(exceptionQuery);
         assertNotNull(exceptionList.get(0).get("file_name"));
