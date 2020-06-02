@@ -458,13 +458,7 @@
         <cpe>cpe:/a:eclipse:jetty</cpe>
         <cpe>cpe:/a:jetty:jetty</cpe>
     </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: bcpg-jdk15on-*.jar
-   ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.bouncycastle/bcpg\-jdk15on@.*$</packageUrl>
-        <cpe>cpe:/a:openpgp:openpgp</cpe>
-    </suppress>
+
     <suppress>
         <notes><![CDATA[
    file name: dom4j-2.1.1.jar
@@ -506,6 +500,14 @@
    ]]></notes>
         <filePath regex="true">.*\bbcprov-jdk15on-1.54\.jar</filePath>
         <cpe>cpe:/a:bouncycastle:legion-of-the-bouncy-castle-java-crytography-api</cpe>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+   file name: ant*.jar
+   ]]></notes>
+        <filePath regex="true">.*\**\.jar</filePath>
+        <cpe>cpe:/a:apache:ant</cpe>
     </suppress>
 
 </suppressions>
