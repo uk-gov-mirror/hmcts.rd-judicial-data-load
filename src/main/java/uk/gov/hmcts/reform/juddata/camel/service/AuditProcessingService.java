@@ -4,11 +4,11 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Objects.isNull;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.FILE_NAME;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_NAME;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_START_TIME;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_STATUS;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SUCCESS;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.FILE_NAME;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.SCHEDULER_NAME;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.SCHEDULER_START_TIME;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.SCHEDULER_STATUS;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.SUCCESS;
 
 import java.sql.Timestamp;
 import java.util.Map;

@@ -17,26 +17,31 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.testcontainers.containers.PostgreSQLContainer;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.ArchiveAzureFileProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.ExceptionProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.FileReadProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.HeaderValidationProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.route.ArchivalRoute;
+import uk.gov.hmcts.reform.data.ingestion.camel.route.LoadRoutes;
+import uk.gov.hmcts.reform.data.ingestion.camel.service.EmailService;
+import uk.gov.hmcts.reform.data.ingestion.camel.util.DataLoadUtil;
+import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAppointment;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserProfile;
 import uk.gov.hmcts.reform.juddata.camel.listener.JobResultListener;
 import uk.gov.hmcts.reform.juddata.camel.mapper.JudicialOfficeAppointmentRowMapper;
 import uk.gov.hmcts.reform.juddata.camel.mapper.JudicialUserProfileRowMapper;
-import uk.gov.hmcts.reform.juddata.camel.processor.ArchiveAzureFileProcessor;
-import uk.gov.hmcts.reform.juddata.camel.processor.ExceptionProcessor;
-import uk.gov.hmcts.reform.juddata.camel.processor.FileReadProcessor;
-import uk.gov.hmcts.reform.juddata.camel.processor.HeaderValidationProcessor;
+
 import uk.gov.hmcts.reform.juddata.camel.processor.JudicialOfficeAppointmentProcessor;
 import uk.gov.hmcts.reform.juddata.camel.processor.JudicialUserProfileProcessor;
-import uk.gov.hmcts.reform.juddata.camel.route.ArchivalRoute;
-import uk.gov.hmcts.reform.juddata.camel.route.LoadRoutes;
+
 import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
-import uk.gov.hmcts.reform.juddata.camel.service.EmailService;
+
 import uk.gov.hmcts.reform.juddata.camel.task.LeafRouteTask;
 import uk.gov.hmcts.reform.juddata.camel.task.ParentRouteTask;
-import uk.gov.hmcts.reform.juddata.camel.util.DataLoadUtil;
-import uk.gov.hmcts.reform.juddata.camel.util.JrdTask;
-import uk.gov.hmcts.reform.juddata.camel.validator.JsrValidatorInitializer;
+
+import uk.gov.hmcts.reform.juddata.camel.util.JrdExecutor;
+
 
 @Configuration
 public class ParentCamelConfig {
@@ -208,8 +213,8 @@ public class ParentCamelConfig {
     }
 
     @Bean
-    JrdTask jrdTask() {
-        return new JrdTask();
+    JrdExecutor jrdTask() {
+        return new JrdExecutor();
     }
 
     @Bean

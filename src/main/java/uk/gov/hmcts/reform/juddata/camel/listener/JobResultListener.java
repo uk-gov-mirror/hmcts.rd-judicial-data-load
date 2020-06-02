@@ -9,7 +9,8 @@ import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.juddata.camel.route.ArchivalRoute;
+import uk.gov.hmcts.reform.data.ingestion.camel.route.ArchivalRoute;
+
 
 @Component
 @Slf4j

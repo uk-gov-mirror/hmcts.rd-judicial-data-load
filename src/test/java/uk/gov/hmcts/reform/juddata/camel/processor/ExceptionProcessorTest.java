@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.juddata.camel.processor;
 
 import static java.lang.Boolean.TRUE;
 import static java.lang.String.valueOf;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.IS_EXCEPTION_HANDLED;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.IS_EXCEPTION_HANDLED;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.ExchangeBuilder;
@@ -13,7 +13,8 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import uk.gov.hmcts.reform.juddata.camel.service.EmailService;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.ExceptionProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.service.EmailService;
 
 public class ExceptionProcessorTest extends CamelTestSupport {
     @Mock

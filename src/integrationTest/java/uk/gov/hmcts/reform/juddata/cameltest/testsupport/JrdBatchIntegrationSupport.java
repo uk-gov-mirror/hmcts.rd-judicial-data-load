@@ -6,11 +6,11 @@ import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
-import uk.gov.hmcts.reform.juddata.camel.processor.ExceptionProcessor;
-import uk.gov.hmcts.reform.juddata.camel.route.LoadRoutes;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.ExceptionProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.route.LoadRoutes;
+import uk.gov.hmcts.reform.data.ingestion.camel.service.EmailService;
+import uk.gov.hmcts.reform.data.ingestion.camel.util.DataLoadUtil;
 import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
-import uk.gov.hmcts.reform.juddata.camel.service.EmailService;
-import uk.gov.hmcts.reform.juddata.camel.util.DataLoadUtil;
 
 public abstract class JrdBatchIntegrationSupport {
 
@@ -96,5 +96,4 @@ public abstract class JrdBatchIntegrationSupport {
 
     @Value("${truncate-audit}")
     protected String truncateAudit;
-
 }

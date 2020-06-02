@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.juddata.camel.processor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.LEAF_ROUTE;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.LEAF_ROUTE;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import org.apache.camel.Message;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.FieldSetter;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.ArchiveAzureFileProcessor;
 
 public class ArchiveAzureFileProcessorTest {
 

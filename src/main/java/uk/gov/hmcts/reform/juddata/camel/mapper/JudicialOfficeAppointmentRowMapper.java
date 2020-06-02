@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.juddata.camel.mapper;
 
-import static uk.gov.hmcts.reform.juddata.camel.util.DataLoadUtil.getCurrentTimeStamp;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.DataLoadUtil.getCurrentTimeStamp;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +8,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.data.ingestion.camel.mapper.IMapper;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAppointment;
 
 @Slf4j

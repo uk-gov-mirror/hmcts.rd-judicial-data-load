@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.juddata.camel.task;
 
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.JUDICIAL_USER_PROFILE_ORCHESTRATION;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ORCHESTRATED_ROUTE;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.JUDICIAL_USER_PROFILE_ORCHESTRATION;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.ORCHESTRATED_ROUTE;
 
 import java.util.List;
 
@@ -14,8 +14,8 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.juddata.camel.route.LoadRoutes;
-import uk.gov.hmcts.reform.juddata.camel.util.JrdTask;
+import uk.gov.hmcts.reform.data.ingestion.camel.route.LoadRoutes;
+import uk.gov.hmcts.reform.juddata.camel.util.JrdExecutor;
 
 @Component
 @Slf4j
@@ -28,7 +28,7 @@ public class ParentRouteTask implements Tasklet {
     CamelContext camelContext;
 
     @Autowired
-    JrdTask jrdTask;
+    JrdExecutor jrdExecutor;
 
     @Autowired
     LoadRoutes loadRoutes;
@@ -41,7 +41,7 @@ public class ParentRouteTask implements Tasklet {
         log.info("::ParentRouteTask starts::");
         camelContext.getGlobalOptions().put(ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
         loadRoutes.startRoute(startRoute, routesToExecute);
-        jrdTask.execute(camelContext, JUDICIAL_USER_PROFILE_ORCHESTRATION, startRoute);
+        jrdExecutor.execute(camelContext, JUDICIAL_USER_PROFILE_ORCHESTRATION, startRoute);
         log.info("::ParentRouteTask completes::");
         return RepeatStatus.FINISHED;
     }

@@ -9,9 +9,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ORCHESTRATED_ROUTE;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_NAME;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_START_TIME;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.JUDICIAL_USER_PROFILE_ORCHESTRATION;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.ORCHESTRATED_ROUTE;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.SCHEDULER_NAME;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.SCHEDULER_START_TIME;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -28,7 +29,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
-import uk.gov.hmcts.reform.juddata.camel.util.MappingConstants;
 
 public class AuditProcessingServiceTest {
 
@@ -46,7 +46,7 @@ public class AuditProcessingServiceTest {
 
     public static Map<String, String> getGlobalOptions(String schedulerName) {
         Map<String, String> globalOptions = new HashMap<>();
-        globalOptions.put(ORCHESTRATED_ROUTE, MappingConstants.JUDICIAL_USER_PROFILE_ORCHESTRATION);
+        globalOptions.put(ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
         globalOptions.put(SCHEDULER_START_TIME, String.valueOf(new Date().getTime()));
         globalOptions.put(SCHEDULER_NAME, schedulerName);
         return globalOptions;

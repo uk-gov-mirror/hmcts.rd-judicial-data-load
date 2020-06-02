@@ -5,9 +5,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.JUDICIAL_USER_PROFILE_ORCHESTRATION;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.LEAF_ROUTE;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ORCHESTRATED_ROUTE;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.FAILURE;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.JUDICIAL_USER_PROFILE_ORCHESTRATION;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.LEAF_ROUTE;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.ORCHESTRATED_ROUTE;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.SUCCESS;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.IntegrationTestSupport.setSourcePath;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.file;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithError;
@@ -33,7 +35,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import uk.gov.hmcts.reform.juddata.camel.util.MappingConstants;
 import uk.gov.hmcts.reform.juddata.cameltest.testsupport.JrdBatchIntegrationSupport;
 import uk.gov.hmcts.reform.juddata.cameltest.testsupport.LeafIntegrationTestSupport;
 import uk.gov.hmcts.reform.juddata.cameltest.testsupport.RestartingSpringJUnit4ClassRunner;
@@ -80,7 +81,7 @@ public class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
 
         auditProcessingService.auditSchedulerStatus(camelContext);
         List<Map<String, Object>> dataLoadSchedulerAudit = jdbcTemplate.queryForList(schedulerInsertJrdSqlFailure);
-        assertEquals(dataLoadSchedulerAudit.get(0).get(DB_SCHEDULER_STATUS), MappingConstants.FAILURE);
+        assertEquals(dataLoadSchedulerAudit.get(0).get(DB_SCHEDULER_STATUS), FAILURE);
     }
 
     @Test
@@ -89,15 +90,12 @@ public class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
         setSourceData(file);
 
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-
-
-
         jobLauncherTestUtils.launchJob();
 
         auditProcessingService.auditSchedulerStatus(camelContext);
 
         List<Map<String, Object>> dataLoadSchedulerAudit = jdbcTemplate.queryForList(schedulerInsertJrdSqlSuccess);
-        assertEquals(dataLoadSchedulerAudit.get(0).get(DB_SCHEDULER_STATUS), MappingConstants.SUCCESS);
+        assertEquals(dataLoadSchedulerAudit.get(0).get(DB_SCHEDULER_STATUS), SUCCESS);
     }
 
     @Test
@@ -106,7 +104,7 @@ public class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
     public void testParentOrchestrationFailureEmail() throws Exception {
         setSourceData(fileWithError);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
+        camelContext.getGlobalOptions().put(ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
         setField(emailService, "mailEnabled", Boolean.FALSE);
 
 
@@ -120,8 +118,7 @@ public class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
     public void testParentOrchestrationSuccessEmail() throws Exception {
         setSourceData(file);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        camelContext.getGlobalOptions().put(MappingConstants.ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
-
+        camelContext.getGlobalOptions().put(ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
 
         jobLauncherTestUtils.launchJob();
         verify(emailService, times(0)).sendEmail(any(String.class));
