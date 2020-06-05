@@ -95,7 +95,7 @@ public class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
         auditProcessingService.auditSchedulerStatus(camelContext);
 
         List<Map<String, Object>> dataLoadSchedulerAudit = jdbcTemplate.queryForList(schedulerInsertJrdSqlSuccess);
-        assertEquals(dataLoadSchedulerAudit.get(0).get(DB_SCHEDULER_STATUS), SUCCESS);
+        assertEquals(SUCCESS, dataLoadSchedulerAudit.get(0).get(DB_SCHEDULER_STATUS));
     }
 
     @Test

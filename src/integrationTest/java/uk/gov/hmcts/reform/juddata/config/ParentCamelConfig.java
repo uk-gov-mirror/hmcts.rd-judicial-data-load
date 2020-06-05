@@ -219,7 +219,7 @@ public class ParentCamelConfig {
 
     @Bean
     JobResultListener jobResultListener() {
-        return mock(JobResultListener.class);
+        return new JobResultListener();
     }
 
     @Bean

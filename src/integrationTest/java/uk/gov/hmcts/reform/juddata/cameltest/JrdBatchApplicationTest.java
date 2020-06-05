@@ -79,7 +79,7 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
         assertEquals(judicialUserProfileList.size(), 2);
         List<Map<String, Object>> judicialUserRoleType = jdbcTemplate.queryForList(roleSql);
-        assertNotEquals(judicialUserRoleType.size(), 0);
+        assertNotEquals(0, judicialUserRoleType.size());
     }
 
     @Test
@@ -100,7 +100,7 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
         List<Map<String, Object>> judicialUserRoleType = jdbcTemplate.queryForList(roleSql);
         assertNotEquals(judicialUserRoleType.size(), 0);
         List<Map<String, Object>> auditList = jdbcTemplate.queryForList(selectDataLoadSchedulerAudit);
-        assertEquals(auditList.size(), 2);
+        assertEquals(2, auditList.size());
     }
 
     @Test
@@ -127,8 +127,8 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
         assertNotNull(judicialAppointmentList.get(1));
         assertNotNull(judicialAppointmentList.get(0).get("judicial_office_appointment_id"));
         assertNotNull(judicialAppointmentList.get(0).get("judicial_office_appointment_id"));
-        assertEquals(judicialAppointmentList.get(0).get("elinks_id"), "1");
-        assertEquals(judicialAppointmentList.get(1).get("elinks_id"), "2");
+        assertEquals("1", judicialAppointmentList.get(0).get("elinks_id"));
+        assertEquals("2", judicialAppointmentList.get(1).get("elinks_id"));
     }
 
     @Test
@@ -142,10 +142,10 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
 
         jobLauncherTestUtils.launchJob();
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
-        assertEquals(judicialUserProfileList.size(), 0);
+        assertEquals(0, judicialUserProfileList.size());
 
         List<Map<String, Object>> judicialAppointmentList = jdbcTemplate.queryForList(sqlChild1);
-        assertEquals(judicialAppointmentList.size(), 0);
+        assertEquals(0, judicialAppointmentList.size());
     }
 
     @Test
@@ -159,10 +159,10 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
 
         jobLauncherTestUtils.launchJob();
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
-        assertEquals(judicialUserProfileList.size(), 1);
+        assertEquals(1, judicialUserProfileList.size());
 
         List<Map<String, Object>> judicialAppointmentList = jdbcTemplate.queryForList(sqlChild1);
-        assertEquals(judicialAppointmentList.size(), 1);
+        assertEquals(1, judicialAppointmentList.size());
     }
 
 
@@ -177,15 +177,15 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
         jobLauncherTestUtils.launchJob();
 
         List<Map<String, Object>> judicialUserRoleType = jdbcTemplate.queryForList(roleSql);
-        assertEquals(judicialUserRoleType.size(), 5);
+        assertEquals(5, judicialUserRoleType.size());
 
         List<Map<String, Object>> judicialContractType = jdbcTemplate.queryForList(contractSql);
-        assertEquals(judicialContractType.size(), 7);
+        assertEquals(7, judicialContractType.size());
 
         List<Map<String, Object>> judicialBaseLocationType = jdbcTemplate.queryForList(baseLocationSql);
-        assertEquals(judicialBaseLocationType.size(), 5);
+        assertEquals(5, judicialBaseLocationType.size());
 
         List<Map<String, Object>> judicialRegionType = jdbcTemplate.queryForList(regionSql);
-        assertEquals(judicialRegionType.size(), 5);
+        assertEquals(5, judicialRegionType.size());
     }
 }

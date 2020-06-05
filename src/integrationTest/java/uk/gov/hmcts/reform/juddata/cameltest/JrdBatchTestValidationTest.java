@@ -80,7 +80,7 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
         jobLauncherTestUtils.launchJob();
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
-        assertEquals(judicialUserProfileList.size(), 0);
+        assertEquals(0, judicialUserProfileList.size());
 
         List<Map<String, Object>> exceptionList = jdbcTemplate.queryForList(exceptionQuery);
 
@@ -90,7 +90,7 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
             assertNotNull(exceptionList.get(0).get("scheduler_name"));
             assertNotNull(exceptionList.get(0).get("updated_timestamp"));
         }
-        assertEquals(exceptionList.size(), 1);
+        assertEquals(1, exceptionList.size());
     }
 
     @Test
@@ -103,17 +103,17 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
         jobLauncherTestUtils.launchJob();
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
-        assertEquals(judicialUserProfileList.size(), 0);
+        assertEquals(0, judicialUserProfileList.size());
 
         List<Map<String, Object>> judicialAppointmentList = jdbcTemplate.queryForList(sqlChild1);
-        assertEquals(judicialAppointmentList.size(), 0);
+        assertEquals(0, judicialAppointmentList.size());
 
         List<Map<String, Object>> exceptionList = jdbcTemplate.queryForList(exceptionQuery);
         assertNotNull(exceptionList.get(0).get("file_name"));
         assertNotNull(exceptionList.get(0).get("scheduler_start_time"));
         assertNotNull(exceptionList.get(0).get("error_description"));
         assertNotNull(exceptionList.get(0).get("updated_timestamp"));
-        assertEquals(exceptionList.size(), 1);
+        assertEquals(1, exceptionList.size());
     }
 
     @Test
@@ -140,7 +140,7 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
         assertEquals(judicialBaseLocationType.size(), 5);
 
         List<Map<String, Object>> judicialRegionType = jdbcTemplate.queryForList(regionSql);
-        assertEquals(judicialRegionType.size(), 5);
+        assertEquals(5, judicialRegionType.size());
     }
 
     @Test
@@ -177,7 +177,7 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
             assertNotNull(exceptionList.get(0).get("error_description"));
             assertNotNull(exceptionList.get(0).get("updated_timestamp"));
         }
-        assertEquals(exceptionList.size(), 5);
+        assertEquals(5, exceptionList.size());
 
         List<Map<String, Object>> dataLoadSchedulerAudit = jdbcTemplate.queryForList(schedulerInsertJrdSqlPartialSuccess);
         assertEquals(dataLoadSchedulerAudit.get(0).get(DB_SCHEDULER_STATUS), PARTIAL_SUCCESS);
@@ -226,7 +226,7 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
         assertNotNull(exceptionList.get(0).get("scheduler_start_time"));
         assertNotNull(exceptionList.get(0).get("error_description"));
         assertNotNull(exceptionList.get(0).get("updated_timestamp"));
-        assertEquals(exceptionList.size(), 1);
+        assertEquals(1, exceptionList.size());
     }
 
     @Test
@@ -274,6 +274,6 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
             assertNotNull(exceptionList.get(count).get("error_description"));
             assertNotNull(exceptionList.get(count).get("updated_timestamp"));
         }
-        assertEquals(exceptionList.size(), 9);
+        assertEquals(9, exceptionList.size());
     }
 }

@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.juddata;
 
-import static net.logstash.logback.encoder.org.apache.commons.lang3.BooleanUtils.negate;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
@@ -46,7 +44,7 @@ public class JudicialApplication implements ApplicationRunner {
                 .addString(jobName, String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
 
-        if (negate(auditProcessingService.isAuditingCompleted())) {
+        if (Boolean.FALSE.equals(auditProcessingService.isAuditingCompleted())) {
             jobLauncher.run(job, params);
             log.info("::Judicial Application running first time for day ::");
         } else {
