@@ -40,7 +40,6 @@ parent-route-task: parentRouteOrchestrationTask
 batchjob-name: JudicialDataLoad
 scheduler-insert-sql:  insert into dataload_schedular_audit (scheduler_name,scheduler_start_time,scheduler_end_time,scheduler_status)
   values(?,?,?,?)
-scheduler-name: judicial_leaf_scheduler
 audit-enable: true
 
 routes-to-execute-orchestration: judicial-user-profile-orchestration, judicial-office-appointment
@@ -90,7 +89,7 @@ route:
       sql:insert into judicial_office_authorisation (judicial_office_auth_id,elinks_id,authorisation_id,jurisdiction_id,authorisation_date,extracted_date,created_date,last_loaded_date)
       values(:#judicial_office_auth_id,:#elinks_id,:#authorisation_id, :#jurisdiction_id,:#authorisation_date,:#extracted_date,:#created_date,:#last_loaded_date)?dataSource=dataSource
     blob-path:
-      azure-blob://${azure.storage.account-name}/jrd-test/judicial_office_authorisation.csv?credentials=#credsreg&operation=updateBlockBlob
+      azure-blob://${azure.storage.account-name}/jud-ref-data/judicial_office_authorisation.csv?credentials=#credsreg&operation=updateBlockBlob
     processor-class: JudicialOfficeAuthorisationProcessor
     mapper-class: JudicialOfficeAuthorisationRowMapper
     csv-binder-object: JudicialOfficeAuthorisation
@@ -110,9 +109,5 @@ select-dataload-scheduler-audit-partial-success: select *  from dataload_schedul
 select-dataload-scheduler-audit-success: select *  from dataload_schedular_audit where scheduler_status='Success'
 
 start-leaf-route: direct:leaf
-
-leaf-archival-file-names: Roles.csv,Contracts.csv,Locations.csv,BaseLocations.csv
-
-leaf-archival-route: direct:jrdLeafArchival
 
 truncate-audit: truncate dataload_schedular_audit

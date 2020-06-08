@@ -51,9 +51,9 @@ aggregation-strategy-completion-size: 100
 aggregation-strategy-timeout: 2000
 start-route: direct:JRD
 archival-route: direct:JrdArchival
-archival-path: azure-blob://${azure.storage.account-name}/jrd-test-archive1
-active-blob-path: azure-blob://${azure.storage.account-name}/jrd-test
-archival-file-names: Personal,Appointments
+archival-path: azure-blob://${azure.storage.account-name}/jud-ref-data-archive
+active-blob-path: azure-blob://${azure.storage.account-name}/jud-ref-data
+archival-file-names: Personal,Appointments,Roles,Contracts,Locations,BaseLocations
 archival-cred: credentials=#credsreg&operation=updateBlockBlob
 archival-date-format: dd-MM-yyyy--HH-mm
 file-read-time-out: 180000
@@ -65,10 +65,7 @@ invalid-exception-sql: insert into dataload_exception_records(file_name,schedule
 invalid-jsr-sql: insert into dataload_exception_records(table_name,scheduler_start_time,scheduler_name,key,field_in_error,error_description,updated_timestamp) values(?, ?, ?, ?, ?, ?, ?)
 jsr-threshold-limit: 100
 scheduler-insert-sql:  insert into dataload_schedular_audit (scheduler_name,scheduler_start_time,scheduler_end_time,scheduler_status) values(?, ?, ?, ?)
-
 start-leaf-route: direct:leaf
-leaf-route-names: judicial-role-type,judicial-contract-type,judicial-region-type,judicial-base-location_type
-scheduler-name: judicial_leaf_scheduler
 audit-enable: true
 
 
