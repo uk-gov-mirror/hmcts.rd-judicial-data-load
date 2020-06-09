@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.juddata;
 
+import static java.lang.Boolean.FALSE;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
@@ -46,7 +48,7 @@ public class JudicialApplication implements ApplicationRunner {
                 .addString(jobName, String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
 
-        if (Boolean.FALSE.equals(auditProcessingService.isAuditingCompleted())) {
+        if (FALSE.equals(auditProcessingService.isAuditingCompleted())) {
             jobLauncher.run(job, params);
             log.info("::Judicial Application running first time for day ::");
         } else {
