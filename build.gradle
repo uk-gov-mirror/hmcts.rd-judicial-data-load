@@ -256,7 +256,7 @@ dependencies {
         exclude group: 'uk.gov.hmcts.reform', module: 'java-logging-spring'
     }
 
-    compile group: 'uk.gov.hmcts.reform', name: 'data-ingestion-lib', version: '0.1.9'
+    compile group: 'uk.gov.hmcts.reform', name: 'data-ingestion-lib', version: '0.1.10'
 
     compile group: 'com.microsoft.azure', name: 'azure-storage-blob', version: '11.0.0'
 
