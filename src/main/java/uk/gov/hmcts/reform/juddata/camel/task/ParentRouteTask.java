@@ -41,8 +41,8 @@ public class ParentRouteTask implements Tasklet {
         log.info("::ParentRouteTask starts::");
         camelContext.getGlobalOptions().put(ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
         loadRoutes.startRoute(startRoute, routesToExecute);
-        jrdExecutor.execute(camelContext, JUDICIAL_USER_PROFILE_ORCHESTRATION, startRoute);
-        log.info("::ParentRouteTask completes::");
+        String status = jrdTask.execute(camelContext, JUDICIAL_USER_PROFILE_ORCHESTRATION, startRoute);
+        log.info("::ParentRouteTask completes with {}::", status);
         return RepeatStatus.FINISHED;
     }
 }
