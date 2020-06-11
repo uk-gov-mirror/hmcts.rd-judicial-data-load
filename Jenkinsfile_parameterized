@@ -45,8 +45,6 @@ withParameterizedPipeline(type, product, component, 'sandbox', 'sandbox') {
     enableDbMigration()
     enableDockerBuild()
 
-
-
     after('functionalTest:preview') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
     }
