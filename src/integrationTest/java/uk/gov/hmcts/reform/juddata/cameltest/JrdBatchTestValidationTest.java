@@ -12,6 +12,7 @@ import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.IntegrationTestS
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.LeafIntegrationTestSupport.file_error;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.LeafIntegrationTestSupport.file_jsr_error;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.file;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithElinkIdInvalidInParent;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithElinkIdMissing;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidHeader;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidJsr;
@@ -178,7 +179,7 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
             assertNotNull(exceptionList.get(0).get("error_description"));
             assertNotNull(exceptionList.get(0).get("updated_timestamp"));
         }
-        assertEquals(exceptionList.size(), 5);
+        assertEquals(exceptionList.size(), 7);
 
         List<Map<String, Object>> dataLoadSchedulerAudit = jdbcTemplate.queryForList(schedulerInsertJrdSqlPartialSuccess);
         assertEquals(dataLoadSchedulerAudit.get(0).get(DB_SCHEDULER_STATUS), PARTIAL_SUCCESS);
@@ -279,5 +280,31 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
             assertNotNull(exceptionList.get(count).get("updated_timestamp"));
         }
         assertEquals(exceptionList.size(), 9);
+    }
+
+    @Test
+    @Sql(scripts = {"/testData/truncate-parent.sql", "/testData/truncate-exception.sql",
+            "/testData/default-leaf-load.sql"})
+    public void testParentOrchestrationJsrSkipChildForeignKeyRecords() throws Exception {
+
+        setSourceData(fileWithElinkIdInvalidInParent);
+        LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
+        leafTableRoute.startRoute();
+        parentRoute.startRoute();
+        jobLauncherTestUtils.launchJob();
+
+        List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);
+        assertEquals(judicialUserProfileList.get(0).get("elinks_id"), "1");
+        assertEquals(judicialUserProfileList.get(1).get("elinks_id"), "2");
+        assertEquals(judicialUserProfileList.get(0).get("email_id"), "joe.bloggs@ejudiciary.net");
+        assertEquals(judicialUserProfileList.get(1).get("email_id"), "jo1e.bloggs@ejudiciary.net");
+        assertEquals(judicialUserProfileList.size(), 2);
+
+        List<Map<String, Object>> judicialAppointmentList = jdbcTemplate.queryForList(sqlChild1);
+        assertNotNull(judicialAppointmentList.get(0).get("judicial_office_appointment_id"));
+        assertNotNull(judicialAppointmentList.get(0).get("judicial_office_appointment_id"));
+        assertEquals(judicialAppointmentList.get(0).get("elinks_id"), "1");
+        assertEquals(judicialAppointmentList.get(1).get("elinks_id"), "2");
+        assertEquals(judicialAppointmentList.size(), 2);
     }
 }

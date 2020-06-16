@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.juddata.camel.validator;
 
 import static java.lang.Boolean.TRUE;
+import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.INVALID_JSR_PARENT;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ROUTE_DETAILS;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_NAME;
 import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.SCHEDULER_START_TIME;
@@ -62,11 +63,16 @@ public class JsrValidatorInitializer<T> {
 
     private Set<ConstraintViolation<T>> constraintViolations;
 
+    private List<T> invalidJsrRecords;
+
     @Value("${invalid-jsr-sql}")
     String invalidJsrSql;
 
     @Value("${jsr-threshold-limit:0}")
     int jsrThresholdLimit;
+
+    @Value("${jdbc-batch-size:10}")
+    int jdbcBatchSize;
 
     @PostConstruct
     public void initializeFactory() {
@@ -83,19 +89,21 @@ public class JsrValidatorInitializer<T> {
     public List<T> validate(List<T> binders) {
 
         log.info("::::JsrValidatorInitializer data processing validate starts::::");
-
         this.constraintViolations = new LinkedHashSet<>();
-
         List<T> binderFilter = new ArrayList<>();
 
-        for (T binder : binders) {
+        this.invalidJsrRecords = new ArrayList<>();
+
+        binders.forEach(binder -> {
             Set<ConstraintViolation<T>> constraintViolations = validator.validate(binder);
             if (constraintViolations.size() == 0) {
                 binderFilter.add(binder);
+            } else {
+                invalidJsrRecords.add(binder);
             }
-
             this.constraintViolations.addAll(constraintViolations);
-        }
+        });
+
         log.info("::::JsrValidatorInitializer data processing validate complete::::");
         return binderFilter;
     }
@@ -124,7 +132,7 @@ public class JsrValidatorInitializer<T> {
         jdbcTemplate.batchUpdate(
                 invalidJsrSql,
                 violationList,
-                10,
+                jdbcBatchSize,
                 new ParameterizedPreparedStatementSetter<ConstraintViolation<T>>() {
                     public void setValues(PreparedStatement ps, ConstraintViolation<T> argument) throws SQLException {
                         ps.setString(1, routeProperties.getTableName());
@@ -140,6 +148,47 @@ public class JsrValidatorInitializer<T> {
         TransactionStatus status = platformTransactionManager.getTransaction(def);
         platformTransactionManager.commit(status);
         log.info("::::JsrValidatorInitializer data processing audit complete::::");
+    }
+
+
+    /**
+     * Auditing JSR Exception for skipped parent in child.
+     *
+     * @param keys List
+     * @param exchange Exchange
+     *
+     */
+    public void auditJsrExceptions(List<String> keys, String fieldInError, Exchange exchange) {
+
+        log.info("::::JsrValidatorInitializer data processing audit start for skipping parent table violation::::");
+
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setName("Jsr exception logs");
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        RouteProperties routeProperties = (RouteProperties) exchange.getIn().getHeader(ROUTE_DETAILS);
+        Map<String, String> globalOptions = camelContext.getGlobalOptions();
+        String schedulerTime = globalOptions.get(SCHEDULER_START_TIME);
+
+        jdbcTemplate.batchUpdate(
+                invalidJsrSql,
+                keys,
+                jdbcBatchSize,
+                new ParameterizedPreparedStatementSetter<String>() {
+                    @Override
+                    public void setValues(PreparedStatement ps, String argument) throws SQLException {
+                        ps.setString(1, routeProperties.getTableName());
+                        ps.setTimestamp(2, new Timestamp(Long.valueOf(schedulerTime)));
+                        ps.setString(3, globalOptions.get(SCHEDULER_NAME));
+                        ps.setString(4, argument);
+                        ps.setString(5, fieldInError);
+                        ps.setString(6, INVALID_JSR_PARENT);
+                        ps.setTimestamp(7, new Timestamp(new Date().getTime()));
+                    }
+                });
+
+        TransactionStatus status = platformTransactionManager.getTransaction(def);
+        platformTransactionManager.commit(status);
+        log.info("::::JsrValidatorInitializer data processing audit complete for skipping parent table violation::::");
     }
 
     /**
@@ -166,8 +215,13 @@ public class JsrValidatorInitializer<T> {
         return "";
     }
 
+
     public Set<ConstraintViolation<T>> getConstraintViolations() {
         return constraintViolations;
+    }
+
+    public List<T> getInvalidJsrRecords() {
+        return invalidJsrRecords;
     }
 }
 
