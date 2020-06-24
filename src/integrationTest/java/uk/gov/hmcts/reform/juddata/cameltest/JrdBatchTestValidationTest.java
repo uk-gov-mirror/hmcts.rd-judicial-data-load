@@ -285,8 +285,6 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
         setSourceData(fileWithElinkIdInvalidInParent);
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
-        leafTableRoute.startRoute();
-        parentRoute.startRoute();
         jobLauncherTestUtils.launchJob();
 
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(sql);

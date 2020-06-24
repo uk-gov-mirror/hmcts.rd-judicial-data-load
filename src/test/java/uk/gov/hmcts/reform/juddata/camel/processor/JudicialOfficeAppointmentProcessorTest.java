@@ -12,7 +12,6 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.ROUTE_DETAILS;
 import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudicialOfficeAppointmentMockMock;
 import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudicialUserProfileMock;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ROUTE_DETAILS;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,8 +35,6 @@ import uk.gov.hmcts.reform.data.ingestion.camel.route.beans.RouteProperties;
 import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAppointment;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserProfile;
-import uk.gov.hmcts.reform.juddata.camel.route.beans.RouteProperties;
-import uk.gov.hmcts.reform.juddata.camel.validator.JsrValidatorInitializer;
 
 public class JudicialOfficeAppointmentProcessorTest {
 
@@ -52,6 +49,7 @@ public class JudicialOfficeAppointmentProcessorTest {
     JudicialOfficeAppointmentProcessor judicialOfficeAppointmentProcessor;
 
     private JsrValidatorInitializer<JudicialOfficeAppointment> judicialOfficeAppointmentJsrValidatorInitializer;
+
 
     private Validator validator;
 
