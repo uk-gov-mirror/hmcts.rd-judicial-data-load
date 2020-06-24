@@ -111,3 +111,7 @@ select-dataload-scheduler-audit-success: select *  from dataload_schedular_audit
 start-leaf-route: direct:leaf
 
 truncate-audit: truncate dataload_schedular_audit
+
+jdbc-batch-size: 10
+
+logging-component-name: RD_Judicial_Ref_Data

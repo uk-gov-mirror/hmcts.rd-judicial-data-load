@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.data.ingestion.camel.processor.JsrValidationBaseProcessor;
 import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
@@ -19,6 +20,8 @@ public class JudicialUserProfileProcessor extends JsrValidationBaseProcessor<Jud
     @Autowired
     JsrValidatorInitializer<JudicialUserProfile> judicialUserProfileJsrValidatorInitializer;
 
+    @Value("${logging-component-name}")
+    private String logComponentName;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -30,12 +33,12 @@ public class JudicialUserProfileProcessor extends JsrValidationBaseProcessor<Jud
                 ? (List<JudicialUserProfile>) exchange.getIn().getBody()
                 : singletonList((JudicialUserProfile) exchange.getIn().getBody());
 
-        log.info("Judicial User Profile Records count before Validation:: " + judicialUserProfiles.size());
+        log.info("{}:: Judicial User Profile Records count before Validation {}::", logComponentName, judicialUserProfiles.size());
 
         List<JudicialUserProfile> filteredJudicialUserProfiles = validate(judicialUserProfileJsrValidatorInitializer,
                 judicialUserProfiles);
 
-        log.info("Judicial User Profile Records count after Validation:: " + filteredJudicialUserProfiles.size());
+        log.info("{}:: Judicial User Profile Records count after Validation {}::", logComponentName, filteredJudicialUserProfiles.size());
 
         audit(judicialUserProfileJsrValidatorInitializer, exchange);
 

@@ -1,3 +1,4 @@
+jdbc-batch-size: 10
 routes-to-execute-orchestration: judicial-user-profile-orchestration, judicial-office-appointment
 route:
   judicial-user-profile-orchestration:

@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.data.ingestion.camel.processor.JsrValidationBaseProcessor;
 import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
@@ -16,9 +17,11 @@ import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserRoleType;
 @Slf4j
 public class JudicialUserRoleTypeProcessor extends JsrValidationBaseProcessor<JudicialUserRoleType> {
 
-
     @Autowired
     JsrValidatorInitializer<JudicialUserRoleType> judicialUserRoleTypeJsrValidatorInitializer;
+
+    @Value("${logging-component-name}")
+    private String logComponentName;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -30,10 +33,10 @@ public class JudicialUserRoleTypeProcessor extends JsrValidationBaseProcessor<Ju
                 ? (List<JudicialUserRoleType>) exchange.getIn().getBody()
                 : singletonList((JudicialUserRoleType) exchange.getIn().getBody());
 
-        log.info("Role type Records count before Validation:: " + judicialUserRoleTypes.size());
+        log.info("{}:: Role type Records count before Validation {}::", logComponentName, judicialUserRoleTypes.size());
         List<JudicialUserRoleType> filteredJudicialRoleTypes = validate(judicialUserRoleTypeJsrValidatorInitializer,
                 judicialUserRoleTypes);
-        log.info("::Role type Records count after Validation:: " + filteredJudicialRoleTypes.size());
+        log.info("{}:: Role type Records count after Validation {}::", logComponentName, filteredJudicialRoleTypes.size());
         audit(judicialUserRoleTypeJsrValidatorInitializer, exchange);
 
         exchange.getMessage().setBody(filteredJudicialRoleTypes);

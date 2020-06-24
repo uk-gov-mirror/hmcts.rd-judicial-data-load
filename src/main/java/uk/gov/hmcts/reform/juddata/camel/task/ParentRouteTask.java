@@ -36,13 +36,16 @@ public class ParentRouteTask implements Tasklet {
     @Value("${routes-to-execute-orchestration}")
     List<String> routesToExecute;
 
+    @Value("${logging-component-name}")
+    private String logComponentName;
+
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        log.info("::ParentRouteTask starts::");
+        log.info("{}:: ParentRouteTask starts::", logComponentName);
         camelContext.getGlobalOptions().put(ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
         loadRoutes.startRoute(startRoute, routesToExecute);
         String status = jrdExecutor.execute(camelContext, JUDICIAL_USER_PROFILE_ORCHESTRATION, startRoute);
-        log.info("::ParentRouteTask completes with {}::", status);
+        log.info("{}:: ParentRouteTask completes with {}::", logComponentName, status);
         return RepeatStatus.FINISHED;
     }
 }

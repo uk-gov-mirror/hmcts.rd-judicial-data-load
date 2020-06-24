@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.data.ingestion.camel.processor.JsrValidationBaseProcessor;
 
@@ -17,9 +18,11 @@ import uk.gov.hmcts.reform.juddata.camel.binder.JudicialRegionType;
 @Component
 public class JudicialRegionTypeProcessor extends JsrValidationBaseProcessor<JudicialRegionType> {
 
-
     @Autowired
     JsrValidatorInitializer<JudicialRegionType> judicialRegionTypeJsrValidatorInitializer;
+
+    @Value("${logging-component-name}")
+    private String logComponentName;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -31,10 +34,10 @@ public class JudicialRegionTypeProcessor extends JsrValidationBaseProcessor<Judi
                 ? (List<JudicialRegionType>) exchange.getIn().getBody()
                 : singletonList((JudicialRegionType) exchange.getIn().getBody());
 
-        log.info("Region type Records count before Validation:: " + judicialRegionTypes.size());
+        log.info("{}:: Region type Records count before Validation {}::", logComponentName, judicialRegionTypes.size());
         List<JudicialRegionType> filteredRegionTypes = validate(judicialRegionTypeJsrValidatorInitializer,
                 judicialRegionTypes);
-        log.info("Region type Records count after Validation:: " + filteredRegionTypes.size());
+        log.info("{}:: Region type Records count after Validation {}::", logComponentName, filteredRegionTypes.size());
         audit(judicialRegionTypeJsrValidatorInitializer, exchange);
 
         exchange.getMessage().setBody(filteredRegionTypes);
