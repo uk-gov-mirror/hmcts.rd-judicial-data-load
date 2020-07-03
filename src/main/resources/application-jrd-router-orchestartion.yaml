@@ -1,4 +1,4 @@
-routes-to-execute-orchestration: judicial-user-profile-orchestration, judicial-office-appointment
+routes-to-execute-orchestration: judicial-user-profile-orchestration, judicial-office-appointment, judicial-office-authorisation
 route:
   judicial-user-profile-orchestration:
     id: judicial-user-profile-orchestration
@@ -44,8 +44,8 @@ route:
     truncate-sql:
       sql:truncate table judicial_office_authorisation restart identity?dataSource=dataSource
     insert-sql:
-      sql:insert into judicial_office_authorisation (judicial_office_auth_id,elinks_id,authorisation_id,jurisdiction_id,authorisation_date,extracted_date,created_date,last_loaded_date)
-      values(:#judicial_office_auth_id,:#elinks_id,:#authorisation_id, :#jurisdiction_id,:#authorisation_date,:#extracted_date,:#created_date,:#last_loaded_date)?dataSource=dataSource
+      sql:insert into judicial_office_authorisation (judicial_office_auth_id,elinks_id,jurisdiction,ticket_id,start_date,end_date,created_date,last_updated,lower_level)
+      values(:#judicial_office_auth_id,:#elinks_id,:#jurisdiction,:#ticket_id,:#start_date,:#end_date,:#created_date,:#last_updated,:#lower_level)?dataSource=dataSource
     blob-path:
       azure-blob://${azure.storage.account-name}/jud-ref-data/judicial_office_authorisation.csv?credentials=#credsreg&operation=updateBlockBlob
     processor-class: JudicialOfficeAuthorisationProcessor
