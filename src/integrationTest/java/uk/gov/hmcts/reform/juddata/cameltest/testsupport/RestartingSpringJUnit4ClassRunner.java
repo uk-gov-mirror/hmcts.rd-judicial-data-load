@@ -16,9 +16,7 @@ public class RestartingSpringJUnit4ClassRunner extends CamelSpringRunner {
     @Override
     protected Object createTest() throws Exception {
         final Object testInstance = super.createTest();
-
         SpringRestarter.getInstance().init(getTestContextManager());
-
         return testInstance;
     }
 }

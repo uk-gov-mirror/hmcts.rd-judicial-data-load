@@ -69,3 +69,5 @@ start-leaf-route: direct:leaf
 audit-enable: true
 
 
+
+logging-component-name: RD_Judicial_Ref_Data
