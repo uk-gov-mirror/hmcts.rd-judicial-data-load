@@ -2,8 +2,6 @@ package uk.gov.hmcts.reform.juddata.cameltest.testsupport;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import org.springframework.util.ResourceUtils;
-import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAuthorisation;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,11 +14,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.springframework.util.ResourceUtils;
+import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAuthorisation;
 
 public interface IntegrationTestSupport {
 
-    String COMMA = ",";
-    String BLANK = "";
+    static final String BLANK = "";
 
     static void setSourcePath(String path, String propertyPlaceHolder) throws Exception {
 
@@ -40,16 +39,16 @@ public interface IntegrationTestSupport {
 
     static List<JudicialOfficeAuthorisation> getFileAuthorisationObjectsFromCsv(String inputFilePath)  {
         List<JudicialOfficeAuthorisation> authorisations = new LinkedList<>();
-        try{
-            File inputF = ResourceUtils.getFile(inputFilePath);
-            InputStream inputFS = new FileInputStream(inputF);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputFS));
+        try {
+            File file = ResourceUtils.getFile(inputFilePath);
+            InputStream inputStream = new FileInputStream(file);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             authorisations = bufferedReader.lines().skip(1).map(line -> mapJudicialOfficeAuthorisation(line)).collect(Collectors.toList());
             bufferedReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return authorisations ;
+        return authorisations;
     }
 
     static JudicialOfficeAuthorisation mapJudicialOfficeAuthorisation(String line) {
@@ -69,7 +68,7 @@ public interface IntegrationTestSupport {
     static String handleNull(String fieldValue, boolean timeStampField) {
         if (isBlank(fieldValue) && !timeStampField) {
             return BLANK;
-        } else if (timeStampField && isBlank(fieldValue)){
+        } else if (timeStampField && isBlank(fieldValue)) {
             return null;
         } else if (timeStampField && !isBlank(fieldValue)) {
             return Timestamp.valueOf(fieldValue).toString();

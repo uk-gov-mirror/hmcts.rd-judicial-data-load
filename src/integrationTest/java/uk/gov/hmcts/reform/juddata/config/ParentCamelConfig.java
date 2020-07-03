@@ -69,33 +69,50 @@ public class ParentCamelConfig {
     }
 
     @Bean
-    public JsrValidatorInitializer<JudicialUserProfile> judicialUserProfileJsrValidatorInitializer() { return new JsrValidatorInitializer<>(); }
+    public JsrValidatorInitializer<JudicialUserProfile> judicialUserProfileJsrValidatorInitializer() {
+        return new JsrValidatorInitializer<>();
+    }
 
     @Bean
-    public JudicialOfficeAppointmentProcessor judicialOfficeAppointmentProcessor() { return new JudicialOfficeAppointmentProcessor(); }
+    public JudicialOfficeAppointmentProcessor judicialOfficeAppointmentProcessor() {
+        return new JudicialOfficeAppointmentProcessor();
+    }
 
     @Bean
-    public JudicialOfficeAppointmentRowMapper judicialOfficeAppointmentRowMapper() { return new JudicialOfficeAppointmentRowMapper(); }
+    public JudicialOfficeAppointmentRowMapper judicialOfficeAppointmentRowMapper() {
+        return new JudicialOfficeAppointmentRowMapper();
+    }
 
     @Bean
     public JudicialOfficeAppointment judicialOfficeAppointment() {
+
         return new JudicialOfficeAppointment();
     }
 
     @Bean
-    public JsrValidatorInitializer<JudicialOfficeAppointment> judicialOfficeAppointmentJsrValidatorInitializer() { return new JsrValidatorInitializer<>(); }
+    public JsrValidatorInitializer<JudicialOfficeAppointment> judicialOfficeAppointmentJsrValidatorInitializer() {
+        return new JsrValidatorInitializer<>();
+    }
 
     @Bean
-    JudicialOfficeAuthorisation judicialOfficeAuthorisation() {return new JudicialOfficeAuthorisation();}
+    JudicialOfficeAuthorisation judicialOfficeAuthorisation() {
+        return new JudicialOfficeAuthorisation();
+    }
 
     @Bean
-    JudicialOfficeAuthorisationProcessor judicialOfficeAuthorisationProcessor() {return new JudicialOfficeAuthorisationProcessor();}
+    JudicialOfficeAuthorisationProcessor judicialOfficeAuthorisationProcessor() {
+        return new JudicialOfficeAuthorisationProcessor();
+    }
 
     @Bean
-    JudicialOfficeAuthorisationRowMapper judicialOfficeAuthorisationRowMapper() {return new JudicialOfficeAuthorisationRowMapper(); }
+    JudicialOfficeAuthorisationRowMapper judicialOfficeAuthorisationRowMapper() {
+        return new JudicialOfficeAuthorisationRowMapper();
+    }
 
     @Bean
-    public JsrValidatorInitializer<JudicialOfficeAuthorisation> judicialOfficeAuthorisationJsrValidatorInitializer() { return new JsrValidatorInitializer<>(); }
+    public JsrValidatorInitializer<JudicialOfficeAuthorisation> judicialOfficeAuthorisationJsrValidatorInitializer() {
+        return new JsrValidatorInitializer<>();
+    }
 
     // Route configuration ends
 
@@ -130,6 +147,7 @@ public class ParentCamelConfig {
     // db configuration starts
     private static final PostgreSQLContainer testPostgres = new PostgreSQLContainer("postgres")
             .withDatabaseName("dbjuddata_test");
+
     static {
         testPostgres.start();
     }
@@ -172,7 +190,8 @@ public class ParentCamelConfig {
 
     @Bean(name = "springJdbcTransactionManager")
     public PlatformTransactionManager springJdbcTransactionManager() {
-        DataSourceTransactionManager platformTransactionManager = new DataSourceTransactionManager(springJdbcDataSource());
+        DataSourceTransactionManager platformTransactionManager =
+                new DataSourceTransactionManager(springJdbcDataSource());
         platformTransactionManager.setDataSource(springJdbcDataSource());
         return platformTransactionManager;
     }
@@ -223,7 +242,9 @@ public class ParentCamelConfig {
 
     // miscellaneous configuration starts
     @Bean("myValidationProviderResolver")
-    HibernateValidationProviderResolver hibernateValidationProviderResolver() { return new HibernateValidationProviderResolver(); }
+    HibernateValidationProviderResolver hibernateValidationProviderResolver() {
+        return new HibernateValidationProviderResolver();
+    }
 
     @Bean("myConstraintValidatorFactory")
     public ConstraintValidatorFactoryImpl constraintValidatorFactory() {

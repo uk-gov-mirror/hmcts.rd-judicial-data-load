@@ -6,6 +6,10 @@ import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.IntegrationTestS
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.IntegrationTestSupport.handleNull;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.file;
 
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.assertj.core.api.Assertions;
@@ -20,10 +24,6 @@ import uk.gov.hmcts.reform.data.ingestion.camel.service.EmailService;
 import uk.gov.hmcts.reform.data.ingestion.camel.util.DataLoadUtil;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAuthorisation;
 import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public abstract class JrdBatchIntegrationSupport {
 

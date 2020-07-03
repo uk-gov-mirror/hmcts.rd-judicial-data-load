@@ -33,7 +33,7 @@ public class JudicialOfficeAuthorisationRowMapper {
     }
 
     private Timestamp getDateTimeStamp(String date) {
-        if(StringUtils.isBlank(date)) {
+        if (StringUtils.isBlank(date)) {
             return null;
         } else {
             return Timestamp.valueOf(date);
