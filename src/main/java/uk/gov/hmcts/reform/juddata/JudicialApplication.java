@@ -12,13 +12,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import uk.gov.hmcts.reform.health.HealthAutoConfiguration;
 import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
 
 @SpringBootApplication(scanBasePackages = "uk.gov.hmcts.reform")
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
 @Slf4j
+@EnableAutoConfiguration(exclude = {HealthAutoConfiguration.class})
 public class JudicialApplication implements ApplicationRunner {
 
     @Autowired
