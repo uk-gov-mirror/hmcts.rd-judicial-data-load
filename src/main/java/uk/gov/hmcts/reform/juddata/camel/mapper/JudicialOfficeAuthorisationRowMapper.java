@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.juddata.camel.mapper;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,11 +37,6 @@ public class JudicialOfficeAuthorisationRowMapper {
         } else {
             return Timestamp.valueOf(date);
         }
-    }
-
-    private Timestamp getCurrentTimeStamp() {
-
-        return new Timestamp(new Date().getTime());
     }
 
     private int generateId() {
