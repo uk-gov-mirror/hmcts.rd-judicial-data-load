@@ -5,11 +5,11 @@ CREATE TABLE judicial_office_authorisation(
     judicial_office_auth_id bigint NOT NULL,
     elinks_id varchar(256) NOT NULL,
     jurisdiction varchar(256),
-    ticket_id bigint
+    ticket_id bigint,
     start_date timestamp,
 	end_date timestamp,
 	created_date timestamp,
-    last_updated_date timestamp,
+    last_updated timestamp,
     lower_level varchar(256),
 	CONSTRAINT jud_auth_pk PRIMARY KEY (judicial_office_auth_id)
 );
