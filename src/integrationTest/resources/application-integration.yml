@@ -62,7 +62,7 @@ route:
     processor-class: JudicialUserProfileProcessor
     mapper-class: JudicialUserProfileRowMapper
     csv-binder-object: JudicialUserProfile
-    child-route: judicial-office-appointment
+    child-route: judicial-office-appointment,judicial-office-authorisation
 
   judicial-office-appointment:
     id: judicial-office-appointment
