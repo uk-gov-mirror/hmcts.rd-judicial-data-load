@@ -9,6 +9,10 @@ import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegratio
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithError;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithSingleRecord;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.setSourceData;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.validateAppointmentFile;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.validateAuthorisationFile;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.validateDbRecordCountFor;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.validateUserProfileFile;
 
 import org.apache.camel.test.spring.CamelTestContextBootstrapper;
 import org.apache.camel.test.spring.MockEndpoints;
@@ -68,8 +72,8 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
 
         jobLauncherTestUtils.launchJob();
 
-        validateDbRecordCountFor(userProfileSql, 2);
-        validateDbRecordCountFor(roleSql, 6);
+        validateDbRecordCountFor(jdbcTemplate, userProfileSql, 2);
+        validateDbRecordCountFor(jdbcTemplate, roleSql, 6);
     }
 
     @Test
@@ -85,9 +89,9 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
             jobLauncherTestUtils.launchJob();
         }
 
-        validateDbRecordCountFor(userProfileSql, 2);
-        validateDbRecordCountFor(roleSql, 6);
-        validateDbRecordCountFor(selectDataLoadSchedulerAudit, 2);
+        validateDbRecordCountFor(jdbcTemplate, userProfileSql, 2);
+        validateDbRecordCountFor(jdbcTemplate, roleSql, 6);
+        validateDbRecordCountFor(jdbcTemplate, selectDataLoadSchedulerAudit, 2);
     }
 
     @Test
@@ -99,9 +103,9 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
 
         jobLauncherTestUtils.launchJob();
 
-        validateUserProfileFile();
-        validateAppointmentFile();
-        validateAuthorisationFile();
+        validateUserProfileFile(jdbcTemplate, userProfileSql);
+        validateAppointmentFile(jdbcTemplate, sqlChild1);
+        validateAuthorisationFile(jdbcTemplate, sqlChild2);
     }
 
     @Test
@@ -113,9 +117,9 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
 
         jobLauncherTestUtils.launchJob();
 
-        validateDbRecordCountFor(userProfileSql, 0);
-        validateDbRecordCountFor(sqlChild1, 0);
-        validateDbRecordCountFor(sqlChild2, 0);
+        validateDbRecordCountFor(jdbcTemplate, userProfileSql, 0);
+        validateDbRecordCountFor(jdbcTemplate, sqlChild1, 0);
+        validateDbRecordCountFor(jdbcTemplate, sqlChild2, 0);
     }
 
     @Test
@@ -126,9 +130,9 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
-        validateDbRecordCountFor(userProfileSql, 1);
-        validateDbRecordCountFor(sqlChild1, 1);
-        validateDbRecordCountFor(sqlChild2, 1);
+        validateDbRecordCountFor(jdbcTemplate, userProfileSql, 1);
+        validateDbRecordCountFor(jdbcTemplate, sqlChild1, 1);
+        validateDbRecordCountFor(jdbcTemplate, sqlChild2, 1);
     }
 
 
@@ -140,9 +144,9 @@ public class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
 
         jobLauncherTestUtils.launchJob();
 
-        validateDbRecordCountFor(roleSql, 5);
-        validateDbRecordCountFor(contractSql, 7);
-        validateDbRecordCountFor(baseLocationSql, 5);
-        validateDbRecordCountFor(regionSql, 5);
+        validateDbRecordCountFor(jdbcTemplate, roleSql, 5);
+        validateDbRecordCountFor(jdbcTemplate, contractSql, 7);
+        validateDbRecordCountFor(jdbcTemplate, baseLocationSql, 5);
+        validateDbRecordCountFor(jdbcTemplate, regionSql, 5);
     }
 }

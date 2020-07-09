@@ -20,6 +20,8 @@ import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegratio
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidJsr;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidJsrExceedsThreshold;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.setSourceData;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.validateDbRecordCountFor;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.validateExceptionDbRecordCount;
 
 import java.util.List;
 import java.util.Map;
@@ -80,8 +82,8 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
-        validateDbRecordCountFor(userProfileSql, 0);
-        validateExceptionDbRecordCount(exceptionQuery, 1, false);
+        validateDbRecordCountFor(jdbcTemplate, userProfileSql, 0);
+        validateExceptionDbRecordCount(jdbcTemplate, exceptionQuery, 1, false);
     }
 
     @Test
@@ -91,8 +93,8 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
-        validateDbRecordCountFor(userProfileSql, 0);
-        validateExceptionDbRecordCount(exceptionQuery, 1, false);
+        validateDbRecordCountFor(jdbcTemplate, userProfileSql, 0);
+        validateExceptionDbRecordCount(jdbcTemplate, exceptionQuery, 1, false);
     }
 
     @Test
@@ -102,9 +104,9 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
-        validateDbRecordCountFor(userProfileSql, 0);
-        validateDbRecordCountFor(sqlChild1, 0);
-        validateExceptionDbRecordCount(exceptionQuery, 1, false);
+        validateDbRecordCountFor(jdbcTemplate, userProfileSql, 0);
+        validateDbRecordCountFor(jdbcTemplate, sqlChild1, 0);
+        validateExceptionDbRecordCount(jdbcTemplate, exceptionQuery, 1, false);
     }
 
     @Test
@@ -114,10 +116,10 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
         LeafIntegrationTestSupport.setSourceData(LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
-        validateDbRecordCountFor(userProfileSql, 0);
-        validateDbRecordCountFor(sqlChild1, 0);
-        validateDbRecordCountFor(sqlChild2, 0);
-        validateExceptionDbRecordCount(exceptionQuery, 1, false);
+        validateDbRecordCountFor(jdbcTemplate, userProfileSql, 0);
+        validateDbRecordCountFor(jdbcTemplate, sqlChild1, 0);
+        validateDbRecordCountFor(jdbcTemplate, sqlChild2, 0);
+        validateExceptionDbRecordCount(jdbcTemplate, exceptionQuery, 1, false);
     }
 
     @Test
@@ -133,10 +135,10 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
         camelContext.getGlobalOptions().put(ORCHESTRATED_ROUTE, JUDICIAL_USER_PROFILE_ORCHESTRATION);
         jobLauncherTestUtils.launchJob();
 
-        validateDbRecordCountFor(roleSql, 5);
-        validateDbRecordCountFor(contractSql, 7);
-        validateDbRecordCountFor(baseLocationSql, 5);
-        validateDbRecordCountFor(regionSql, 5);
+        validateDbRecordCountFor(jdbcTemplate, roleSql, 5);
+        validateDbRecordCountFor(jdbcTemplate, contractSql, 7);
+        validateDbRecordCountFor(jdbcTemplate, baseLocationSql, 5);
+        validateDbRecordCountFor(jdbcTemplate, regionSql, 5);
     }
 
     @Test
@@ -163,8 +165,8 @@ public class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
         assertEquals(judicialAppointmentList.get(1).get("elinks_id"), "2");
         assertEquals(judicialAppointmentList.size(), 2);
 
-        validateDbRecordCountFor(sqlChild2, 2);
-        validateExceptionDbRecordCount(exceptionQuery, 6, true);
+        validateDbRecordCountFor(jdbcTemplate, sqlChild2, 2);
+        validateExceptionDbRecordCount(jdbcTemplate, exceptionQuery, 6, true);
 
         List<Map<String, Object>> dataLoadSchedulerAudit = jdbcTemplate.queryForList(schedulerInsertJrdSqlPartialSuccess);
         assertEquals(dataLoadSchedulerAudit.get(0).get(DB_SCHEDULER_STATUS), PARTIAL_SUCCESS);
