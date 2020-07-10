@@ -549,4 +549,39 @@
         <cpe>cpe:/a:pivotal_software:spring_security</cpe>
         <cve>CVE-2018-1258</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: spring-batch-core-4.2.1.RELEASE.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.batch/spring\-batch\-core@.*$</packageUrl>
+        <cpe>cpe:/a:pivotal_software:spring_batch</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: spring-security-core-5.2.2.RELEASE.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-core@.*$</packageUrl>
+        <vulnerabilityName>CVE-2020-5407</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: spring-security-core-5.2.2.RELEASE.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-core@.*$</packageUrl>
+        <vulnerabilityName>CVE-2020-5408</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: spring-batch-infrastructure-4.2.1.RELEASE.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.batch/spring\-batch\-infrastructure@.*$</packageUrl>
+        <cpe>cpe:/a:pivotal_software:spring_batch</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: tomcat-embed-core-9.0.33.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-core@.*$</packageUrl>
+        <vulnerabilityName>CVE-2020-9484</vulnerabilityName>
+    </suppress>
 </suppressions>
