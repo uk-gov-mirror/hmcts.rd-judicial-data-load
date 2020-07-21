@@ -9,8 +9,9 @@ import org.apache.camel.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.JsrValidationBaseProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialContractType;
-import uk.gov.hmcts.reform.juddata.camel.validator.JsrValidatorInitializer;
 
 @Slf4j
 @Component
@@ -29,13 +30,15 @@ public class JudicialContractTypeProcessor extends JsrValidationBaseProcessor<Ju
         List<JudicialContractType> judicialContractTypes;
 
         judicialContractTypes = (exchange.getIn().getBody() instanceof List)
-                ? (List<JudicialContractType>) exchange.getIn().getBody()
-                : singletonList((JudicialContractType) exchange.getIn().getBody());
+            ? (List<JudicialContractType>) exchange.getIn().getBody()
+            : singletonList((JudicialContractType) exchange.getIn().getBody());
 
-        log.info("{}:: Contract type Records count before Validation {}:: ", logComponentName, judicialContractTypes.size());
+        log.info("{}:: Contract type Records count before Validation {}:: ", logComponentName,
+            judicialContractTypes.size());
         List<JudicialContractType> filteredJudicialContractTypes = validate(judicialContractTypeJsrValidatorInitializer,
-                judicialContractTypes);
-        log.info("{}:: Contract type Records count after Validation {}::", logComponentName, filteredJudicialContractTypes.size());
+            judicialContractTypes);
+        log.info("{}:: Contract type Records count after Validation {}::", logComponentName,
+            filteredJudicialContractTypes.size());
         audit(judicialContractTypeJsrValidatorInitializer, exchange);
 
         exchange.getMessage().setBody(filteredJudicialContractTypes);

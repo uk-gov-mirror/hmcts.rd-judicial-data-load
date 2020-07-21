@@ -1,19 +1,19 @@
 package uk.gov.hmcts.reform.juddata.camel.helper;
 
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.DATE_FORMAT;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.DATE_FORMAT;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+import uk.gov.hmcts.reform.data.ingestion.camel.route.beans.RouteProperties;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialBaseLocationType;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialContractType;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAppointment;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialRegionType;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserProfile;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserRoleType;
-import uk.gov.hmcts.reform.juddata.camel.route.beans.RouteProperties;
 
 public class JrdTestSupport {
 
@@ -125,7 +125,7 @@ public class JrdTestSupport {
 
     public static String getDateTimeWithFormat(LocalDateTime dateTime) {
         String datTime = dateTime.toString().replace("T", " ");
-        String tail = datTime.substring(datTime.lastIndexOf(".")).concat("000000");
+        String tail = datTime.substring(datTime.lastIndexOf(".")).concat("000");
         return datTime.substring(0, datTime.lastIndexOf(".")) + tail;
     }
 }

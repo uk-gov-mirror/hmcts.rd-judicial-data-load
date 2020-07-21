@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.juddata.camel.processor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.LEAF_ROUTE;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.LEAF_ROUTE;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,10 +17,11 @@ import org.apache.camel.Message;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.FieldSetter;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.ArchiveFileProcessor;
 
 public class ArchiveAzureFileProcessorTest {
 
-    ArchiveAzureFileProcessor azureFileProcessor = new ArchiveAzureFileProcessor();
+    ArchiveFileProcessor archiveFileProcessor = new ArchiveFileProcessor();
 
     private final CamelContext camelContextMock = mock(CamelContext.class);
 
@@ -44,7 +45,7 @@ public class ArchiveAzureFileProcessorTest {
 
         when(exchangeMock.getFromEndpoint()).thenReturn(endpointMock);
         when(endpointMock.getEndpointUri()).thenReturn("direct://leaf");
-        when(exchangeMock.getProperty("CamelLoopIndex",Integer.class)).thenReturn(0);
+        when(exchangeMock.getProperty("CamelLoopIndex", Integer.class)).thenReturn(0);
         when(exchangeMock.getIn()).thenReturn(messageMock);
         when(exchangeMock.getContext()).thenReturn(camelContextMock);
         when(camelContextMock.createConsumerTemplate()).thenReturn(consumerTemplateMock);
@@ -52,22 +53,18 @@ public class ArchiveAzureFileProcessorTest {
         when(consumerTemplateMock.receiveBody(any(String.class), any(Long.class))).thenReturn(file);
         when(messageMock.getHeader(LEAF_ROUTE)).thenReturn(LEAF_ROUTE);
 
-        FieldSetter.setField(azureFileProcessor, azureFileProcessor
+        FieldSetter.setField(archiveFileProcessor, archiveFileProcessor
                 .getClass().getDeclaredField("archivalFileNames"), archivalFileNames);
-        FieldSetter.setField(azureFileProcessor, azureFileProcessor
+        FieldSetter.setField(archiveFileProcessor, archiveFileProcessor
                 .getClass().getDeclaredField("activeBlobs"), "file:");
-        FieldSetter.setField(azureFileProcessor, azureFileProcessor
+        FieldSetter.setField(archiveFileProcessor, archiveFileProcessor
                 .getClass().getDeclaredField("archivalCred"), "");
-        FieldSetter.setField(azureFileProcessor,azureFileProcessor
+        FieldSetter.setField(archiveFileProcessor, archiveFileProcessor
                 .getClass().getDeclaredField("archivalDateFormat"), "dd-MM-yyyy--HH-mm");
-        FieldSetter.setField(azureFileProcessor,azureFileProcessor
+        FieldSetter.setField(archiveFileProcessor, archiveFileProcessor
                 .getClass().getDeclaredField("fileReadTimeOut"), 1000);
-        FieldSetter.setField(azureFileProcessor, azureFileProcessor
-                .getClass().getDeclaredField("leafRouteName"), "direct:leaf");
-        FieldSetter.setField(azureFileProcessor, azureFileProcessor
-                .getClass().getDeclaredField("leafArchivalFileNames"), archivalFileNames);
 
-        azureFileProcessor.process(exchangeMock);
+        archiveFileProcessor.process(exchangeMock);
         Assert.assertNotNull(exchangeMock);
     }
 }

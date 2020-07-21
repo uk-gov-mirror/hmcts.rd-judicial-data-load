@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.juddata.camel.route.beans;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import uk.gov.hmcts.reform.data.ingestion.camel.route.beans.RouteProperties;
 import uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport;
 
 public class RoutePropertiesTest {

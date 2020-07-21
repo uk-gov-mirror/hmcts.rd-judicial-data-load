@@ -9,8 +9,9 @@ import org.apache.camel.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.JsrValidationBaseProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialBaseLocationType;
-import uk.gov.hmcts.reform.juddata.camel.validator.JsrValidatorInitializer;
 
 @Slf4j
 @Component
@@ -33,9 +34,11 @@ public class JudicialBaseLocationProcessor extends JsrValidationBaseProcessor<Ju
                 : singletonList((JudicialBaseLocationType) exchange.getIn().getBody());
 
         log.info("{}:: Base Location Records count before Validation {}::", logComponentName, locationsRecords.size());
-        List<JudicialBaseLocationType> filteredBaseLocationTypes = validate(judicialBaseLocationTypeJsrValidatorInitializer,
-                locationsRecords);
-        log.info("{}:: Base Location Records count after Validation {}:: ", logComponentName, filteredBaseLocationTypes.size());
+        List<JudicialBaseLocationType> filteredBaseLocationTypes
+            = validate(judicialBaseLocationTypeJsrValidatorInitializer, locationsRecords);
+
+        log.info("{}:: Base Location Records count after Validation {}:: ", logComponentName,
+            filteredBaseLocationTypes.size());
         audit(judicialBaseLocationTypeJsrValidatorInitializer, exchange);
 
         exchange.getMessage().setBody(filteredBaseLocationTypes);

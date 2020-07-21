@@ -17,24 +17,32 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.testcontainers.containers.PostgreSQLContainer;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.ArchiveFileProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.ExceptionProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.FileReadProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.HeaderValidationProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.route.ArchivalRoute;
+import uk.gov.hmcts.reform.data.ingestion.camel.route.DataLoadRoute;
+import uk.gov.hmcts.reform.data.ingestion.camel.service.EmailServiceImpl;
+import uk.gov.hmcts.reform.data.ingestion.camel.service.IEmailService;
+import uk.gov.hmcts.reform.data.ingestion.camel.util.DataLoadUtil;
+import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAppointment;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserProfile;
+import uk.gov.hmcts.reform.juddata.camel.listener.JobResultListener;
 import uk.gov.hmcts.reform.juddata.camel.mapper.JudicialOfficeAppointmentRowMapper;
 import uk.gov.hmcts.reform.juddata.camel.mapper.JudicialUserProfileRowMapper;
-import uk.gov.hmcts.reform.juddata.camel.processor.ArchiveAzureFileProcessor;
-import uk.gov.hmcts.reform.juddata.camel.processor.ExceptionProcessor;
-import uk.gov.hmcts.reform.juddata.camel.processor.FileReadProcessor;
-import uk.gov.hmcts.reform.juddata.camel.processor.HeaderValidationProcessor;
+
 import uk.gov.hmcts.reform.juddata.camel.processor.JudicialOfficeAppointmentProcessor;
 import uk.gov.hmcts.reform.juddata.camel.processor.JudicialUserProfileProcessor;
-import uk.gov.hmcts.reform.juddata.camel.route.ParentOrchestrationRoute;
-import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
-import uk.gov.hmcts.reform.juddata.camel.service.EmailService;
+
+import uk.gov.hmcts.reform.juddata.camel.service.JudicialAuditServiceImpl;
+
 import uk.gov.hmcts.reform.juddata.camel.task.LeafRouteTask;
 import uk.gov.hmcts.reform.juddata.camel.task.ParentRouteTask;
-import uk.gov.hmcts.reform.juddata.camel.util.DataLoadUtil;
-import uk.gov.hmcts.reform.juddata.camel.util.JrdTask;
-import uk.gov.hmcts.reform.juddata.camel.validator.JsrValidatorInitializer;
+
+import uk.gov.hmcts.reform.juddata.camel.util.JrdExecutor;
+
 
 @Configuration
 public class ParentCamelConfig {
@@ -43,8 +51,8 @@ public class ParentCamelConfig {
     ApplicationContext applicationContext;
 
     @Bean
-    ParentOrchestrationRoute parentRoute() {
-        return new ParentOrchestrationRoute();
+    DataLoadRoute parentRoute() {
+        return new DataLoadRoute();
     }
 
     @Bean
@@ -68,8 +76,8 @@ public class ParentCamelConfig {
     }
 
     @Bean
-    ArchiveAzureFileProcessor azureFileProcessor() {
-        return mock(ArchiveAzureFileProcessor.class);
+    ArchiveFileProcessor azureFileProcessor() {
+        return mock(ArchiveFileProcessor.class);
     }
 
     private static final PostgreSQLContainer testPostgres = new PostgreSQLContainer("postgres")
@@ -116,7 +124,8 @@ public class ParentCamelConfig {
 
     @Bean(name = "springJdbcTransactionManager")
     public PlatformTransactionManager springJdbcTransactionManager() {
-        DataSourceTransactionManager platformTransactionManager = new DataSourceTransactionManager(springJdbcDataSource());
+        DataSourceTransactionManager platformTransactionManager
+            = new DataSourceTransactionManager(springJdbcDataSource());
         platformTransactionManager.setDataSource(springJdbcDataSource());
         return platformTransactionManager;
     }
@@ -186,13 +195,13 @@ public class ParentCamelConfig {
     }
 
     @Bean
-    public AuditProcessingService schedulerAuditProcessor() {
-        return new AuditProcessingService();
+    public JudicialAuditServiceImpl schedulerAuditProcessor() {
+        return new JudicialAuditServiceImpl();
     }
 
     @Bean
-    EmailService emailService() {
-        return mock(EmailService.class);
+    IEmailService emailService() {
+        return mock(EmailServiceImpl.class);
     }
 
     @Bean
@@ -206,7 +215,17 @@ public class ParentCamelConfig {
     }
 
     @Bean
-    JrdTask jrdTask() {
-        return new JrdTask();
+    JrdExecutor jrdTask() {
+        return new JrdExecutor();
+    }
+
+    @Bean
+    JobResultListener jobResultListener() {
+        return new JobResultListener();
+    }
+
+    @Bean
+    ArchivalRoute archivalRoute() {
+        return new ArchivalRoute();
     }
 }

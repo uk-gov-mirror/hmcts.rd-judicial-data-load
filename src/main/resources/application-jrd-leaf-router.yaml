@@ -1,13 +1,5 @@
-start-leaf-route: direct:leaf
-leaf-route-names: judicial-role-type,judicial-contract-type,judicial-region-type,judicial-base-location_type
-scheduler-insert-sql: insert into dataload_schedular_audit (scheduler_name,scheduler_start_time,scheduler_end_time,scheduler_status)
-  values(?,?,?,?)
-scheduler-name: judicial_leaf_scheduler
-audit-enable: true
-leaf-archival-route: direct:jrdLeafArchival
-leaf-archival-file-names: Roles,Contracts,Locations,BaseLocations
-
-leaf-route:
+routes-to-execute-leaf: judicial-role-type, judicial-contract-type, judicial-region-type, judicial-base-location_type
+route:
   judicial-role-type:
     id: judicial-role-type
     file-name: Roles

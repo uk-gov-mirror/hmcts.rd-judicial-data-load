@@ -12,13 +12,12 @@ import java.util.List;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.junit.Before;
 import org.junit.Test;
+import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialContractType;
-import uk.gov.hmcts.reform.juddata.camel.validator.JsrValidatorInitializer;
 
 public class JudicialContractTypeProcessorTest {
 

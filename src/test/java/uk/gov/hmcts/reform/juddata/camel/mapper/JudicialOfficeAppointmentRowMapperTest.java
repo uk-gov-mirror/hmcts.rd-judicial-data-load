@@ -2,10 +2,10 @@ package uk.gov.hmcts.reform.juddata.camel.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.DATE_FORMAT;
 import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudicialOfficeAppointmentMockMock;
 import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.getDateTimeWithFormat;
 import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.getDateWithFormat;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.DATE_FORMAT;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -23,7 +23,8 @@ public class JudicialOfficeAppointmentRowMapperTest {
 
         Date currentDate = new Date();
         LocalDateTime dateTime = LocalDateTime.now();
-        JudicialOfficeAppointment judicialOfficeAppointmentMock = createJudicialOfficeAppointmentMockMock(currentDate, dateTime);
+        JudicialOfficeAppointment judicialOfficeAppointmentMock = createJudicialOfficeAppointmentMockMock(currentDate,
+            dateTime);
         Map<String, Object> response = judicialOfficeAppointmentRowMapper.getMap(judicialOfficeAppointmentMock);
 
         assertEquals(1, response.get("judicial_office_appointment_id"));

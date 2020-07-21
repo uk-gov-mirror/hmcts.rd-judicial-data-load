@@ -1,15 +1,15 @@
 spring:
   mail:
     from: no-reply@reform.hmcts.net
-    to:  sushant.choudhari@hmcts.net
-    enabled: true
-    subject:  Ref Data - Exception in JRD data load
+    to:  sushant.choudhari@hmcts.net,abhijit.diwan@hmcts.net,mallikarjun.puttana@hmcts.net
+    subject:  JRD - Exception in processing -
     host: mta.reform.hmcts.net
     port: 25
+    enabled: true
     properties:
       mail-smtp:
         starttls:
-          enable: true
+          enable: false
         ssl:
           trust: "*"
   flyway:
@@ -21,6 +21,7 @@ spring:
     # eg. dynamic properties ${parent.file.name}
     job:
       enabled: false
+
 
 start-route: direct:JRD
 archival-route: direct:JrdArchival
@@ -39,8 +40,9 @@ parent-route-task: parentRouteOrchestrationTask
 batchjob-name: JudicialDataLoad
 scheduler-insert-sql:  insert into dataload_schedular_audit (scheduler_name,scheduler_start_time,scheduler_end_time,scheduler_status)
   values(?,?,?,?)
-scheduler-name: judicial_leaf_scheduler
 audit-enable: true
+
+routes-to-execute-orchestration: judicial-user-profile-orchestration, judicial-office-appointment
 route:
   judicial-user-profile-orchestration:
     id: judicial-user-profile-orchestration
@@ -51,11 +53,11 @@ route:
       active_flag,extracted_date,created_date,last_loaded_date)
       values(:#elinks_id,:#personal_code,:#title,:#known_as,:#surname,:#full_name,:#post_nominals,
       :#contract_type,:#work_pattern, :#email_id,TO_DATE(NULLIF(:#joining_date,''), 'yyyy-MM-dd'),TO_DATE(NULLIF(:#last_working_date,''), 'yyyy-MM-dd'),:#active_flag,
-      TO_TIMESTAMP(:#extracted_date, 'yyyy-MM-dd HH:MI:SS.MSUS'), now() at time zone 'utc', now() at time zone 'utc') on conflict (elinks_id) do update set personal_code = :#personal_code, title = :#title,
+      TO_TIMESTAMP(:#extracted_date, 'yyyy-MM-dd HH24:MI:SS.MSUS'), now() at time zone 'utc', now() at time zone 'utc') on conflict (elinks_id) do update set personal_code = :#personal_code, title = :#title,
       known_as = :#known_as, surname = :#surname, full_name = :#full_name, post_nominals =:#post_nominals,
       contract_type = :#contract_type, work_pattern = :#work_pattern, email_id = :#email_id, joining_date = TO_DATE(NULLIF(:#joining_date,''), 'yyyy-MM-dd'),
       last_working_date = TO_DATE(NULLIF(:#last_working_date,''), 'yyyy-MM-dd'), active_flag = :#active_flag,
-      extracted_date = TO_TIMESTAMP(:#extracted_date, 'yyyy-MM-dd HH:MI:SS.MSUS'), last_loaded_date = now() at time zone 'utc'?batch=true&dataSource=dataSource
+      extracted_date = TO_TIMESTAMP(:#extracted_date, 'yyyy-MM-dd HH24:MI:SS.MSUS'), last_loaded_date = now() at time zone 'utc'?batch=true&dataSource=dataSource
     blob-path: ${parent.file.path}
     processor-class: JudicialUserProfileProcessor
     mapper-class: JudicialUserProfileRowMapper
@@ -67,15 +69,30 @@ route:
     file-name: ${child.file.name}
     table-name: judicial-office-appointment
     truncate-sql:
-        sql:truncate judicial_office_appointment restart identity?dataSource=dataSource
+      sql:truncate judicial_office_appointment restart identity?dataSource=dataSource
     insert-sql:
-        sql:insert into judicial_office_appointment (judicial_office_appointment_id,elinks_id,role_id,contract_type_id,base_location_id,region_id,is_prinicple_appointment,start_date,end_date,active_flag,extracted_date,created_date,last_loaded_date)
-        values(:#judicial_office_appointment_id, :#elinks_id, :#role_id, :#contract_type_id, :#base_location_id, :#region_id, :#is_prinicple_appointment,
-        TO_DATE(NULLIF(:#start_date,''), 'yyyy-MM-dd'), TO_DATE(NULLIF(:#end_date,''), 'yyyy-MM-dd'), :#active_flag, TO_TIMESTAMP(:#extracted_date, 'yyyy-MM-dd HH:MI:SS.MSUS'),now() at time zone 'utc',now() at time zone 'utc')?dataSource=dataSource
+      sql:insert into judicial_office_appointment (judicial_office_appointment_id,elinks_id,role_id,contract_type_id,base_location_id,region_id,is_prinicple_appointment,start_date,end_date,active_flag,extracted_date,created_date,last_loaded_date)
+      values(:#judicial_office_appointment_id, :#elinks_id, :#role_id, :#contract_type_id, :#base_location_id, :#region_id, :#is_prinicple_appointment,
+      TO_DATE(NULLIF(:#start_date,''), 'yyyy-MM-dd'), TO_DATE(NULLIF(:#end_date,''), 'yyyy-MM-dd'), :#active_flag, TO_TIMESTAMP(:#extracted_date, 'yyyy-MM-dd HH24:MI:SS.MSUS'),now() at time zone 'utc',now() at time zone 'utc')?dataSource=dataSource
     blob-path: ${child1.file.path}
     processor-class: JudicialOfficeAppointmentProcessor
     mapper-class: JudicialOfficeAppointmentRowMapper
     csv-binder-object: JudicialOfficeAppointment
+
+  judicial-office-authorisation:
+    id: judicial-office-authorisation
+    file-name: judicial_office_authorisation.csv
+    table-name: judicial_office_authorisation
+    truncate-sql:
+      sql:truncate table judicial_office_authorisation restart identity?dataSource=dataSource
+    insert-sql:
+      sql:insert into judicial_office_authorisation (judicial_office_auth_id,elinks_id,authorisation_id,jurisdiction_id,authorisation_date,extracted_date,created_date,last_loaded_date)
+      values(:#judicial_office_auth_id,:#elinks_id,:#authorisation_id, :#jurisdiction_id,:#authorisation_date,:#extracted_date,:#created_date,:#last_loaded_date)?dataSource=dataSource
+    blob-path:
+      azure-blob://${azure.storage.account-name}/jud-ref-data/judicial_office_authorisation.csv?credentials=#credsreg&operation=updateBlockBlob
+    processor-class: JudicialOfficeAuthorisationProcessor
+    mapper-class: JudicialOfficeAuthorisationRowMapper
+    csv-binder-object: JudicialOfficeAuthorisation
 
 parent-select-jrd-sql: SELECT * FROM judicial_user_profile
 
@@ -93,12 +110,12 @@ select-dataload-scheduler-audit-success: select *  from dataload_schedular_audit
 
 start-leaf-route: direct:leaf
 
-leaf-archival-file-names: Roles.csv,Contracts.csv,Locations.csv,BaseLocations.csv
-
-leaf-archival-route: direct:jrdLeafArchival
-
 truncate-audit: truncate dataload_schedular_audit
 
 jdbc-batch-size: 10
 
 logging-component-name: RD_Judicial_Ref_Data
+component:
+  name: Judicial Reference Data
+mail:
+  enabled: true

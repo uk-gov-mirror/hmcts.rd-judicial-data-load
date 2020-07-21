@@ -16,9 +16,9 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.junit.Before;
 import org.junit.Test;
+import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialContractType;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserRoleType;
-import uk.gov.hmcts.reform.juddata.camel.validator.JsrValidatorInitializer;
 
 public class JudicialUserRoleTypeProcessorTest {
 

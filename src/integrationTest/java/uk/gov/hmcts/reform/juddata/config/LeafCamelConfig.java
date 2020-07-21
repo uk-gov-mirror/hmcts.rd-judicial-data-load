@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.juddata.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialBaseLocationType;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialContractType;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialRegionType;
@@ -14,16 +15,10 @@ import uk.gov.hmcts.reform.juddata.camel.processor.JudicialBaseLocationProcessor
 import uk.gov.hmcts.reform.juddata.camel.processor.JudicialContractTypeProcessor;
 import uk.gov.hmcts.reform.juddata.camel.processor.JudicialRegionTypeProcessor;
 import uk.gov.hmcts.reform.juddata.camel.processor.JudicialUserRoleTypeProcessor;
-import uk.gov.hmcts.reform.juddata.camel.route.LeafTableRoute;
-import uk.gov.hmcts.reform.juddata.camel.validator.JsrValidatorInitializer;
+
 
 @Configuration
 public class LeafCamelConfig {
-
-    @Bean
-    LeafTableRoute leafTableRoute() {
-        return new LeafTableRoute();
-    }
 
     @Bean
     public JudicialBaseLocationProcessor judicialBaseLocationProcessor() {

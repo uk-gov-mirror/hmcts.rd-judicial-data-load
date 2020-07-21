@@ -9,8 +9,8 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.ROUTE_DETAILS;
 import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudicialUserProfileMock;
-import static uk.gov.hmcts.reform.juddata.camel.util.MappingConstants.ROUTE_DETAILS;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,10 +29,10 @@ import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import uk.gov.hmcts.reform.data.ingestion.camel.exception.RouteFailedException;
+import uk.gov.hmcts.reform.data.ingestion.camel.route.beans.RouteProperties;
+import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserProfile;
-import uk.gov.hmcts.reform.juddata.camel.exception.RouteFailedException;
-import uk.gov.hmcts.reform.juddata.camel.route.beans.RouteProperties;
-import uk.gov.hmcts.reform.juddata.camel.validator.JsrValidatorInitializer;
 
 public class JudicialUserProfileProcessorTest {
 
@@ -69,7 +69,7 @@ public class JudicialUserProfileProcessorTest {
     }
 
     @Test
-    public void should_return_JudicialOfficeAuthorisationRow_response() {
+    public void should_return_JudicialUserProfileRow_response() {
 
         List<JudicialUserProfile> judicialUserProfiles = new ArrayList<>();
         judicialUserProfiles.add(judicialUserProfileMock1);
@@ -85,7 +85,7 @@ public class JudicialUserProfileProcessorTest {
     }
 
     @Test
-    public void should_return_JudicialOfficeAuthorisationRow_with_single_record_response() {
+    public void should_return_JudicialUserProfileRow_with_single_record_response() {
 
         Exchange exchangeMock = mock(Exchange.class);
         Message messageMock = mock(Message.class);
@@ -103,7 +103,7 @@ public class JudicialUserProfileProcessorTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void should_return_JudicialOfficeAuthorisationRow_with_single_record_with_elinks_id_nullresponse() {
+    public void should_return_JudicialUserProfileRow_with_single_record_with_elinks_id_nullresponse() {
 
         judicialUserProfileMock1.setElinksId(null);
         Exchange exchangeMock = mock(Exchange.class);
@@ -137,7 +137,7 @@ public class JudicialUserProfileProcessorTest {
 
     @Test(expected = RouteFailedException.class)
     @SuppressWarnings("unchecked")
-    public void should_return_JudicialOfficeAuthorisationRow_with_single_record_with_elinks_id_null_exceeds_threshold() {
+    public void should_return_JudicialUserProfileRow_with_single_record_with_elinks_id_null_exceeds_threshold() {
         judicialUserProfileMock1.setElinksId(null);
         judicialUserProfileMock1.setFullName(null);
         Exchange exchangeMock = mock(Exchange.class);

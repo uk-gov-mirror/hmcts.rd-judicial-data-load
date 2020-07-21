@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.juddata;
 
-import static net.logstash.logback.encoder.org.apache.commons.lang3.BooleanUtils.negate;
+import static java.lang.Boolean.FALSE;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -14,9 +14,10 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import uk.gov.hmcts.reform.juddata.camel.service.AuditProcessingService;
+import uk.gov.hmcts.reform.health.HealthAutoConfiguration;
+import uk.gov.hmcts.reform.juddata.camel.service.JudicialAuditServiceImpl;
 
-@SpringBootApplication(scanBasePackages = "uk.gov.hmcts.reform.juddata")
+@SpringBootApplication(scanBasePackages = "uk.gov.hmcts.reform", exclude = HealthAutoConfiguration.class)
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
 @Slf4j
 public class JudicialApplication implements ApplicationRunner {
@@ -33,7 +34,7 @@ public class JudicialApplication implements ApplicationRunner {
     private static String logComponentName;
 
     @Autowired
-    AuditProcessingService auditProcessingService;
+    JudicialAuditServiceImpl judicialAuditServiceImpl;
 
     public static void main(final String[] args) throws Exception {
         ApplicationContext context = SpringApplication.run(JudicialApplication.class);
@@ -49,7 +50,8 @@ public class JudicialApplication implements ApplicationRunner {
         JobParameters params = new JobParametersBuilder()
                 .addString(jobName, String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
-        if (negate(auditProcessingService.isAuditingCompleted())) {
+
+        if (FALSE.equals(judicialAuditServiceImpl.isAuditingCompleted())) {
             log.info("{}:: Judicial Application running first time for a day::", logComponentName);
             jobLauncher.run(job, params);
             log.info("{}:: Judicial Application job run completed::", logComponentName);
