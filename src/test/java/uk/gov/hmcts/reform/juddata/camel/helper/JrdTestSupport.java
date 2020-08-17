@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.data.ingestion.camel.route.beans.RouteProperties;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialBaseLocationType;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialContractType;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAppointment;
+import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAuthorisation;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialRegionType;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserProfile;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserRoleType;
@@ -57,6 +58,21 @@ public class JrdTestSupport {
         judicialOfficeAppointmentMock.setExtractedDate(getDateTimeWithFormat(dateTime));
         return judicialOfficeAppointmentMock;
     }
+
+    public static JudicialOfficeAuthorisation createJudicialOfficeAuthorisation(String date) {
+
+        JudicialOfficeAuthorisation judicialOfficeAuthorisation = new JudicialOfficeAuthorisation();
+        judicialOfficeAuthorisation.setElinksId("1");
+        judicialOfficeAuthorisation.setJurisdiction("jurisdiction");
+        judicialOfficeAuthorisation.setStartDate(date);
+        judicialOfficeAuthorisation.setEndDate(date);
+        judicialOfficeAuthorisation.setCreatedDate(date);
+        judicialOfficeAuthorisation.setLastUpdated(date);
+        judicialOfficeAuthorisation.setLowerLevel("lowerLevel");
+        judicialOfficeAuthorisation.setTicketId(12345L);
+        return judicialOfficeAuthorisation;
+    }
+
 
     public static RouteProperties createRoutePropertiesMock() {
 

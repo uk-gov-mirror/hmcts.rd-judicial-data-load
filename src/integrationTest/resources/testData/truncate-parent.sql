@@ -1,3 +1,4 @@
 truncate judicial_office_appointment cascade;
 truncate judicial_user_profile cascade;
+truncate judicial_office_authorisation cascade;
 commit;

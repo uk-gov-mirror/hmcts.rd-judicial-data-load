@@ -42,7 +42,7 @@ scheduler-insert-sql:  insert into dataload_schedular_audit (scheduler_name,sche
   values(?,?,?,?)
 audit-enable: true
 
-routes-to-execute-orchestration: judicial-user-profile-orchestration, judicial-office-appointment
+routes-to-execute-orchestration: judicial-user-profile-orchestration, judicial-office-appointment, judicial-office-authorisation
 route:
   judicial-user-profile-orchestration:
     id: judicial-user-profile-orchestration
@@ -62,11 +62,10 @@ route:
     processor-class: JudicialUserProfileProcessor
     mapper-class: JudicialUserProfileRowMapper
     csv-binder-object: JudicialUserProfile
-    child-route: judicial-office-appointment
 
   judicial-office-appointment:
     id: judicial-office-appointment
-    file-name: ${child.file.name}
+    file-name: ${child1.file.name}
     table-name: judicial-office-appointment
     truncate-sql:
       sql:truncate judicial_office_appointment restart identity?dataSource=dataSource
@@ -81,15 +80,14 @@ route:
 
   judicial-office-authorisation:
     id: judicial-office-authorisation
-    file-name: judicial_office_authorisation.csv
+    file-name: ${child2.file.name}
     table-name: judicial_office_authorisation
     truncate-sql:
       sql:truncate table judicial_office_authorisation restart identity?dataSource=dataSource
     insert-sql:
-      sql:insert into judicial_office_authorisation (judicial_office_auth_id,elinks_id,authorisation_id,jurisdiction_id,authorisation_date,extracted_date,created_date,last_loaded_date)
-      values(:#judicial_office_auth_id,:#elinks_id,:#authorisation_id, :#jurisdiction_id,:#authorisation_date,:#extracted_date,:#created_date,:#last_loaded_date)?dataSource=dataSource
-    blob-path:
-      azure-blob://${azure.storage.account-name}/jud-ref-data/judicial_office_authorisation.csv?credentials=#credsreg&operation=updateBlockBlob
+      sql:insert into judicial_office_authorisation (judicial_office_auth_id,elinks_id,jurisdiction,ticket_id,start_date,end_date,created_date,last_updated,lower_level)
+      values(:#judicial_office_auth_id,:#elinks_id,:#jurisdiction,:#ticket_id,:#start_date,:#end_date,:#created_date,:#last_updated,:#lower_level)?dataSource=dataSource
+    blob-path: ${child2.file.path}
     processor-class: JudicialOfficeAuthorisationProcessor
     mapper-class: JudicialOfficeAuthorisationRowMapper
     csv-binder-object: JudicialOfficeAuthorisation
@@ -97,6 +95,8 @@ route:
 parent-select-jrd-sql: SELECT * FROM judicial_user_profile
 
 child-select-child1-sql: SELECT * FROM judicial_office_appointment
+
+child-select-child2-sql: SELECT * FROM judicial_office_authorisation
 
 exception-select-query: select * from  dataload_exception_records
 

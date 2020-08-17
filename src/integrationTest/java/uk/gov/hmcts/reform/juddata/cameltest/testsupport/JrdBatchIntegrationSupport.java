@@ -33,10 +33,13 @@ public abstract class JrdBatchIntegrationSupport {
     protected ProducerTemplate producerTemplate;
 
     @Value("${parent-select-jrd-sql}")
-    protected String sql;
+    protected String userProfileSql;
 
     @Value("${child-select-child1-sql}")
     protected String sqlChild1;
+
+    @Value("${child-select-child2-sql}")
+    protected String sqlChild2;
 
     @Value("${archival-cred}")
     protected String archivalCred;

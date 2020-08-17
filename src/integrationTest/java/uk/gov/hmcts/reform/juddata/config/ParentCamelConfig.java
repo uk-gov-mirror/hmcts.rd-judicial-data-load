@@ -28,12 +28,15 @@ import uk.gov.hmcts.reform.data.ingestion.camel.service.IEmailService;
 import uk.gov.hmcts.reform.data.ingestion.camel.util.DataLoadUtil;
 import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAppointment;
+import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAuthorisation;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserProfile;
 import uk.gov.hmcts.reform.juddata.camel.listener.JobResultListener;
 import uk.gov.hmcts.reform.juddata.camel.mapper.JudicialOfficeAppointmentRowMapper;
+import uk.gov.hmcts.reform.juddata.camel.mapper.JudicialOfficeAuthorisationRowMapper;
 import uk.gov.hmcts.reform.juddata.camel.mapper.JudicialUserProfileRowMapper;
 
 import uk.gov.hmcts.reform.juddata.camel.processor.JudicialOfficeAppointmentProcessor;
+import uk.gov.hmcts.reform.juddata.camel.processor.JudicialOfficeAuthorisationProcessor;
 import uk.gov.hmcts.reform.juddata.camel.processor.JudicialUserProfileProcessor;
 
 import uk.gov.hmcts.reform.juddata.camel.service.JudicialAuditServiceImpl;
@@ -51,11 +54,6 @@ public class ParentCamelConfig {
     ApplicationContext applicationContext;
 
     @Bean
-    DataLoadRoute parentRoute() {
-        return new DataLoadRoute();
-    }
-
-    @Bean
     JudicialUserProfileProcessor judicialUserProfileProcessor() {
         return new JudicialUserProfileProcessor();
     }
@@ -71,6 +69,55 @@ public class ParentCamelConfig {
     }
 
     @Bean
+    public JsrValidatorInitializer<JudicialUserProfile> judicialUserProfileJsrValidatorInitializer() {
+        return new JsrValidatorInitializer<>();
+    }
+
+    @Bean
+    public JudicialOfficeAppointmentProcessor judicialOfficeAppointmentProcessor() {
+        return new JudicialOfficeAppointmentProcessor();
+    }
+
+    @Bean
+    public JudicialOfficeAppointmentRowMapper judicialOfficeAppointmentRowMapper() {
+        return new JudicialOfficeAppointmentRowMapper();
+    }
+
+    @Bean
+    public JudicialOfficeAppointment judicialOfficeAppointment() {
+
+        return new JudicialOfficeAppointment();
+    }
+
+    @Bean
+    public JsrValidatorInitializer<JudicialOfficeAppointment> judicialOfficeAppointmentJsrValidatorInitializer() {
+        return new JsrValidatorInitializer<>();
+    }
+
+    @Bean
+    JudicialOfficeAuthorisation judicialOfficeAuthorisation() {
+        return new JudicialOfficeAuthorisation();
+    }
+
+    @Bean
+    JudicialOfficeAuthorisationProcessor judicialOfficeAuthorisationProcessor() {
+        return new JudicialOfficeAuthorisationProcessor();
+    }
+
+    @Bean
+    JudicialOfficeAuthorisationRowMapper judicialOfficeAuthorisationRowMapper() {
+        return new JudicialOfficeAuthorisationRowMapper();
+    }
+
+    @Bean
+    public JsrValidatorInitializer<JudicialOfficeAuthorisation> judicialOfficeAuthorisationJsrValidatorInitializer() {
+        return new JsrValidatorInitializer<>();
+    }
+
+    // Route configuration ends
+
+    // processor configuration starts
+    @Bean
     FileReadProcessor fileReadProcessor() {
         return new FileReadProcessor();
     }
@@ -80,6 +127,24 @@ public class ParentCamelConfig {
         return mock(ArchiveFileProcessor.class);
     }
 
+    @Bean
+    public ExceptionProcessor exceptionProcessor() {
+        return new ExceptionProcessor();
+    }
+
+    @Bean
+    public JudicialAuditServiceImpl schedulerAuditProcessor() {
+        return new JudicialAuditServiceImpl();
+    }
+
+    @Bean
+    public HeaderValidationProcessor headerValidationProcessor() {
+        return new HeaderValidationProcessor();
+    }
+    // processor configuration starts
+
+
+    // db configuration starts
     private static final PostgreSQLContainer testPostgres = new PostgreSQLContainer("postgres")
             .withDatabaseName("dbjuddata_test");
 
@@ -97,7 +162,6 @@ public class ParentCamelConfig {
         return dataSourceBuilder.build();
     }
 
-
     @Bean("springJdbcDataSource")
     public DataSource springJdbcDataSource() {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
@@ -114,7 +178,9 @@ public class ParentCamelConfig {
         jdbcTemplate.setDataSource(springJdbcDataSource());
         return jdbcTemplate;
     }
+    // db configuration ends
 
+    // transaction configuration starts
     @Bean(name = "txManager")
     public PlatformTransactionManager txManager() {
         DataSourceTransactionManager platformTransactionManager = new DataSourceTransactionManager(dataSource());
@@ -137,73 +203,9 @@ public class ParentCamelConfig {
         springTransactionPolicy.setPropagationBehaviorName("PROPAGATION_REQUIRED");
         return springTransactionPolicy;
     }
+    // transaction configuration ends
 
-    @Bean
-    public JudicialOfficeAppointmentProcessor judicialOfficeAppointmentProcessor() {
-        return new JudicialOfficeAppointmentProcessor();
-    }
-
-    @Bean
-    public JudicialOfficeAppointmentRowMapper judicialOfficeAppointmentRowMapper() {
-        return new JudicialOfficeAppointmentRowMapper();
-    }
-
-    @Bean
-    public JudicialOfficeAppointment judicialOfficeAppointment() {
-        return new JudicialOfficeAppointment();
-    }
-
-    @Bean
-    public ExceptionProcessor exceptionProcessor() {
-        return new ExceptionProcessor();
-    }
-
-    @Bean
-    public CamelContext camelContext() {
-        CamelContext camelContext = new SpringCamelContext(applicationContext);
-        return camelContext;
-    }
-
-    @Bean("myValidationProviderResolver")
-    HibernateValidationProviderResolver hibernateValidationProviderResolver() {
-        return new HibernateValidationProviderResolver();
-    }
-
-    @Bean("myConstraintValidatorFactory")
-    public ConstraintValidatorFactoryImpl constraintValidatorFactory() {
-        return new ConstraintValidatorFactoryImpl();
-    }
-
-    @Bean
-    public HeaderValidationProcessor headerValidationProcessor() {
-        return new HeaderValidationProcessor();
-    }
-
-    @Bean
-    public JsrValidatorInitializer<JudicialUserProfile> judicialUserProfileJsrValidatorInitializer() {
-        return new JsrValidatorInitializer<>();
-    }
-
-    @Bean
-    public JsrValidatorInitializer<JudicialOfficeAppointment> judicialOfficeAppointmentJsrValidatorInitializer() {
-        return new JsrValidatorInitializer<>();
-    }
-
-    @Bean
-    public DataLoadUtil dataLoadUtil() {
-        return new DataLoadUtil();
-    }
-
-    @Bean
-    public JudicialAuditServiceImpl schedulerAuditProcessor() {
-        return new JudicialAuditServiceImpl();
-    }
-
-    @Bean
-    IEmailService emailService() {
-        return mock(EmailServiceImpl.class);
-    }
-
+    // tasks configuration starts
     @Bean
     ParentRouteTask parentRouteTask() {
         return new ParentRouteTask();
@@ -218,14 +220,50 @@ public class ParentCamelConfig {
     JrdExecutor jrdTask() {
         return new JrdExecutor();
     }
+    // tasks configuration ends
 
+    // camel related configuration starts
     @Bean
-    JobResultListener jobResultListener() {
-        return new JobResultListener();
+    DataLoadRoute parentRoute() {
+        return new DataLoadRoute();
     }
 
     @Bean
     ArchivalRoute archivalRoute() {
         return new ArchivalRoute();
     }
+
+    @Bean
+    public CamelContext camelContext() {
+        CamelContext camelContext = new SpringCamelContext(applicationContext);
+        return camelContext;
+    }
+    // camel related configuration ends
+
+    // miscellaneous configuration starts
+    @Bean("myValidationProviderResolver")
+    HibernateValidationProviderResolver hibernateValidationProviderResolver() {
+        return new HibernateValidationProviderResolver();
+    }
+
+    @Bean("myConstraintValidatorFactory")
+    public ConstraintValidatorFactoryImpl constraintValidatorFactory() {
+        return new ConstraintValidatorFactoryImpl();
+    }
+
+    @Bean
+    public DataLoadUtil dataLoadUtil() {
+        return new DataLoadUtil();
+    }
+
+    @Bean
+    IEmailService emailService() {
+        return mock(EmailServiceImpl.class);
+    }
+
+    @Bean
+    JobResultListener jobResultListener() {
+        return new JobResultListener();
+    }
+    // miscellaneous configuration ends
 }
