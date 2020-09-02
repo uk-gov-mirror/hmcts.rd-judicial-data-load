@@ -4,10 +4,10 @@ provider "azurerm" {
 }
 
 locals {
-  local_env = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env}"
-  preview_app_service_plan = "${var.product}-${var.component}-${var.env}"
-  non_preview_app_service_plan = "${var.product}-${var.env}"
-  app_service_plan = "${var.env == "preview" || var.env == "spreview" ? local.preview_app_service_plan : local.non_preview_app_service_plan}"
+  # local_env = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env}"
+  # preview_app_service_plan = "${var.product}-${var.component}-${var.env}"
+  # non_preview_app_service_plan = "${var.product}-${var.env}"
+  # app_service_plan = "${var.env == "preview" || var.env == "spreview" ? local.preview_app_service_plan : local.non_preview_app_service_plan}"
 
   preview_vault_name = "${var.raw_product}-aat"
   non_preview_vault_name = "${var.raw_product}-${var.env}"
