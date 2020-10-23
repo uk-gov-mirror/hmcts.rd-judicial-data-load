@@ -1,6 +1,7 @@
 #!groovy
 
 @Library("Infrastructure")
+import uk.gov.hmcts.contino.GradleBuilder
 
 def type = "java"
 def product = "rd"
@@ -21,9 +22,25 @@ def vaultOverrides = [
     'spreview': 'saat'
 ]
 
+def secrets = [
+        'rd-${env}': [
+                secret('ACCOUNT-KEY-PREVIEW', 'ACCOUNT_KEY_PREVIEW'),
+                secret('ACCOUNT-NAME', 'ACCOUNT_NAME'),
+                secret('ACCOUNT-KEY', 'ACCOUNT_KEY')
+        ]
+]
+
+GradleBuilder builder = new GradleBuilder(this, product)
 withPipeline(type, product, component) {
 
     overrideVaultEnvironments(vaultOverrides)
+    loadVaultSecrets(secrets)
+    onMaster {
+        env.execution_environment = "aat"
+    }
+    onPR {
+        env.execution_environment = "preview"
+    }
 
     disableLegacyDeployment()
     enableAksStagingDeployment()
@@ -36,6 +53,17 @@ withPipeline(type, product, component) {
 
     after('functionalTest:aat') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+    }
+
+    after('akschartsinstall') {
+        def time = "120"
+        echo "Waiting ${time} seconds for deployment to complete prior starting functional testing"
+        sleep time.toInteger() // seconds
+        try {
+            builder.gradle('functional')
+        } finally {
+            junit '**/test-results/**/*.xml'
+        }
     }
 
 }
