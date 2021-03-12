@@ -4,8 +4,8 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.spi.Registry;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -26,7 +26,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.ROUTE_DETAILS;
 import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudicialContractType;
 
-public class JudicialContractTypeProcessorTest {
+class JudicialContractTypeProcessorTest {
 
     JudicialContractTypeProcessor judicialContractTypeProcessor = new JudicialContractTypeProcessor();
 
@@ -51,7 +51,7 @@ public class JudicialContractTypeProcessorTest {
     ConfigurableListableBeanFactory configurableListableBeanFactory = mock(ConfigurableListableBeanFactory.class);
 
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         judicialContractTypeJsrValidatorInitializer
@@ -80,7 +80,7 @@ public class JudicialContractTypeProcessorTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testProcess() throws Exception {
+    void testProcess() throws Exception {
 
         judicialContractTypes.add(judicialContractTypeMock1);
         judicialContractTypes.add(judicialContractTypeMock2);

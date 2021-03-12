@@ -59,13 +59,13 @@ public class JudicialUserProfileProcessor extends JsrValidationBaseProcessor<Jud
 
         //Get Elink ids from current load
         validElinksInUserProfile = filteredJudicialUserProfiles.stream()
-            .map(userProfile -> userProfile.getElinksId()).collect(toSet());
+            .map(JudicialUserProfile::getElinksId).collect(toSet());
 
         //Get Elinks from previous loads
         validElinksInUserProfile.addAll(loadElinksId());
 
         filteredJudicialUserProfiles.stream()
-            .map(userProfile -> userProfile.getElinksId()).collect(toSet());
+            .map(JudicialUserProfile::getElinksId).collect(toSet());
 
         exchange.getMessage().setBody(filteredJudicialUserProfiles);
     }
