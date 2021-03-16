@@ -14,8 +14,11 @@ import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserProfile;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 @Slf4j
 @Component
@@ -71,12 +74,12 @@ public class JudicialUserProfileProcessor extends JsrValidationBaseProcessor<Jud
     }
 
     public Set<String> getValidElinksInUserProfile() {
-        return validElinksInUserProfile;
+        return isNotEmpty(validElinksInUserProfile) ? validElinksInUserProfile : emptySet();
     }
 
     @SuppressWarnings("unchecked")
     private List<String> loadElinksId() {
-        return jdbcTemplate.queryForList(loadElinksId, String.class);
+        List<String> elinkList = jdbcTemplate.queryForList(loadElinksId, String.class);
+        return isNotEmpty(elinkList) ? elinkList : emptyList();
     }
-
 }

@@ -20,7 +20,10 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.ROUTE_DETAILS;
@@ -28,7 +31,7 @@ import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudi
 
 class JudicialContractTypeProcessorTest {
 
-    JudicialContractTypeProcessor judicialContractTypeProcessor = new JudicialContractTypeProcessor();
+    JudicialContractTypeProcessor judicialContractTypeProcessor = spy(new JudicialContractTypeProcessor());
 
     List<JudicialContractType> judicialContractTypes = new ArrayList<>();
 
@@ -54,8 +57,7 @@ class JudicialContractTypeProcessorTest {
     @BeforeEach
     public void setup() {
 
-        judicialContractTypeJsrValidatorInitializer
-            = new JsrValidatorInitializer<>();
+        judicialContractTypeJsrValidatorInitializer = new JsrValidatorInitializer<>();
 
         setField(judicialContractTypeProcessor,
             "judicialContractTypeJsrValidatorInitializer", judicialContractTypeJsrValidatorInitializer);
@@ -88,6 +90,8 @@ class JudicialContractTypeProcessorTest {
         when(messageMock.getBody()).thenReturn(judicialContractTypes);
         judicialContractTypeProcessor.process(exchangeMock);
 
+        verify(judicialContractTypeProcessor).audit(judicialContractTypeJsrValidatorInitializer, exchangeMock);
+        verify(messageMock).setBody(any());
         assertThat(((List) exchangeMock.getMessage().getBody()).size()).isEqualTo(2);
         assertThat(((List<JudicialContractType>) exchangeMock.getMessage().getBody())).isSameAs(judicialContractTypes);
     }

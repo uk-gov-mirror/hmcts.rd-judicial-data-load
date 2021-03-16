@@ -28,6 +28,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
+import static java.util.Collections.emptySet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -35,7 +36,10 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.util.ReflectionTestUtils.invokeMethod;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.ROUTE_DETAILS;
 import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.ELINKSID_1;
@@ -153,6 +157,7 @@ class JudicialUserProfileProcessorTest {
         when(exchangeMock.getIn().getHeader(ROUTE_DETAILS)).thenReturn(routeProperties);
 
         judicialUserProfileProcessor.process(exchangeMock);
+        verify(messageMock, times(1)).setBody(any());
         assertThat(((JudicialUserProfile) exchangeMock.getMessage().getBody())).isSameAs(judicialUserProfileMock1);
     }
 
@@ -191,5 +196,24 @@ class JudicialUserProfileProcessorTest {
             judicialUserProfileProcessor.process(exchangeMock);
         });
         assertThat(((JudicialUserProfile) exchangeMock.getMessage().getBody())).isSameAs(judicialUserProfileMock1);
+    }
+
+    @Test
+    void should_return_JudicialUserProfileRow_with_empty_response() {
+        when(jdbcTemplate.queryForList("dummysql", String.class))
+            .thenReturn(new ArrayList<>());
+        when(messageMock.getBody()).thenReturn(new ArrayList<>());
+        judicialUserProfileProcessor.process(exchangeMock);
+        List<JudicialUserProfile> judicialUserProfiles = new ArrayList<>();
+        judicialUserProfiles.add(judicialUserProfileMock1);
+        assertThat(judicialUserProfileProcessor.getValidElinksInUserProfile()).isSameAs(emptySet());
+    }
+
+    @Test
+    void testLoadElinksId() {
+        when(jdbcTemplate.queryForList("dummysql", String.class))
+            .thenReturn(ImmutableList.of(ELINKSID_1, ELINKSID_2, "0"));
+        List<String> resultList = invokeMethod(judicialUserProfileProcessor, "loadElinksId");
+        assertThat(resultList.size()).isEqualTo(3);
     }
 }

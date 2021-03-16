@@ -21,7 +21,9 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,7 +33,7 @@ import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudi
 
 class JudicialBaseLocationProcessorTest {
 
-    JudicialBaseLocationProcessor judicialBaseLocationProcessor = new JudicialBaseLocationProcessor();
+    JudicialBaseLocationProcessor judicialBaseLocationProcessor = spy(new JudicialBaseLocationProcessor());
 
     List<JudicialBaseLocationType> judicialBaseLocationTypes = new ArrayList<>();
 
@@ -90,6 +92,8 @@ class JudicialBaseLocationProcessorTest {
         assertThat(((List) exchangeMock.getMessage().getBody()).size()).isEqualTo(2);
         assertThat(((List<JudicialContractType>) exchangeMock.getMessage().getBody()))
             .isSameAs(judicialBaseLocationTypes);
+        verify(judicialBaseLocationProcessor).audit(judicialBaseLocationTypeJsrValidatorInitializer,exchangeMock);
+        verify(messageMock).setBody(any());
         verify(exchangeMock, times(3)).getMessage();
     }
 } 
