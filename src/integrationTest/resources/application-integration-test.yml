@@ -1,17 +1,10 @@
 spring:
   mail:
-    from: no-reply@reform.hmcts.net
-    to: abhijit.diwan@hmcts.net,praveen.saxena@hmcts.net
-    subject: JRD - Exception in processing -
+    to: test@hmcts.net
+    subject: ${component.name:data-ingestion} - Exception in processing -
     host: mta.reform.hmcts.net
     port: 25
-    enabled: true
-    properties:
-      mail-smtp:
-        starttls:
-          enable: false
-        ssl:
-          trust: "*"
+    enabled: ${mail.enabled:false}
   flyway:
     locations: classpath:db/testmigration
     enabled: true
@@ -22,11 +15,10 @@ spring:
     job:
       enabled: false
 
-
 start-route: direct:JRD
 archival-route: direct:JrdArchival
-archival-path: azure-blob://${azure.storage.account-name}/jud-ref-data-archive
-archival-file-names: Personal-Test,Appointments-Test,Authorisations-Test,Roles-Test,Contracts-Test,Locations-Test,BaseLocations-Test
+archival-path: ${archival.path}
+archival-file-names: ${archival.file.names}
 archival-cred: credentials=#credsreg&operation=updateBlockBlob
 archival-date-format: dd-MM-yyyy
 active-blob-path: azure-blob://${azure.storage.account-name}/jud-ref-data
@@ -45,7 +37,7 @@ routes-to-execute-orchestration: judicial-user-profile-orchestration, judicial-o
 route:
   judicial-user-profile-orchestration:
     id: judicial-user-profile-orchestration
-    file-name: Personal-Test
+    file-name: ${parent.file.name:''}
     table-name: judicial_user_profile
     insert-sql:
       sql:insert into judicial_user_profile (elinks_id,personal_code,title,known_as,surname,full_name,post_nominals,contract_type,work_pattern,email_id,joining_date,last_working_date,
@@ -57,14 +49,14 @@ route:
       contract_type = :#contract_type, work_pattern = :#work_pattern, email_id = :#email_id, joining_date = TO_DATE(NULLIF(:#joining_date,''), 'yyyy-MM-dd'),
       last_working_date = TO_DATE(NULLIF(:#last_working_date,''), 'yyyy-MM-dd'), active_flag = :#active_flag,
       extracted_date = TO_TIMESTAMP(:#extracted_date, 'yyyy-MM-dd HH24:MI:SS.MSUS'), last_loaded_date = now() at time zone 'utc', object_id = :#object_id?batch=true&dataSource=dataSource
-    blob-path: azure-blob://${azure.storage.account-name}/jud-ref-data/Personal-Test?credentials=#credsreg&operation=updateBlockBlob
+    blob-path: ${parent.file.path}
     processor-class: JudicialUserProfileProcessor
     mapper-class: JudicialUserProfileRowMapper
     csv-binder-object: JudicialUserProfile
 
   judicial-office-appointment:
     id: judicial-office-appointment
-    file-name: Appointments-Test
+    file-name: ${child.file.name}
     table-name: judicial-office-appointment
     truncate-sql:
       sql:truncate judicial_office_appointment restart identity?dataSource=dataSource&batch=true
@@ -72,21 +64,21 @@ route:
       sql:insert into judicial_office_appointment (judicial_office_appointment_id,elinks_id,role_id,contract_type_id,base_location_id,region_id,is_prinicple_appointment,start_date,end_date,active_flag,extracted_date,created_date,last_loaded_date)
       values(:#judicial_office_appointment_id, :#elinks_id, :#role_id, :#contract_type_id, :#base_location_id, :#region_id, :#is_prinicple_appointment,
       TO_DATE(NULLIF(:#start_date,''), 'yyyy-MM-dd'), TO_DATE(NULLIF(:#end_date,''), 'yyyy-MM-dd'), :#active_flag, TO_TIMESTAMP(:#extracted_date, 'yyyy-MM-dd HH24:MI:SS.MSUS'),now() at time zone 'utc',now() at time zone 'utc')?dataSource=dataSource&batch=true
-    blob-path: azure-blob://${azure.storage.account-name}/jud-ref-data/Appointments-Test?credentials=#credsreg&operation=updateBlockBlob
+    blob-path: ${child.file.path}
     processor-class: JudicialOfficeAppointmentProcessor
     mapper-class: JudicialOfficeAppointmentRowMapper
     csv-binder-object: JudicialOfficeAppointment
 
   judicial-office-authorisation:
     id: judicial-office-authorisation
-    file-name: Authorisations-Test
+    file-name: ${child1.file.name}
     table-name: judicial_office_authorisation
     truncate-sql:
       sql:truncate table judicial_office_authorisation restart identity?dataSource=dataSource
     insert-sql:
       sql:insert into judicial_office_authorisation (judicial_office_auth_id,elinks_id,jurisdiction,ticket_id,start_date,end_date,created_date,last_updated,lower_level)
       values(:#judicial_office_auth_id,:#elinks_id,:#jurisdiction,:#ticket_id,:#start_date,:#end_date,:#created_date,:#last_updated,:#lower_level)?dataSource=dataSource&batch=true
-    blob-path: azure-blob://${azure.storage.account-name}/jud-ref-data/Authorisations-Test?credentials=#credsreg&operation=updateBlockBlob
+    blob-path: ${child1.file.path}
     processor-class: JudicialOfficeAuthorisationProcessor
     mapper-class: JudicialOfficeAuthorisationRowMapper
     csv-binder-object: JudicialOfficeAuthorisation
@@ -140,7 +132,6 @@ jrd:
         bus:
           connection-string: ${JRD_ASB_CONNECTION_KEY_STR:AAAAAAAAAA}
           topic: jrd-aks-topic
-          # DO NOT SET THIS 'true' IN PRODUCTION!
           trustAllCerts: ${JRD_MQ_TRUST_ALL_CERTS:false}
     jrd-message-batch-size: ${JRD_DATA_PER_MESSAGE:5}
 
