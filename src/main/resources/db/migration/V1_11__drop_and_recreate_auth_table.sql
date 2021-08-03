@@ -2,8 +2,8 @@ DROP TABLE judicial_office_authorisation;
 DROP TABLE authorisation_type;
 
 CREATE TABLE judicial_office_authorisation(
-    judicial_office_auth_id bigint,
-    elinks_id varchar(256),
+    judicial_office_auth_id bigint NOT NULL,
+    elinks_id varchar(256) NOT NULL,
     jurisdiction varchar(256),
     ticket_id bigint,
     start_date timestamp,

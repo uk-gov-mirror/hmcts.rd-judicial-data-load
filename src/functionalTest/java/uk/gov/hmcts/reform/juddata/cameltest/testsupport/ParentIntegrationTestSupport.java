@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.hibernate.validator.internal.util.Contracts;
 import org.javatuples.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.ResourceUtils;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAuthorisation;
@@ -20,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -229,5 +231,20 @@ public interface ParentIntegrationTestSupport {
         } else {
             return String.valueOf(timestamp);
         }
+    }
+
+    @NotNull
+    static List<Object> retrieveColumnValues(JdbcTemplate jdbcTemplate, String queryName, String columnName) {
+        final List<Optional<Object>> optional_values = jdbcTemplate.queryForList(queryName).stream()
+                .map(row -> row.entrySet().stream()
+                        .filter(e -> e.getKey().equals(columnName))
+                        .map(Map.Entry::getValue)
+                        .findFirst())
+                .collect(Collectors.toUnmodifiableList());
+
+        return optional_values.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toUnmodifiableList());
     }
 }
