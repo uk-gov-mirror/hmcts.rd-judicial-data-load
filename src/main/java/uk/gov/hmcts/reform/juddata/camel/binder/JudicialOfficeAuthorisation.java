@@ -11,13 +11,14 @@ import lombok.Setter;
 import org.apache.camel.dataformat.bindy.annotation.CsvRecord;
 import org.apache.camel.dataformat.bindy.annotation.DataField;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.data.ingestion.camel.domain.CommonCsvField;
 import uk.gov.hmcts.reform.data.ingestion.camel.validator.DatePattern;
 
 @Setter
 @Getter
 @CsvRecord(separator = ",", crlf = "UNIX", skipFirstLine = true, skipField = true)
 @Component
-public class JudicialOfficeAuthorisation implements Serializable {
+public class JudicialOfficeAuthorisation extends CommonCsvField implements Serializable {
 
     @DataField(pos = 1, columnName = "per_id")
     @NotEmpty
@@ -44,4 +45,7 @@ public class JudicialOfficeAuthorisation implements Serializable {
 
     @DataField(pos = 7, columnName = "personal_code")
     String personalCode;
+
+    @DataField(pos = 8, columnName = "object_id")
+    String objectId;
 }

@@ -6,6 +6,9 @@ import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.CamelTestContextBootstrapper;
 import org.apache.camel.test.spring.junit5.MockEndpoints;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.test.JobLauncherTestUtils;
@@ -20,6 +23,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import uk.gov.hmcts.reform.data.ingestion.DataIngestionLibraryRunner;
+import uk.gov.hmcts.reform.data.ingestion.camel.service.EmailServiceImpl;
+import uk.gov.hmcts.reform.data.ingestion.camel.service.dto.Email;
 import uk.gov.hmcts.reform.data.ingestion.configuration.AzureBlobConfig;
 import uk.gov.hmcts.reform.data.ingestion.configuration.BlobStorageCredentials;
 import uk.gov.hmcts.reform.idam.client.IdamApi;
@@ -33,11 +38,13 @@ import uk.gov.hmcts.reform.juddata.configuration.BatchConfig;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.StringContains.containsString;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.PARTIAL_SUCCESS;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_BASE_LOCATION;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_PER_ID;
@@ -48,6 +55,7 @@ import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.ORCHEST
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.file;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithAuthPerIdMissing;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithAuthorisationInvalidHeader;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithEmptyPerIdInAuth;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithPerIdInvalidInParent;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithPerIdMissing;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithForeignKeyViolations;
@@ -83,6 +91,9 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
     @Autowired
     CamelContext camelContext;
+
+    @Mock
+    EmailServiceImpl emailService;
 
     @Test
     void testTaskletException() throws Exception {
@@ -131,6 +142,8 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
     @Test
     void testLeafFailuresRollbackAndKeepExistingState() throws Exception {
+        setField(jrdExecutor, "emailService", emailService);
+        Mockito.when(emailService.sendEmail(ArgumentMatchers.any(Email.class))).thenReturn(200);
         uploadBlobs(jrdBlobSupport, archivalFileNames, true, file);
         uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
 
@@ -186,8 +199,9 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
         List<Map<String, Object>> exceptionList = jdbcTemplate.queryForList(exceptionQuery);
         //Jsr exception exceeds threshold limit in
 
-        assertThat(exceptionList.get(exceptionList.size() - 2).get("error_description").toString(),
-            containsString("Jsr exception exceeds threshold limit"));
+        String errorDescription = exceptionList.get(exceptionList.size() - 2).get("error_description").toString();
+
+        assertTrue(errorDescription.contains("Jsr exception exceeds threshold limit"));
     }
 
     @Test
@@ -274,7 +288,7 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
         jobLauncherTestUtils.launchJob();
         validateDbRecordCountFor(jdbcTemplate, userProfileSql, 1);
-        validateExceptionDbRecordCount(jdbcTemplate, exceptionQuery, 3, false);
+        validateExceptionDbRecordCount(jdbcTemplate, exceptionQuery, 7, false);
     }
 
     @Test
@@ -288,6 +302,26 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
         dataIngestionLibraryRunner.run(jobLauncherTestUtils.getJob(), params);
         List<Map<String, Object>> auditList = jdbcTemplate.queryForList(selectDataLoadSchedulerAudit);
         assertEquals(3, auditList.size()); //Personal, Locations, base-locations only
+    }
+
+    @Test
+    void testRowIdInExceptionTable() throws Exception {
+
+        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithEmptyPerIdInAuth);
+        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+
+        jobLauncherTestUtils.launchJob();
+        validateExceptionDbRecordCount(jdbcTemplate, exceptionQuery, 2, false);
+        List<Map<String, Object>> exceptionList = jdbcTemplate.queryForList(exceptionQuery);
+
+        List<Long> rowId = exceptionList.stream()
+                .map(i -> (Long) i.get("row_id"))
+                .collect(Collectors.toList());
+
+        assertThat(rowId)
+                .hasSize(2)
+                .hasSameElementsAs(List.of(3L, 5L));
+
     }
 
 }

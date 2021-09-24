@@ -19,6 +19,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.testcontainers.containers.PostgreSQLContainer;
 import uk.gov.hmcts.reform.data.ingestion.camel.processor.ArchiveFileProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.processor.CommonCsvFieldProcessor;
 import uk.gov.hmcts.reform.data.ingestion.camel.processor.ExceptionProcessor;
 import uk.gov.hmcts.reform.data.ingestion.camel.processor.FileReadProcessor;
 import uk.gov.hmcts.reform.data.ingestion.camel.processor.FileResponseProcessor;
@@ -52,6 +53,7 @@ import uk.gov.hmcts.reform.juddata.camel.util.JrdExecutor;
 import uk.gov.hmcts.reform.juddata.camel.util.JrdSidamTokenService;
 import uk.gov.hmcts.reform.juddata.camel.util.JrdSidamTokenServiceImpl;
 import uk.gov.hmcts.reform.juddata.cameltest.testsupport.JrdBlobSupport;
+import uk.gov.hmcts.reform.juddata.configuration.EmailConfiguration;
 import uk.gov.hmcts.reform.juddata.configuration.TokenConfigProperties;
 
 import javax.sql.DataSource;
@@ -77,6 +79,11 @@ public class ParentCamelConfig {
     @Bean
     JudicialUserProfileProcessor judicialUserProfileProcessor() {
         return new JudicialUserProfileProcessor();
+    }
+
+    @Bean
+    CommonCsvFieldProcessor commonCsvFieldProcessor() {
+        return new CommonCsvFieldProcessor();
     }
 
     @Bean
@@ -294,7 +301,7 @@ public class ParentCamelConfig {
 
     @Bean
     IEmailService emailService() {
-        return mock(EmailServiceImpl.class);
+        return new EmailServiceImpl();
     }
 
     @Bean
@@ -362,6 +369,11 @@ public class ParentCamelConfig {
     @Bean
     TokenConfigProperties tokenConfigProperties() {
         return new TokenConfigProperties();
+    }
+
+    @Bean
+    EmailConfiguration emailConfiguration() {
+        return new EmailConfiguration();
     }
 
 }
