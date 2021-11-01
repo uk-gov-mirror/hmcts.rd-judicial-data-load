@@ -47,6 +47,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.PARTIAL_SUCCESS;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.START_ROUTE;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.DIRECT_JRD;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_BASE_LOCATION;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_PER_ID;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_LOCATION;
@@ -272,6 +274,7 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
         JobParameters params = new JobParametersBuilder()
             .addString(jobLauncherTestUtils.getJob().getName(), String.valueOf(System.currentTimeMillis()))
+            .addString(START_ROUTE, DIRECT_JRD)
             .toJobParameters();
         dataIngestionLibraryRunner.run(jobLauncherTestUtils.getJob(), params);
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(userProfileSql);
@@ -307,6 +310,7 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
         JobParameters params = new JobParametersBuilder()
             .addString(jobLauncherTestUtils.getJob().getName(), String.valueOf(System.currentTimeMillis()))
+            .addString(START_ROUTE, DIRECT_JRD)
             .toJobParameters();
         dataIngestionLibraryRunner.run(jobLauncherTestUtils.getJob(), params);
         List<Map<String, Object>> auditList = jdbcTemplate.queryForList(selectDataLoadSchedulerAudit);
