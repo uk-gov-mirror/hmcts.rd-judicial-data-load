@@ -27,6 +27,7 @@ import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.STA
     "uk.gov.hmcts.reform.juddata"}, basePackageClasses = {IdamApi.class})
 public class JudicialApplication implements ApplicationRunner {
 
+    
     @Autowired
     JobLauncher jobLauncher;
 
