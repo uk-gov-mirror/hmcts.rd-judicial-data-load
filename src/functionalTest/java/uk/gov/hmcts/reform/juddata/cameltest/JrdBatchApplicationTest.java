@@ -2,7 +2,10 @@ package uk.gov.hmcts.reform.juddata.cameltest;
 
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.MockEndpoints;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.test.JobLauncherTestUtils;
@@ -67,12 +70,14 @@ import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegratio
     transactionMode = SqlConfig.TransactionMode.ISOLATED)
 @SpringBootTest
 @EnableFeignClients(clients = {IdamClient.class, IdamApi.class})
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
 
     @Autowired
     DataIngestionLibraryRunner dataIngestionLibraryRunner;
 
     @Test
+    @Order(1)
     void testTasklet() throws Exception {
         uploadBlobs(jrdBlobSupport, parentFiles, file);
         uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
@@ -88,6 +93,7 @@ class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     }
 
     @Test
+    @Order(2)
     void testTaskletIdempotent() throws Exception {
         //clean context
         SpringStarter.getInstance().restart();
@@ -112,6 +118,7 @@ class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     }
 
     @Test
+    @Order(3)
     void testParentOrchestration() throws Exception {
 
         uploadBlobs(jrdBlobSupport, parentFiles, file);
@@ -125,6 +132,7 @@ class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     }
 
     @Test
+    @Order(4)
     void testAppointmentFailureRollbacksAppointment() throws Exception {
 
         uploadBlobs(jrdBlobSupport, parentFiles, fileWithError);
@@ -140,6 +148,7 @@ class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     }
 
     @Test
+    @Order(5)
     void testParentOrchestrationSingleRecord() throws Exception {
 
         uploadBlobs(jrdBlobSupport, parentFiles, fileWithSingleRecord);
@@ -152,6 +161,7 @@ class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     }
 
     @Test
+    @Order(6)
     void testAllLeafs() throws Exception {
 
         uploadBlobs(jrdBlobSupport, parentFiles, file);
@@ -166,6 +176,7 @@ class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     }
 
     @Test
+    @Order(7)
     void testTicketCodeMappingInJudicialOfficeAuthorisationTable() throws Exception {
         uploadBlobs(jrdBlobSupport, parentFiles, file);
         uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
@@ -182,6 +193,7 @@ class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     }
 
     @Test
+    @Order(8)
     void testLocationsMappingInJudicialOfficeAppointmentTable() throws Exception {
         uploadBlobs(jrdBlobSupport, parentFiles, file);
         uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
@@ -197,6 +209,7 @@ class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     }
 
     @Test
+    @Order(9)
     void testServiceCodeMappingInJudicialOfficeAppointmentTable() throws Exception {
         uploadBlobs(jrdBlobSupport, parentFiles, file);
         uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
@@ -213,6 +226,7 @@ class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     }
 
     @Test
+    @Order(10)
     void testObjectIdMappingInJudicialOfficeAuthorisationTable() throws Exception {
         uploadBlobs(jrdBlobSupport, parentFiles, file);
         uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
@@ -228,6 +242,7 @@ class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     }
 
     @Test
+    @Order(11)
     void testMappingInJudicialOfficeAppointmentTable() throws Exception {
         uploadBlobs(jrdBlobSupport, parentFiles, file);
         uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
@@ -250,6 +265,7 @@ class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     }
 
     @Test
+    @Order(12)
     void testMappingInJudicialOfficeAppointmentWithErrors() throws Exception {
         uploadBlobs(jrdBlobSupport, parentFiles, fileWithInvalidAppointmentsEntry);
         uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
@@ -271,6 +287,7 @@ class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     }
 
     @Test
+    @Order(13)
     void testMappingInJudicialUserRoleTypesWithErrors() throws Exception {
         uploadBlobs(jrdBlobSupport, parentFiles, file);
         uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
