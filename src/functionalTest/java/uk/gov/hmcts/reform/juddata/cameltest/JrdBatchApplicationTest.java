@@ -76,6 +76,7 @@ class JrdBatchApplicationTest extends JrdBatchIntegrationSupport {
     void testTasklet() throws Exception {
         uploadBlobs(jrdBlobSupport, parentFiles, file);
         uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
+        jobLauncherTestUtils.launchJob();
         JobParameters params = new JobParametersBuilder()
             .addString(jobLauncherTestUtils.getJob().getName(), String.valueOf(System.currentTimeMillis()))
             .addString(START_ROUTE, DIRECT_JRD)
