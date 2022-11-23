@@ -1,4 +1,7 @@
 -- NB Flyway requires lowercase for table names
+--To drop schema for integration testing
+DROP SCHEMA if EXISTS dbjudicialdata CASCADE;
+
 CREATE SCHEMA IF NOT EXISTS dbjudicialdata;
 
 -- Create table script : base_location_type
