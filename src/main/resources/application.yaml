@@ -125,3 +125,12 @@ idam:
     authorization: ${OAUTH2_AUTH:}
     client-authorization: ${OAUTH2_CLIENT_AUTH:}
 
+cron:
+  pocapp:
+    schedule: "0 */1 * * * *"
+
+bearerAuthorizationKey:
+s2sServiceAuthorizationKey:
+regionIdurl : http://localhost:8099/refdata/location/regions?region={regionId}
+orgServiceUrl : http://localhost:8099/refdata/location/orgServices?serviceCode={serviceCode}
+loggingComponentName: RD-Elink-Api
