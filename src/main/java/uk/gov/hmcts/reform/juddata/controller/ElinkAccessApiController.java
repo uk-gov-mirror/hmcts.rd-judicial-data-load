@@ -17,18 +17,18 @@ import java.util.List;
 public class ElinkAccessApiController {
 
     private static final Logger logger = LogManager.getLogger(ElinkAccessApiController.class);
-    private final String regionId = "London";
-    private final String orgServiceCode = "AAA1";
     @Autowired
     ElinkAccessApiService elinkAccessApiService;
     @Value("${loggingComponentName}")
     private String loggingComponentName;
 
-    @Scheduled(cron = "${cron.pocapp.schedule}")
+    @Scheduled(cron = "${elinks.schedule}")
     public List<ResponseEntity> getApiAsPerScheduler() {
-        logger.info("{} : Inside retrieveOrgServiceDetails", loggingComponentName);
-        return elinkAccessApiService.retrieveCitiesDetails(regionId, orgServiceCode);
+        logger.info("{} : Inside retrieveDetails", loggingComponentName);
 
+        List<ResponseEntity>  response = elinkAccessApiService.retrieveDetails();
+        logger.info("{} : Return getApiAsPerScheduler", response);
+        return response;
     }
 
 
