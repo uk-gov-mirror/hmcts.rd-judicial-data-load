@@ -223,9 +223,10 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/juddata/client/**," +
                 "src/main/java/uk/gov/hmcts/reform/juddata/response/**," +
                 "src/main/java/uk/gov/hmcts/reform/juddata/camel/binder/**," +
-                "src/main/java/uk/gov/hmcts/reform/juddata/controlle/**," +
+                "src/main/java/uk/gov/hmcts/reform/juddata/controller/**," +
                 "src/main/java/uk/gov/hmcts/reform/juddata/model/**," +
-                "src/main/java/uk/gov/hmcts/reform/juddata/service/**,"
+                "src/main/java/uk/gov/hmcts/reform/juddata/service/**," +
+                "src/main/java/uk/gov/hmcts/reform/juddata/schedular/**,"
     }
 }
 
