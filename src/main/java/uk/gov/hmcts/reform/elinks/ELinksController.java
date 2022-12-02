@@ -4,7 +4,6 @@ package uk.gov.hmcts.reform.elinks;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping(
-        path = "/refdata/internal/v1/elinks" //need to decide the path
-)
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.BAD_REQUEST;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.FORBIDDEN_ERROR;
@@ -25,7 +21,7 @@ import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.UNAUTHORIZED_ERRO
 
 @RestController
 @RequestMapping(
-        path = "/api/elink"
+        path = "/refdata/internal/v1/elinks" //need to decide the path
 )
 @Slf4j
 //@NoArgsConstructor
