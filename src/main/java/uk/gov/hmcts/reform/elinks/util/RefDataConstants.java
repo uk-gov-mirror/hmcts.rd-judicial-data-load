@@ -16,5 +16,7 @@ public class RefDataConstants {
     public static final String NO_DATA_FOUND = "The eLinks data could not be found";
     public static final String INTERNAL_SERVER_ERROR = "Internal Server Error";
 
+    public static final String TOO_MANY_REQUESTS = "Too Many Requests";
+
 
 }

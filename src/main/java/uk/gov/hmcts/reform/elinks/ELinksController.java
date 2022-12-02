@@ -17,6 +17,7 @@ import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.BAD_REQUEST;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.FORBIDDEN_ERROR;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.INTERNAL_SERVER_ERROR;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.NO_DATA_FOUND;
+import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.TOO_MANY_REQUESTS;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.UNAUTHORIZED_ERROR;
 
 @RestController
@@ -49,6 +50,10 @@ public class ELinksController {
             @ApiResponse(
                     code = 404,
                     message = NO_DATA_FOUND
+            ),
+            @ApiResponse(
+                    code = 429,
+                    message = TOO_MANY_REQUESTS
             ),
             @ApiResponse(
                     code = 500,
