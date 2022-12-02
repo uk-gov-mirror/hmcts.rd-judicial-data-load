@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.elinks.service.impl;
 import com.launchdarkly.sdk.LDUser;
 import com.launchdarkly.sdk.server.LDClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.elinks.service.FeatureToggleService;
@@ -11,10 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 
-@Service
+@Service("eLinkFeatureToggleServiceImpl")
 public class FeatureToggleServiceImpl implements FeatureToggleService {
 
     @Autowired
+    @Qualifier("eLinksLdClient")
     private final LDClient ldClient;
 
     @Value("${launchdarkly.sdk.environment}")
@@ -43,6 +45,9 @@ public class FeatureToggleServiceImpl implements FeatureToggleService {
       //  launchDarklyMap.put("JrdUsersController.searchUsers", judApi);
       //  launchDarklyMap.put("TestingSupportController.createIdamUserProfiles", "rd-judicial-api-test-idam-users");
       //  launchDarklyMap.put("JrdUsersController.refreshUserProfile", judApi);
+
+        launchDarklyMap.put("ELinksController.loadRegionType", judApi);
+
     }
 
     @Override

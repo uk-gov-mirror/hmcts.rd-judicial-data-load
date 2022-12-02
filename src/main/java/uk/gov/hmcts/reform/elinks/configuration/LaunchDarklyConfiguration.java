@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.elinks.util.FeatureConditionEvaluation;
 @Configuration
 public class LaunchDarklyConfiguration implements WebMvcConfigurer {
 
-    @Bean
+    @Bean(name="eLinksLdClient")
     public LDClient ldClient(@Value("${launchdarkly.sdk.key}") String sdkKey) {
         return new LDClient(sdkKey);
     }
