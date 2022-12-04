@@ -70,14 +70,14 @@ class IdamElasticSearchServiceImplTest {
         tokenConfigProperties.setUrl(url);
         idamElasticSearchServiceImpl.props = tokenConfigProperties;
         idamElasticSearchServiceImpl.recordsPerPage = 1;
-        idamElasticSearchServiceImpl.searchQuery = "(roles:judiciary) AND lastModified:>now-%sh";
+        idamElasticSearchServiceImpl.idamSearchQuery = "(roles:judiciary) AND lastModified:>now-%sh";
     }
 
     @Test
     void getBearerToken() {
         when(openIdTokenResponseMock.getAccessToken()).thenReturn(CLIENT_AUTHORIZATION);
         when(idamClientMock.getOpenIdToken(any())).thenReturn(openIdTokenResponseMock);
-        String actualToken = idamElasticSearchServiceImpl.getBearerToken();
+        String actualToken = idamElasticSearchServiceImpl.getIdamBearerToken();
         assertThat(actualToken).isEqualTo(CLIENT_AUTHORIZATION);
         verify(openIdTokenResponseMock, times(1)).getAccessToken();
         verify(idamClientMock, times(1)).getOpenIdToken(any());
@@ -86,7 +86,7 @@ class IdamElasticSearchServiceImplTest {
     @Test
     void getBearerTokenWithException() {
         when(openIdTokenResponseMock.getAccessToken()).thenReturn(CLIENT_AUTHORIZATION);
-        assertThrows(JudicialDataLoadException.class, () -> idamElasticSearchServiceImpl.getBearerToken());
+        assertThrows(JudicialDataLoadException.class, () -> idamElasticSearchServiceImpl.getIdamBearerToken());
     }
 
     @Test
@@ -109,7 +109,7 @@ class IdamElasticSearchServiceImplTest {
             .status(200).build();
         when(idamClientMock.getUserFeed(anyString(), any())).thenReturn(response);
         when(dataloadSchedularAuditRepository.findByScheduleEndTime()).thenReturn(LocalDateTime.now());
-        Set<IdamResponse> useResponses = idamElasticSearchServiceImpl.getSyncFeed();
+        Set<IdamResponse> useResponses = idamElasticSearchServiceImpl.getIdamElasticSearchSyncFeed();
         assertThat(response).isNotNull();
         useResponses.forEach(useResponse -> {
             assertThat(useResponse.getEmail()).isEqualTo("some@some.com");
@@ -132,7 +132,7 @@ class IdamElasticSearchServiceImplTest {
             .status(500).build();
         when(idamClientMock.getUserFeed(anyString(), any())).thenReturn(response);
         when(dataloadSchedularAuditRepository.findByScheduleEndTime()).thenReturn(LocalDateTime.now());
-        assertThrows(JudicialDataLoadException.class, () -> idamElasticSearchServiceImpl.getSyncFeed());
+        assertThrows(JudicialDataLoadException.class,() -> idamElasticSearchServiceImpl.getIdamElasticSearchSyncFeed());
     }
 
     @Test
@@ -155,7 +155,7 @@ class IdamElasticSearchServiceImplTest {
             .status(200).build();
         when(idamClientMock.getUserFeed(anyString(), any())).thenReturn(response);
         when(dataloadSchedularAuditRepository.findByScheduleEndTime()).thenReturn(LocalDateTime.now());
-        assertThrows(JudicialDataLoadException.class, () -> idamElasticSearchServiceImpl.getSyncFeed());
+        assertThrows(JudicialDataLoadException.class,() -> idamElasticSearchServiceImpl.getIdamElasticSearchSyncFeed());
     }
 
 
@@ -183,7 +183,7 @@ class IdamElasticSearchServiceImplTest {
         Response response = spy(Response.builder().request(Request.create(Request.HttpMethod.GET, "", new HashMap<>(),
             Request.Body.empty(), null)).headers(map).body(body, Charset.defaultCharset())
             .status(200).build());
-        invokeMethod(idamElasticSearchServiceImpl, "logIdamResponse", response);
+        invokeMethod(idamElasticSearchServiceImpl, "logIdamResponses", response);
         verify(response, times(2)).status();
     }
 
@@ -193,7 +193,7 @@ class IdamElasticSearchServiceImplTest {
         Response nullResponse = spy(Response.builder().request(Request.create(Request.HttpMethod.GET, "",
             new HashMap<>(),
             Request.Body.create((byte[]) null), null)).build());
-        invokeMethod(idamElasticSearchServiceImpl, "logIdamResponse", nullResponse);
+        invokeMethod(idamElasticSearchServiceImpl, "logIdamResponses", nullResponse);
         assertNull(nullResponse.body());
     }
 
@@ -212,21 +212,21 @@ class IdamElasticSearchServiceImplTest {
             new HashMap<>(),
             Request.Body.empty(), null)).headers(map).body(body, Charset.defaultCharset())
             .status(500).build());
-        invokeMethod(idamElasticSearchServiceImpl, "logIdamResponse", response);
+        invokeMethod(idamElasticSearchServiceImpl, "logIdamResponses", response);
         verify(response, times(3)).status();
     }
 
     @Test
     void testElasticSearchQuery() {
         when(dataloadSchedularAuditRepository.findByScheduleEndTime()).thenReturn(LocalDateTime.now().minusDays(1));
-        String formattedQuery = invokeMethod(idamElasticSearchServiceImpl, "elasticSearchQuery");
+        String formattedQuery = invokeMethod(idamElasticSearchServiceImpl, "idamElasticSearchQuery");
         Assert.assertEquals("(roles:judiciary) AND lastModified:>now-25h", formattedQuery);
     }
 
     @Test
     void testElasticSearchQueryMaxIsNull() {
         when(dataloadSchedularAuditRepository.findByScheduleEndTime()).thenReturn(null);
-        String formattedQuery = invokeMethod(idamElasticSearchServiceImpl, "elasticSearchQuery");
+        String formattedQuery = invokeMethod(idamElasticSearchServiceImpl, "idamElasticSearchQuery");
         Assert.assertEquals("(roles:judiciary) AND lastModified:>now-72h", formattedQuery);
     }
 }

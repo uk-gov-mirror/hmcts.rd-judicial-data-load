@@ -7,7 +7,7 @@ import java.util.Set;
 
 public interface IdamTokenService {
 
-    String getBearerToken() throws JudicialDataLoadException;
+    String getIdamBearerToken() throws JudicialDataLoadException;
 
-    Set<IdamResponse> getSyncFeed() throws JudicialDataLoadException;
+    Set<IdamResponse> getIdamElasticSearchSyncFeed() throws JudicialDataLoadException;
 }

@@ -30,26 +30,26 @@ import java.util.Set;
 @Component
 public class IdamElasticSearchServiceImpl implements IdamTokenService {
 
+    @Value("${logging-component-name}")
+    String loggingComponentName;
+
+    @Value("${elastic.search.query}")
+    String idamSearchQuery;
+
+    @Value("${elastic.search.recordsPerPage}")
+    int recordsPerPage;
+
     @Autowired
     IdamFeignClient idamFeignClient;
 
     @Autowired
     IdamTokenConfigProperties props;
 
-    @Value("${logging-component-name}")
-    String loggingComponentName;
-
-    @Value("${elastic.search.query}")
-    String searchQuery;
-
-    @Value("${elastic.search.recordsPerPage}")
-    int recordsPerPage;
-
     @Autowired
     DataloadSchedularAuditRepository dataloadSchedularAuditRepository;
 
     @Override
-    public String getBearerToken() throws JudicialDataLoadException {
+    public String getIdamBearerToken() throws JudicialDataLoadException {
 
         byte[] base64UserDetails = Base64.getDecoder().decode(props.getAuthorization());
         Map<String, String> formParams = new HashMap<>();
@@ -60,36 +60,35 @@ public class IdamElasticSearchServiceImpl implements IdamTokenService {
         formParams.put("client_id", props.getClientId());
         byte[] base64ClientAuth = Base64.getDecoder().decode(props.getClientAuthorization());
         String[] clientAuth = new String(base64ClientAuth).split(":");
-        formParams.put("client_secret", clientAuth[1]);
         formParams.put("redirect_uri", props.getRedirectUri());
+        formParams.put("client_secret", clientAuth[1]);
         formParams.put("scope", "openid profile roles manage-user create-user search-user");
 
+        IdamOpenIdTokenResponse idamOpenIdTokenResponse = idamFeignClient.getOpenIdToken(formParams);
 
-        IdamOpenIdTokenResponse openIdTokenResponse = idamFeignClient.getOpenIdToken(formParams);
-
-        if (openIdTokenResponse == null) {
+        if (idamOpenIdTokenResponse == null) {
             throw new JudicialDataLoadException("Idam Service Failed while bearer token generate");
         }
-        return openIdTokenResponse.getAccessToken();
+        return idamOpenIdTokenResponse.getAccessToken();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Set<IdamResponse> getSyncFeed() throws JudicialDataLoadException {
-        Map<String, String> formParams = new HashMap<>();
-        searchQuery = elasticSearchQuery();
-        formParams.put("query",searchQuery);
-        formParams.put("size",String.valueOf(recordsPerPage));
-        log.info("{}:: search elk query {}", loggingComponentName, searchQuery);
+    public Set<IdamResponse> getIdamElasticSearchSyncFeed() throws JudicialDataLoadException {
+        Map<String, String> params = new HashMap<>();
+        idamSearchQuery = idamElasticSearchQuery();
+        params.put("size",String.valueOf(recordsPerPage));
+        params.put("query",idamSearchQuery);
+        log.info("{}:: search elk query {}", loggingComponentName, idamSearchQuery);
         Set<IdamResponse> judicialUsers = new HashSet<>();
+        int count = 0;
         int totalCount = 0;
-        int counter = 0;
 
         do {
-            formParams.put("page", String.valueOf(counter));
-            String bearerToken = "Bearer ".concat(getBearerToken());
-            Response response = idamFeignClient.getUserFeed(bearerToken, formParams);
-            logIdamResponse(response);
+            params.put("page", String.valueOf(count));
+            String bearerToken = "Bearer ".concat(getIdamBearerToken());
+            Response response = idamFeignClient.getUserFeed(bearerToken, params);
+            logIdamResponses(response);
 
             ResponseEntity<Object> responseEntity = JsonFeignResponseUtility.toResponseEntity(response,
                 new TypeReference<Set<IdamResponse>>() {
@@ -119,13 +118,13 @@ public class IdamElasticSearchServiceImpl implements IdamTokenService {
                 throw new JudicialDataLoadException("Idam search query failure with response status "
                     + response.status());
             }
-            counter++;
+            count++;
 
-        } while (totalCount > 0 && recordsPerPage * counter < totalCount);
+        } while (totalCount > 0 && recordsPerPage * count < totalCount);
         return judicialUsers;
     }
 
-    private void logIdamResponse(Response response) {
+    private void logIdamResponses(Response response) {
         log.info("Logging Response from IDAM");
         if (response != null) {
             log.info("{}:: Response code from idamClient.getUserFeed {}", loggingComponentName, response.status());
@@ -135,11 +134,11 @@ public class IdamElasticSearchServiceImpl implements IdamTokenService {
         }
     }
 
-    private String elasticSearchQuery() {
+    private String idamElasticSearchQuery() {
 
         LocalDateTime maxSchedulerEndTime = dataloadSchedularAuditRepository.findByScheduleEndTime();
 
-        return maxSchedulerEndTime == null ? String.format(searchQuery,72) : String.format(searchQuery,
+        return maxSchedulerEndTime == null ? String.format(idamSearchQuery,72) : String.format(idamSearchQuery,
                 Math.addExact(ChronoUnit.HOURS.between(maxSchedulerEndTime, LocalDateTime.now()), 1));
     }
 }
