@@ -56,9 +56,6 @@ postgresql:
   enabled: true
   image:
     tag: '11.3.0'
-  postgresqlUsername: dbjuddata
-  postgresqlPassword: dbjuddata
-  postgresqlDatabase: dbjuddata
   persistence:
     enabled: false
 
