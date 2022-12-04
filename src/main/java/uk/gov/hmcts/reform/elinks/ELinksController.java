@@ -73,7 +73,7 @@ public class ELinksController {
     @ApiResponses({
             @ApiResponse(
                     code = 200,
-                    message = "Get list of location and populate region type.",
+                    message = "Get list of idam users.",
                     response = String.class
             ),
             @ApiResponse(
