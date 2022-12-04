@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.elinks.util.FeatureConditionEvaluation;
 @Configuration
 public class LaunchDarklyConfiguration implements WebMvcConfigurer {
 
-    @Bean(name="eLinksLdClient")
+    @Bean(name = "eLinksLdClient")
     public LDClient ldClient(@Value("${launchdarkly.sdk.key}") String sdkKey) {
         return new LDClient(sdkKey);
     }
@@ -22,10 +22,13 @@ public class LaunchDarklyConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(featureConditionEvaluation);
-              //  .addPathPatterns("/refdata/judicial/users/fetch") we need to edit here
-              //  .addPathPatterns("/refdata/judicial/users/search")
-              //   .addPathPatterns("/refdata/judicial/users/testing-support/sidam/actions/create-users")
-              //   .addPathPatterns("/refdata/judicial/users");
+        registry.addInterceptor(featureConditionEvaluation)
+                .addPathPatterns("/refdata/jinternal/elink/reference_data/base_location")
+                .addPathPatterns("/refdata/internal/elink/reference_data/location")
+                .addPathPatterns("/refdata/jinternal/elink/people")
+                .addPathPatterns("/refdata/jinternal/elink/leavers")
+                .addPathPatterns("/refdata/jinternal/elinks/idam/elastic/search")
+                .addPathPatterns("/refdata/jinternal/elinks/asb/publish");
+
     }
 }

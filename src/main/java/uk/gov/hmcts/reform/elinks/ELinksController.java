@@ -59,9 +59,51 @@ public class ELinksController {
                     message = INTERNAL_SERVER_ERROR
             )
     })
-    @GetMapping(  path = "/location",
+    @GetMapping (path = "/location",
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> loadRegionType(){
+    public ResponseEntity<String> loadRegionType() {
+
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("Test API");
+    }
+
+
+    @ApiResponses({
+            @ApiResponse(
+                    code = 200,
+                    message = "Get list of location and populate region type.",
+                    response = String.class
+            ),
+            @ApiResponse(
+                    code = 400,
+                    message = BAD_REQUEST
+            ),
+            @ApiResponse(
+                    code = 401,
+                    message = UNAUTHORIZED_ERROR
+            ),
+            @ApiResponse(
+                    code = 403,
+                    message = FORBIDDEN_ERROR
+            ),
+            @ApiResponse(
+                    code = 404,
+                    message = NO_DATA_FOUND
+            ),
+            @ApiResponse(
+                    code = 429,
+                    message = TOO_MANY_REQUESTS
+            ),
+            @ApiResponse(
+                    code = 500,
+                    message = INTERNAL_SERVER_ERROR
+            )
+    })
+    @GetMapping (path = "/idam/elastic/search",
+            produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> idamElasticSearch() {
 
 
         return ResponseEntity

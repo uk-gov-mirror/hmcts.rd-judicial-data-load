@@ -34,19 +34,13 @@ public class FeatureToggleServiceImpl implements FeatureToggleService {
 
     /**
      * add controller.method name, flag name  in map to apply ld flag on api like below
-     * launchDarklyMap.put("OrganisationExternalController.retrieveOrganisationsByStatusWithAddressDetailsOptional",
-     * "prd-aac-get-org-by-status");
      */
     @PostConstruct
     public void mapServiceToFlag() {
         String judApi = "rd_jud_elinks";
         launchDarklyMap = new HashMap<>();
-      //  launchDarklyMap.put("JrdUsersController.fetchUsers", judApi); we need to edit here
-      //  launchDarklyMap.put("JrdUsersController.searchUsers", judApi);
-      //  launchDarklyMap.put("TestingSupportController.createIdamUserProfiles", "rd-judicial-api-test-idam-users");
-      //  launchDarklyMap.put("JrdUsersController.refreshUserProfile", judApi);
-
         launchDarklyMap.put("ELinksController.loadRegionType", judApi);
+        launchDarklyMap.put("ELinksController.idamElasticSearch", judApi);
 
     }
 

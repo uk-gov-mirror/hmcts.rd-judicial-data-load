@@ -29,17 +29,12 @@ public class SwaggerConfiguration {
                 .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
                 .paths(PathSelectors.any())
                 .build();
-                //.securitySchemes(apiKeyList());
     }
 
     private List<ApiKey> apiKeyList() {
         return
                 newArrayList(
                         new ApiKey("ApiKeyAuth", "Authorization","header")
-                        //new ApiKey("Authorization", "Authorization","header"),
-                        //new ApiKey("ServiceAuthorization", "ServiceAuthorization", "header"),
-                        //new ApiKey("UserEmail", "UserEmail", "header"),
-                        //new ApiKey("ApiKeyAuth", "X-API-KEY", "header")
                 );
     }
 
