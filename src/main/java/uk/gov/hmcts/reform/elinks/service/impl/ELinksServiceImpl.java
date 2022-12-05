@@ -8,7 +8,7 @@ import uk.gov.hmcts.reform.elinks.service.ELinksService;
 public class ELinksServiceImpl implements ELinksService {
 
     @Override
-    public ResponseEntity<Object> retrieveBaseLocation(String baseLocation) {
+    public ResponseEntity<Object> retrieveBaseLocation() {
         return null;
     }
 
