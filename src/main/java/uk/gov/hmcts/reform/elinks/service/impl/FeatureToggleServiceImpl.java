@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 @Service("eLinkFeatureToggleServiceImpl")
+@SuppressWarnings("all")
 public class FeatureToggleServiceImpl implements FeatureToggleService {
 
     @Autowired

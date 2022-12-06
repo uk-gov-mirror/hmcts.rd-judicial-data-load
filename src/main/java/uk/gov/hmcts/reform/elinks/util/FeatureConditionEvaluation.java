@@ -3,22 +3,16 @@ package uk.gov.hmcts.reform.elinks.util;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import uk.gov.hmcts.reform.elinks.controller.advice.ForbiddenException;
 import uk.gov.hmcts.reform.elinks.service.FeatureToggleService;
 
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang.BooleanUtils.isNotTrue;
-import static org.apache.commons.lang3.StringUtils.SPACE;
-
 @Component
 @AllArgsConstructor
+@SuppressWarnings("all")
 public class FeatureConditionEvaluation implements HandlerInterceptor {
 
     public static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";

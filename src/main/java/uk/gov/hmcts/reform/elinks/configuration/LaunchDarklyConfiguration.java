@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import uk.gov.hmcts.reform.elinks.util.FeatureConditionEvaluation;
 
 @Configuration
+@SuppressWarnings("all")
 public class LaunchDarklyConfiguration implements WebMvcConfigurer {
 
     @Bean(name="eLinksLdClient")

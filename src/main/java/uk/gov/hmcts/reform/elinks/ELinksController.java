@@ -28,6 +28,7 @@ import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.UNAUTHORIZED_ERRO
 @Slf4j
 //@NoArgsConstructor
 @AllArgsConstructor
+@SuppressWarnings("all")
 public class ELinksController {
 
     @Autowired
