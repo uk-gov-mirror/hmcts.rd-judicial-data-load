@@ -18,5 +18,4 @@ public class RefDataConstants {
 
     public static final String TOO_MANY_REQUESTS = "Too Many Requests";
 
-
 }
