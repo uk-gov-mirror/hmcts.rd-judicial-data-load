@@ -136,6 +136,8 @@ elastic:
     query: ${JRD_SIDAM_SEARCH_QUERY:(roles:judiciary) AND lastModified:>now-%sh}
     recordsPerPage: 500
 
+eLinksUrl: ${ELinks_URL:https://jo-staging.elinks.judiciary.uk/api/v4/reference_data}
+
 idam:
   api:
     url: ${IDAM_URL:https://idam-api.aat.platform.hmcts.net}
