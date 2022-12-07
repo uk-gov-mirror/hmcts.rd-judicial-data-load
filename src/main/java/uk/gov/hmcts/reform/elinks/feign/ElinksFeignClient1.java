@@ -9,10 +9,11 @@ import uk.gov.hmcts.reform.elinks.configuration.ElinksFeignInterceptorConfigurat
 
 import org.springframework.cloud.openfeign.FeignClient;
 import uk.gov.hmcts.reform.elinks.domain.BaseLocation;
+import uk.gov.hmcts.reform.elinks.domain.Location;
 
 import java.util.List;
 
-@FeignClient(name = "ElinksClient", url = "${eLinksUrl}", configuration = ElinksFeignInterceptorConfiguration.class, fallback = BaseLocationFallBack.class)
+@FeignClient(name = "ElinksClient", url = "${eLinksUrl}", configuration = ElinksFeignInterceptorConfiguration.class)
 public interface ElinksFeignClient1 {
 
     @GetMapping(value = "/base_location")
@@ -20,6 +21,13 @@ public interface ElinksFeignClient1 {
     @Headers({"Authorization: {authorization}", "ServiceAuthorization: {serviceAuthorization}",
             "Content-Type: application/json"})
     List<BaseLocation> retrieveBaseLocations();
+
+    //URL not tested , code is for developers reference
+    @GetMapping(value = "/location")
+    @RequestLine("GET /location")
+    @Headers({"Authorization: {authorization}",
+            "Content-Type: application/json"})
+    List<Location> getLocationDetails();
 
 
 }
