@@ -352,7 +352,11 @@ dependencies {
     testImplementation (group: 'io.rest-assured', name: 'rest-assured', version: '4.1.2') {
         exclude group: "com.sun.xml.bind", module: "jaxb-osgi"
     }
-    testImplementation group: 'com.h2database', name: 'h2'
+
+    testImplementation group: 'org.testcontainers', name: 'postgresql', version: '1.17.2'
+    testImplementation "org.testcontainers:junit-jupiter:1.17.2"
+    testImplementation "org.testcontainers:testcontainers:1.16.2"
+
     testImplementation ("org.mockito:mockito-core:4.3.1") {
         exclude group: "net.bytebuddy", module: "byte-buddy"
         exclude group: "net.bytebuddy", module: "byte-buddy-agent"

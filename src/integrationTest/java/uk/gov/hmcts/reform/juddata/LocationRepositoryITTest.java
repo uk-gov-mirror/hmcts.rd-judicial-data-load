@@ -1,28 +1,25 @@
 package uk.gov.hmcts.reform.juddata;
 
-import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.MockEndpoints;
 import org.junit.jupiter.api.Test;
-import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.stereotype.Repository;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import uk.gov.hmcts.reform.data.ingestion.configuration.AzureBlobConfig;
-import uk.gov.hmcts.reform.data.ingestion.configuration.BlobStorageCredentials;
+import uk.gov.hmcts.reform.elinks.domain.RegionType;
 import uk.gov.hmcts.reform.elinks.repository.LocationRepository;
-import uk.gov.hmcts.reform.idam.client.IdamApi;
-import uk.gov.hmcts.reform.juddata.client.IdamClient;
-import uk.gov.hmcts.reform.juddata.config.LeafConfig;
-import uk.gov.hmcts.reform.juddata.config.ParentConfig;
-import uk.gov.hmcts.reform.juddata.configuration.BatchConfig;
+import uk.gov.hmcts.reform.juddata.config.LocationConfig;
 import uk.gov.hmcts.reform.juddata.configuration.EmailConfiguration;
 import uk.gov.hmcts.reform.juddata.configuration.FeignConfiguration;
 
@@ -32,22 +29,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @TestPropertySource(properties = {"spring.config.location=classpath:application-integration-test.yml,"
+        +"classpath:application-test.yml,"
         + "classpath:application-leaf-integration-test.yml"})
 @MockEndpoints("log:*")
-@ContextConfiguration(classes = {ParentConfig.class, LeafConfig.class,
-        JobLauncherTestUtils.class, BatchConfig.class, AzureBlobConfig.class, BlobStorageCredentials.class,
-        FeignConfiguration.class, EmailConfiguration.class},
+@ContextConfiguration(classes = {
+        AzureBlobConfig.class,
+        FeignConfiguration.class,
+        EmailConfiguration.class,
+        LocationConfig.class
+
+    },
         initializers = ConfigDataApplicationContextInitializer.class)
-@CamelSpringBootTest
-@EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class)
-@EnableTransactionManagement
-@SqlConfig(dataSource = "dataSource", transactionManager = "txManager",
-        transactionMode = SqlConfig.TransactionMode.ISOLATED)
-@SpringBootTest
-@EnableFeignClients(clients = {IdamClient.class, IdamApi.class})
+
+//@EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class)
+
+@EnableAutoConfiguration
+
+@EntityScan("uk.gov.hmcts.reform.elinks.domain")
+@EnableJpaRepositories("uk.gov.hmcts.reform.elinks.repository")
+
+//@EnableTransactionManagement
+//@SqlConfig(dataSource = "dataSource", transactionManager = "txManager",
+//        transactionMode = SqlConfig.TransactionMode.ISOLATED)
+//@SpringBootTest
+//@EnableFeignClients(clients = {IdamClient.class, IdamApi.class})
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+//(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Repository.class))
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SuppressWarnings("all")
-public class LocationRepositoryITTest {
+public class LocationRepositoryITTest  {
 
 
 
