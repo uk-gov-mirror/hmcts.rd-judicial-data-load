@@ -4,10 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import uk.gov.hmcts.reform.elinks.domain.Location;
+import uk.gov.hmcts.reform.elinks.domain.RegionType;
 
-
-public interface LocationRepository extends JpaRepository<Location, String> {
+@Repository
+public interface LocationRepository extends JpaRepository<RegionType, String> {
     @Modifying(flushAutomatically = true)
     @Query(
             value = "INSERT INTO dbjudicialdata.region_type (region_id,region_desc_en,region_desc_cy) "
