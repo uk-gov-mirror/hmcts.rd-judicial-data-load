@@ -33,6 +33,7 @@ public class JudicialApplication implements ApplicationRunner {
     @Autowired
     Job job;
 
+
     @Value("${batchjob-name}")
     String jobName;
 
