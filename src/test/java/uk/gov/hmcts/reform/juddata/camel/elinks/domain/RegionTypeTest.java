@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.juddata.camel.elinks.domain;
 
 import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.elinks.domain.RegionType;
+import uk.gov.hmcts.reform.elinks.domain.Location;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -11,7 +11,7 @@ class RegionTypeTest {
 
     @Test
     void testRegionType() {
-        RegionType regionType = createRegionType();
+        Location regionType = createRegionType();
 
         assertNotNull(regionType);
         assertEquals("0", regionType.getRegionId());

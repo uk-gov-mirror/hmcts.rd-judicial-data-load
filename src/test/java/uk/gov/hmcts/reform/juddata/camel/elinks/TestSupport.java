@@ -1,10 +1,9 @@
 package uk.gov.hmcts.reform.juddata.camel.elinks;
 
-import uk.gov.hmcts.reform.elinks.domain.RegionType;
+import uk.gov.hmcts.reform.elinks.domain.Location;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 
 public class TestSupport {
 
@@ -15,8 +14,8 @@ public class TestSupport {
 
     }
 
-    public static RegionType createRegionType() {
-        RegionType regionType = new RegionType();
+    public static Location createRegionType() {
+        Location regionType = new Location();
         regionType.setRegionId("0");
         regionType.setRegionDescEn("default");
         regionType.setRegionDescCy("default");
