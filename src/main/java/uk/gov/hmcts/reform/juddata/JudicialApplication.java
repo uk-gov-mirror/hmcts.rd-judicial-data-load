@@ -24,7 +24,7 @@ import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.STA
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
 @Slf4j
 @EnableFeignClients(basePackages = {
-    "uk.gov.hmcts.reform.juddata"}, basePackageClasses = {IdamApi.class})
+    "uk.gov.hmcts.reform.juddata","uk.gov.hmcts.reform.elinks"}, basePackageClasses = {IdamApi.class})
 public class JudicialApplication implements ApplicationRunner {
 
     @Autowired
@@ -47,10 +47,6 @@ public class JudicialApplication implements ApplicationRunner {
     public static void main(final String[] args) throws Exception {
         ApplicationContext context = SpringApplication.run(JudicialApplication.class);
         //Sleep added to allow app-insights to flush the logs
-        Thread.sleep(7000);
-        int exitCode = SpringApplication.exit(context);
-        log.info("{}:: Judicial Application exiting with exit code {} ", logComponentName, exitCode);
-        System.exit(exitCode);
     }
 
     @Override

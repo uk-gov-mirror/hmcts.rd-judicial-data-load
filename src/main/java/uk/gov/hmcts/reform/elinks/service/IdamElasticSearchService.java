@@ -5,7 +5,7 @@ import uk.gov.hmcts.reform.juddata.exception.JudicialDataLoadException;
 
 import java.util.Set;
 
-public interface IdamTokenService {
+public interface IdamElasticSearchService {
 
     String getIdamBearerToken() throws JudicialDataLoadException;
 

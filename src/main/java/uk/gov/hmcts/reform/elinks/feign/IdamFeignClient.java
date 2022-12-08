@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.elinks.response.IdamOpenIdTokenResponse;
 import java.util.Map;
 
 
-@FeignClient(name = "idamClient", url = "${idam.api.url}")
+@FeignClient(name = "IdamFeignClient", url = "${idam.api.url}")
 public interface IdamFeignClient {
 
     @GetMapping(value = "/api/v1/users")

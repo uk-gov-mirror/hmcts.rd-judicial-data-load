@@ -48,7 +48,7 @@ def versions = [
         bytebuddy          : '1.12.7'
 ]
 
-mainClassName = 'uk.gov.hmcts.reform.juddata.JudicialApplication'
+mainClassName = 'uk.gov.hmcts.reform.JudicialApplication'
 def jarName = 'rd-judicial-data-load.jar'
 
 group = 'uk.gov.hmcts.reform.juddata'
@@ -405,7 +405,21 @@ dependencies {
     testImplementation group: 'org.postgresql', name: 'postgresql', version: '42.4.1'
     testImplementation 'com.github.hmcts:fortify-client:1.2.0:all'
 
-	implementation group: 'org.yaml', name: 'snakeyaml', version: '1.33'
+    testImplementation ("com.github.tomakehurst:wiremock-jre8:2.32.0") {
+        exclude group: 'com.github.jknack'
+    }
+    testCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    integrationTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    functionalTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    functionalTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.33'
+    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.20'
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.20'
 
     functionalTestImplementation sourceSets.main.runtimeClasspath
     functionalTestImplementation sourceSets.test.runtimeClasspath

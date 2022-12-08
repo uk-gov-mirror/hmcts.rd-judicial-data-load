@@ -5,11 +5,16 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.elinks.response.IdamResponse;
+import uk.gov.hmcts.reform.elinks.service.IdamElasticSearchService;
+
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.BAD_REQUEST;
@@ -27,6 +32,9 @@ import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.UNAUTHORIZED_ERRO
 //@NoArgsConstructor
 @AllArgsConstructor
 public class ELinksController {
+
+    @Autowired
+    IdamElasticSearchService idamElasticSearchService;
 
     @ApiResponses({
             @ApiResponse(
@@ -74,7 +82,7 @@ public class ELinksController {
             @ApiResponse(
                     code = 200,
                     message = "Get list of idam users.",
-                    response = String.class
+                    response = IdamResponse.class
             ),
             @ApiResponse(
                     code = 400,
@@ -89,26 +97,19 @@ public class ELinksController {
                     message = FORBIDDEN_ERROR
             ),
             @ApiResponse(
-                    code = 404,
-                    message = NO_DATA_FOUND
-            ),
-            @ApiResponse(
-                    code = 429,
-                    message = TOO_MANY_REQUESTS
-            ),
-            @ApiResponse(
                     code = 500,
                     message = INTERNAL_SERVER_ERROR
             )
     })
     @GetMapping (path = "/idam/elastic/search",
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> idamElasticSearch() {
+    public ResponseEntity<Object> idamElasticSearch() {
 
+        Set<IdamResponse> response =  idamElasticSearchService.getIdamElasticSearchSyncFeed();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body("Test API");
+                .body(response);
     }
 
 }
