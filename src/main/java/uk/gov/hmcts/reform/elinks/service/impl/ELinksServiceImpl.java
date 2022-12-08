@@ -1,23 +1,19 @@
 package uk.gov.hmcts.reform.elinks.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.elinks.domain.BaseLocation;
-//import uk.gov.hmcts.reform.elinks.repository.BaseLocationRepository;
-import uk.gov.hmcts.reform.elinks.feign.BaseLocationFallBack;
-import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient;
 import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient1;
 import uk.gov.hmcts.reform.elinks.repository.BaseLocationRepository;
-import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient1;
+import uk.gov.hmcts.reform.elinks.repository.LocationRepository;
 import uk.gov.hmcts.reform.elinks.service.ELinksService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
+import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.LOCATION_DATA_LOAD_SUCCESS;
 
 @Service
 public class ELinksServiceImpl implements ELinksService {
@@ -26,7 +22,9 @@ public class ELinksServiceImpl implements ELinksService {
     BaseLocationRepository baseLocationRepository;
 
     @Autowired
-    BaseLocationFallBack elinksFeignClient;
+    LocationRepository LocationRepository;
+
+
 
     @Autowired
     ElinksFeignClient1 elinksFeignClient;
@@ -50,9 +48,14 @@ public class ELinksServiceImpl implements ELinksService {
     @Override
     public ResponseEntity<Object> retrieveLocation() {
 
+        List<BaseLocation> locations = new ArrayList<>();
+        locations = elinksFeignClient.retrieveBaseLocations();
+
+        baseLocationRepository.saveAll(locations);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(elinksFeignClient.getLocationDetails());
+                .body(LOCATION_DATA_LOAD_SUCCESS);
     }
 
 

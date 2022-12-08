@@ -18,5 +18,8 @@ public class RefDataConstants {
 
     public static final String TOO_MANY_REQUESTS = "You have exceeded the request limit (20 requests in 20 seconds)";
 
+    public static final String LOCATION_DATA_LOAD_SUCCESS = "Location data load successfully.";
+
+
 
 }
