@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.elinks.domain.BaseLocation;
+import uk.gov.hmcts.reform.elinks.domain.Location;
 import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient1;
 import uk.gov.hmcts.reform.elinks.repository.BaseLocationRepository;
 import uk.gov.hmcts.reform.elinks.repository.LocationRepository;
@@ -22,7 +23,7 @@ public class ELinksServiceImpl implements ELinksService {
     BaseLocationRepository baseLocationRepository;
 
     @Autowired
-    LocationRepository LocationRepository;
+    LocationRepository locationRepository;
 
 
 
@@ -48,10 +49,10 @@ public class ELinksServiceImpl implements ELinksService {
     @Override
     public ResponseEntity<Object> retrieveLocation() {
 
-        List<BaseLocation> locations = new ArrayList<>();
-        locations = elinksFeignClient.retrieveBaseLocations();
+        List<Location> locations = new ArrayList<>();
+        locations = elinksFeignClient.getLocationDetails();
 
-        baseLocationRepository.saveAll(locations);
+        locationRepository.saveAll(locations);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
