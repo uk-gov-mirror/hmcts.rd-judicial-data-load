@@ -67,13 +67,12 @@ public class ELinksController {
     })
     @GetMapping(  path = "/location",
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> loadRegionType(){
+    public ResponseEntity<Object> loadLocation(){
 
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body("Test API");
+        return eLinksService.retrieveLocation();
     }
+
 
     @ApiResponses({
             @ApiResponse(

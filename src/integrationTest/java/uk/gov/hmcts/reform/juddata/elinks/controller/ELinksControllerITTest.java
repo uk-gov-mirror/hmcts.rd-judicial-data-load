@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.juddata.elinks.service;
+package uk.gov.hmcts.reform.juddata.elinks.controller;
 
 import org.apache.camel.test.spring.junit5.MockEndpoints;
 import org.junit.jupiter.api.Test;
@@ -14,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.data.ingestion.configuration.AzureBlobConfig;
+import uk.gov.hmcts.reform.elinks.ELinksController;
 import uk.gov.hmcts.reform.elinks.configuration.ElinksFeignInterceptorConfiguration;
 import uk.gov.hmcts.reform.elinks.configuration.FeignHeaderConfig;
 import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient;
@@ -23,6 +24,7 @@ import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.juddata.client.IdamClient;
 import uk.gov.hmcts.reform.juddata.config.LocationConfig;
 import uk.gov.hmcts.reform.juddata.configuration.EmailConfiguration;
+import uk.gov.hmcts.reform.juddata.elinks.service.ELinksServiceImplTestConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,7 +43,8 @@ import static org.assertj.core.api.Assertions.assertThat;
         EmailConfiguration.class,
         LocationConfig.class,
         ELinksServiceImpl.class,
-        ELinksServiceImplTestConfig.class
+        ELinksControllerTestConfig.class,
+        ELinksController.class
 
 },
         initializers = ConfigDataApplicationContextInitializer.class)
@@ -66,19 +69,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SuppressWarnings("all")
-public class ELinksServiceImplTest {
-
-
-    @Autowired
-    LocationRepository locationRepository;
+public class ELinksControllerITTest {
 
     @Autowired
-    ELinksServiceImpl eLinksServiceImpl;
+    ELinksController eLinksController;
 
     @Test
-    void test_elinksService_loaded() {
-        assertThat(locationRepository).isNotNull();
-        assertThat(eLinksServiceImpl).isNotNull();
+    void test_elinksController_loaded() {
+        assertThat(eLinksController).isNotNull();
     }
-
 }
