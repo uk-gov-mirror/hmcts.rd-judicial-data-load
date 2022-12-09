@@ -16,7 +16,6 @@ import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.data.ingestion.configuration.AzureBlobConfig;
 import uk.gov.hmcts.reform.elinks.domain.Location;
 import uk.gov.hmcts.reform.elinks.repository.LocationRepository;
-import uk.gov.hmcts.reform.juddata.config.LocationConfig;
 import uk.gov.hmcts.reform.juddata.configuration.EmailConfiguration;
 import uk.gov.hmcts.reform.juddata.configuration.FeignConfiguration;
 
@@ -32,8 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration(classes = {
         AzureBlobConfig.class,
         FeignConfiguration.class,
-        EmailConfiguration.class,
-        LocationConfig.class
+        EmailConfiguration.class
 
 },
         initializers = ConfigDataApplicationContextInitializer.class)

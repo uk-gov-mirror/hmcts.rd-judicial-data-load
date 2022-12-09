@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@SuppressWarnings("all")
 public class BaseLocationResponse {
 
     private String baseLocationId;

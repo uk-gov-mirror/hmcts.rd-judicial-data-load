@@ -24,13 +24,10 @@ import uk.gov.hmcts.reform.elinks.configuration.ElinksFeignInterceptorConfigurat
 import uk.gov.hmcts.reform.elinks.configuration.FeignHeaderConfig;
 import uk.gov.hmcts.reform.elinks.domain.Location;
 import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient;
-import uk.gov.hmcts.reform.elinks.repository.LocationRepository;
 import uk.gov.hmcts.reform.elinks.service.impl.ELinksServiceImpl;
 import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.juddata.client.IdamClient;
-import uk.gov.hmcts.reform.juddata.config.LocationConfig;
 import uk.gov.hmcts.reform.juddata.configuration.EmailConfiguration;
-import uk.gov.hmcts.reform.juddata.elinks.service.ELinksServiceImplTestConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +49,6 @@ import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.LOCATION_DATA_LOA
         FeignHeaderConfig.class,
 
         EmailConfiguration.class,
-        LocationConfig.class,
         ELinksServiceImpl.class,
         ELinksControllerTestConfig.class,
         ELinksController.class

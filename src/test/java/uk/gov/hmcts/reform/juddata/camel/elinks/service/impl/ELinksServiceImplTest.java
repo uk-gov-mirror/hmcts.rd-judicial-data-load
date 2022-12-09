@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.elinks.repository.LocationRepository;
 import uk.gov.hmcts.reform.elinks.service.impl.ELinksServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("all")
 public class ELinksServiceImplTest {
 
     @InjectMocks

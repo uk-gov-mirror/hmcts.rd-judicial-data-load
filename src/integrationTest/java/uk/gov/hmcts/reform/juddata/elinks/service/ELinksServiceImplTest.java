@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpStatus;
@@ -28,11 +27,9 @@ import uk.gov.hmcts.reform.elinks.repository.LocationRepository;
 import uk.gov.hmcts.reform.elinks.service.impl.ELinksServiceImpl;
 import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.juddata.client.IdamClient;
-import uk.gov.hmcts.reform.juddata.config.LocationConfig;
 import uk.gov.hmcts.reform.juddata.configuration.EmailConfiguration;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,7 +49,6 @@ import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.LOCATION_DATA_LOA
         FeignHeaderConfig.class,
 
         EmailConfiguration.class,
-        LocationConfig.class,
         ELinksServiceImpl.class,
         ELinksServiceImplTestConfig.class
 
