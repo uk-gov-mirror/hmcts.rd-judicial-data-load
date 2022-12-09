@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.juddata.elinks.repository;
 
 import org.apache.camel.test.spring.junit5.MockEndpoints;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -19,12 +20,9 @@ import uk.gov.hmcts.reform.juddata.config.LocationConfig;
 import uk.gov.hmcts.reform.juddata.configuration.EmailConfiguration;
 import uk.gov.hmcts.reform.juddata.configuration.FeignConfiguration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-
 
 
 @TestPropertySource(properties = {"spring.config.location=classpath:application-integration-test.yml,"
@@ -40,26 +38,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 },
         initializers = ConfigDataApplicationContextInitializer.class)
 
-//@EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class)
 
 @EnableAutoConfiguration
 
 @EntityScan("uk.gov.hmcts.reform.elinks.domain")
 @EnableJpaRepositories("uk.gov.hmcts.reform.elinks.repository")
 
-//@EnableTransactionManagement
-//@SqlConfig(dataSource = "dataSource", transactionManager = "txManager",
-//        transactionMode = SqlConfig.TransactionMode.ISOLATED)
-//@SpringBootTest
-//@EnableFeignClients(clients = {IdamClient.class, IdamApi.class})
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-//(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Repository.class))
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+
 @SuppressWarnings("all")
 public class LocationRepositoryITTest  {
-
-
 
     @Autowired
     LocationRepository locationRepository;
@@ -69,6 +59,11 @@ public class LocationRepositoryITTest  {
         assertThat(locationRepository).isNotNull();
     }
 
+    @AfterEach
+    void cleanUpData(){
+
+        locationRepository.deleteAllInBatch();
+    }
     @Test
     void test_save_location() {
         Location location = new Location();
@@ -117,5 +112,30 @@ public class LocationRepositoryITTest  {
         assertThat(result.get(2).getRegionDescCy()).isBlank();
     }
 
+    @Test
+    void test_save_All_Locations_UpdateLocation() {
+
+        Location locationOne = new Location();
+        locationOne.setRegionId("1");
+        locationOne.setRegionDescEn("National");
+
+        Location locationTwo = new Location();
+        locationTwo.setRegionId("1");
+        locationTwo.setRegionDescEn("National England and Wales");
+
+
+        List<Location> locations = List.of(locationOne,locationTwo);
+
+        locationRepository.saveAll(locations);
+
+        List<Location> result = locationRepository.findAll();
+        //As default record is inserted through flyway script
+        assertThat(result.size()).isEqualTo(2);
+
+        assertThat(result.get(1).getRegionId()).isEqualTo(locationTwo.getRegionId());
+        assertThat(result.get(1).getRegionDescEn()).isEqualTo(locationTwo.getRegionDescEn());
+        assertThat(result.get(1).getRegionDescCy()).isBlank();
+
+    }
 
 }
