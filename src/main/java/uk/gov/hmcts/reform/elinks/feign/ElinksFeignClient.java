@@ -7,17 +7,27 @@ import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import uk.gov.hmcts.reform.elinks.configuration.ElinksFeignInterceptorConfiguration;
+import uk.gov.hmcts.reform.elinks.domain.BaseLocation;
+import uk.gov.hmcts.reform.elinks.domain.Location;
+
+import java.util.List;
 
 @FeignClient(name = "ElinksFeignClient", url = "${elinksUrl}",
         configuration = ElinksFeignInterceptorConfiguration.class)
 public interface ElinksFeignClient {
 
+    @GetMapping(value = "/base_location")
+    @RequestLine("GET /base_location")
+    @Headers({"Authorization: {authorization}", "ServiceAuthorization: {serviceAuthorization}",
+            "Content-Type: application/json"})
+    List<BaseLocation> retrieveBaseLocations();
+
     //URL not tested , code is for developers reference
-    @GetMapping(value = "/api/v4/reference_data/location")
-    @RequestLine("GET /api/v4/reference_data/location")
+    @GetMapping(value = "/location")
+    @RequestLine("GET /location")
     @Headers({"Authorization: {authorization}",
             "Content-Type: application/json"})
-    Response getLocationDetails();
+    List<Location> getLocationDetails();
 
 
 }

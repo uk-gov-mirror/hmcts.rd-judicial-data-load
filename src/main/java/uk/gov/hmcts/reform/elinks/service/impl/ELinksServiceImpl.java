@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.elinks.domain.BaseLocation;
 import uk.gov.hmcts.reform.elinks.domain.Location;
-import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient1;
+import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient;
 import uk.gov.hmcts.reform.elinks.repository.BaseLocationRepository;
 import uk.gov.hmcts.reform.elinks.repository.LocationRepository;
 import uk.gov.hmcts.reform.elinks.service.ELinksService;
@@ -28,7 +28,7 @@ public class ELinksServiceImpl implements ELinksService {
 
 
     @Autowired
-    ElinksFeignClient1 elinksFeignClient;
+    ElinksFeignClient elinksFeignClient;
 
     @Override
     public ResponseEntity<Object> retrieveBaseLocation() {
