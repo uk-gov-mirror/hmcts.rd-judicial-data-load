@@ -1,0 +1,36 @@
+package uk.gov.hmcts.reform.juddata.camel.elinks.service.impl;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient;
+import uk.gov.hmcts.reform.elinks.repository.BaseLocationRepository;
+import uk.gov.hmcts.reform.elinks.repository.LocationRepository;
+import uk.gov.hmcts.reform.elinks.service.impl.ELinksServiceImpl;
+
+@ExtendWith(MockitoExtension.class)
+@SuppressWarnings("all")
+public class ELinksServiceImplTest {
+
+    @InjectMocks
+    ELinksServiceImpl eLinksServiceImpl;
+
+    @Spy
+    BaseLocationRepository baseLocationRepository;
+
+    @Spy
+    LocationRepository LocationRepository;
+
+
+
+    @Spy
+    ElinksFeignClient elinksFeignClient;
+
+
+    @Test
+    void testLoadLocation() {
+
+    }
+}

@@ -17,6 +17,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
 @Configuration
 @EnableSwagger2
+@SuppressWarnings("all")
 public class SwaggerConfiguration {
 
     @Bean

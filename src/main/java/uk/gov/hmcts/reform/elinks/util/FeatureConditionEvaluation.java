@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 
 @Component
 @AllArgsConstructor
+@SuppressWarnings("all")
 public class FeatureConditionEvaluation implements HandlerInterceptor {
 
     public static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
