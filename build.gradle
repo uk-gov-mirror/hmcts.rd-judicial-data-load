@@ -219,10 +219,15 @@ sonarqube {
         property "sonar.pitest.reportsDirectory", "build/reports/pitest"
 
         property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/juddata/configuration/**," +
+                "src/main/java/uk/gov/hmcts/reform/elinks/configuration/**," +
                 "src/main/java/uk/gov/hmcts/reform/juddata/JudicialApplication.java," +
                 "src/main/java/uk/gov/hmcts/reform/juddata/client/**," +
                 "src/main/java/uk/gov/hmcts/reform/juddata/response/**," +
-                "src/main/java/uk/gov/hmcts/reform/juddata/camel/binder/**,"
+                "src/main/java/uk/gov/hmcts/reform/juddata/camel/binder/**," +
+                "src/main/java/uk/gov/hmcts/reform/elinks/configuration/**," +
+                "src/main/java/uk/gov/hmcts/reform/elinks/response/**," +
+                "src/main/java/uk/gov/hmcts/reform/elinks/domain/**," +
+                "src/main/java/uk/gov/hmcts/reform/elinks/util/**,"
     }
 }
 
@@ -284,6 +289,8 @@ dependencies {
     implementation "io.github.openfeign:feign-httpclient:11.8"
     implementation group: 'io.github.openfeign.form', name: 'feign-form', version: versions.feign
     implementation group: 'io.github.openfeign.form', name: 'feign-form-spring', version: versions.feign
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot
+
 
     implementation group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '3.0.2'
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
@@ -304,7 +311,7 @@ dependencies {
     testImplementation group: 'com.microsoft.azure', name: 'azure-storage-blob', version: '11.0.0'
 
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '5.2.4'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.4.1'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
 
     implementation group: 'com.google.guava', name: 'guava', version: '30.1-jre'
 
@@ -399,7 +406,18 @@ dependencies {
     testImplementation group: 'org.postgresql', name: 'postgresql', version: '42.4.1'
     testImplementation 'com.github.hmcts:fortify-client:1.2.0:all'
 
-	implementation group: 'org.yaml', name: 'snakeyaml', version: '1.33'
+    testImplementation ("com.github.tomakehurst:wiremock-jre8:2.32.0") {
+        exclude group: 'com.github.jknack'
+    }
+    testCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    integrationTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    functionalTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    functionalTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.33'
+    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.20'
 
     functionalTestImplementation sourceSets.main.runtimeClasspath
     functionalTestImplementation sourceSets.test.runtimeClasspath
@@ -415,7 +433,7 @@ dependencyManagement {
 
     dependencies {
         // CVE-2021-42340
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.63') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.68') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-el'
             entry 'tomcat-embed-websocket'
