@@ -48,7 +48,7 @@ def versions = [
         bytebuddy          : '1.12.7'
 ]
 
-mainClassName = 'uk.gov.hmcts.reform.JudicialApplication'
+mainClassName = 'uk.gov.hmcts.reform.juddata.JudicialApplication'
 def jarName = 'rd-judicial-data-load.jar'
 
 group = 'uk.gov.hmcts.reform.juddata'
