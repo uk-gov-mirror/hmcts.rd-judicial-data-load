@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 @Entity(name = "region_type")
-@Table(name = "dbjudicialdata.region_type")
+@Table(name = "region_type", schema = "dbjudicialdata")
 @Getter
 @Setter
 @NoArgsConstructor

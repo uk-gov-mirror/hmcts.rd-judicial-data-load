@@ -128,11 +128,11 @@ public class LocationRepositoryITTest  {
 
         List<Location> result = locationRepository.findAll();
         //As default record is inserted through flyway script
-        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.size()).isEqualTo(1);
 
-        assertThat(result.get(1).getRegionId()).isEqualTo(locationTwo.getRegionId());
-        assertThat(result.get(1).getRegionDescEn()).isEqualTo(locationTwo.getRegionDescEn());
-        assertThat(result.get(1).getRegionDescCy()).isBlank();
+        assertThat(result.get(0).getRegionId()).isEqualTo(locationTwo.getRegionId());
+        assertThat(result.get(0).getRegionDescEn()).isEqualTo(locationTwo.getRegionDescEn());
+        assertThat(result.get(0).getRegionDescCy()).isBlank();
 
     }
 
