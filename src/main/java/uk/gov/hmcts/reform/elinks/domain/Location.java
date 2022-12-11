@@ -9,12 +9,15 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 @Entity(name = "region_type")
+@Table(name = "dbjudicialdata.region_type")
 @Getter
 @Setter
 @NoArgsConstructor
+
 public class Location implements Serializable {
 
     @Id

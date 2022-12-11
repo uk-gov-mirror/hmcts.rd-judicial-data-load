@@ -9,9 +9,11 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 @Entity(name = "base_location_type")
+@Table(name = "dbjudicialdata.base_location_type")
 @Getter
 @Setter
 @NoArgsConstructor
