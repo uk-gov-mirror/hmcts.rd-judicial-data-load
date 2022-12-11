@@ -13,6 +13,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import uk.gov.hmcts.reform.data.ingestion.camel.service.AuditServiceImpl;
 import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.juddata.camel.util.JrdDataIngestionLibraryRunner;
@@ -25,6 +26,7 @@ import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.STA
 @Slf4j
 @EnableFeignClients(basePackages = {
     "uk.gov.hmcts.reform.juddata","uk.gov.hmcts.reform.elinks"}, basePackageClasses = {IdamApi.class})
+@EnableJpaRepositories(basePackages = "uk.gov.hmcts.reform")
 public class JudicialApplication implements ApplicationRunner {
 
     @Autowired

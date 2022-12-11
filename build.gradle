@@ -418,9 +418,6 @@ dependencies {
 
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.33'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.20'
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
-    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.20'
 
     functionalTestImplementation sourceSets.main.runtimeClasspath
     functionalTestImplementation sourceSets.test.runtimeClasspath

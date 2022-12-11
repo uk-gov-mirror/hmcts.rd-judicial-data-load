@@ -26,7 +26,7 @@ import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.UNAUTHORIZED_ERRO
 
 @RestController
 @RequestMapping(
-        path = "/refdata/internal/v1/elinks" //need to decide the path
+        path = "/refdata/jinternal/elink"
 )
 @Slf4j
 //@NoArgsConstructor
