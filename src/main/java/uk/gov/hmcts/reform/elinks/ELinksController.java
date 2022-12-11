@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.elinks.response.IdamResponse;
+import uk.gov.hmcts.reform.elinks.service.ELinksService;
 import uk.gov.hmcts.reform.elinks.service.IdamElasticSearchService;
 
 import java.util.Set;
@@ -74,7 +75,6 @@ public class ELinksController {
     })
     @GetMapping (path = "/location",
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> loadRegionType() {
     public ResponseEntity<Object> loadLocation(){
 
 
