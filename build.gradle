@@ -228,8 +228,8 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/elinks/response/**," +
                 "src/main/java/uk/gov/hmcts/reform/elinks/domain/**," +
                 "src/main/java/uk/gov/hmcts/reform/elinks/util/**,"   +
-                "src/main/java/uk/gov/hmcts/reform/elinks/controller/**," +
-                "src/main/java/uk/gov/hmcts/reform/elinks/service/**,"
+                "src/main/java/uk/gov/hmcts/reform/elinks/ELinksController.java," +
+                "src/main/java/uk/gov/hmcts/reform/juddata/camel/util/**,"
     }
 }
 
