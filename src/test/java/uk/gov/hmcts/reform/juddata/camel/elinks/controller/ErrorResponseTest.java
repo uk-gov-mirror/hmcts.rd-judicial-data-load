@@ -6,7 +6,7 @@ import uk.gov.hmcts.reform.elinks.controller.advice.ErrorResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings({"AbbreviationAsWordInName","MemberName"})
-public class ErrorResponseTest {
+class ErrorResponseTest {
 
     @Test
     void errorResponseResourceNotFound() {

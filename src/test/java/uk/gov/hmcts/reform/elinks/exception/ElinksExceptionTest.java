@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.INTERNAL_SERVER_ERROR;
 
 @SuppressWarnings({"AbbreviationAsWordInName","MemberName"})
-public class ElinksExceptionTest {
+class ElinksExceptionTest {
 
     @Test
     void elinksExceptionInternalServerError() {
