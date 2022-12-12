@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.elinks.feign;
 
 import feign.Headers;
 import feign.RequestLine;
+import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import uk.gov.hmcts.reform.elinks.configuration.ElinksFeignInterceptorConfiguration;
@@ -26,7 +27,7 @@ public interface ElinksFeignClient {
     @RequestLine("GET /reference_data/location")
     @Headers({"Authorization: {authorization}",
             "Content-Type: application/json"})
-    List<Location> getLocationDetails();
+    Response getLocationDetails();
 
 
 }
