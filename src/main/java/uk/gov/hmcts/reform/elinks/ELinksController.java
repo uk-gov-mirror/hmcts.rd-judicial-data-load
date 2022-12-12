@@ -20,6 +20,7 @@ import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.BAD_REQUEST;
+import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.BASE_LOCATION_DATA_LOAD_SUCCESS;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.FORBIDDEN_ERROR;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.INTERNAL_SERVER_ERROR;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.NO_DATA_FOUND;
@@ -115,12 +116,12 @@ public class ELinksController {
     })
     @GetMapping(  path = "/reference_data/base_location",
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> loadBaseLocationType() {
+    public ResponseEntity<Object> loadBaseLocationType() {
 
     eLinksService.retrieveBaseLocation();
     return ResponseEntity
                 .status(HttpStatus.OK)
-                .body("Test API");
+                .body(BASE_LOCATION_DATA_LOAD_SUCCESS);
     }
 
 
