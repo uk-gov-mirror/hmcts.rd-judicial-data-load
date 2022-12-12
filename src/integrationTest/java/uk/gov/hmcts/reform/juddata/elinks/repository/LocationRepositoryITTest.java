@@ -25,15 +25,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @TestPropertySource(properties = {"spring.config.location=classpath:application-integration-test.yml,"
-        +"classpath:application-test.yml,"
+        + "classpath:application-test.yml,"
         + "classpath:application-leaf-integration-test.yml"})
 @MockEndpoints("log:*")
 @ContextConfiguration(classes = {
         AzureBlobConfig.class,
         FeignConfiguration.class,
-        EmailConfiguration.class
-
-},
+        EmailConfiguration.class},
         initializers = ConfigDataApplicationContextInitializer.class)
 
 
@@ -45,8 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-
-@SuppressWarnings("all")
+@SuppressWarnings("AbbreviationAsWordInName")
 public class LocationRepositoryITTest  {
 
     @Autowired
@@ -58,10 +55,11 @@ public class LocationRepositoryITTest  {
     }
 
     @AfterEach
-    void cleanUpData(){
+    void cleanUpData() {
 
         locationRepository.deleteAllInBatch();
     }
+
     @Test
     void test_save_location() {
         Location location = new Location();

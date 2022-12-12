@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.elinks.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
@@ -15,10 +16,13 @@ import java.io.Serializable;
 public class LocationResponse implements Serializable {
     private String id;
     private String name;
-    private String start_date;
-    private String end_date;
-    private String created_at;
-    private String updated_at;
+    @JsonProperty("start_date")
+    private String startDate;
+    @JsonProperty("end_date")
+    private String endDate;
+    @JsonProperty("created_at")
+    private String createdAt;
+    @JsonProperty("updated_at")
+    private String updatedAt;
 
-    //{"id":1,"name":"National","start_date":null,"end_date":null,"created_at":"2022-10-03T15:28:19Z","updated_at":"2022-10-03T15:28:19Z"}
 }

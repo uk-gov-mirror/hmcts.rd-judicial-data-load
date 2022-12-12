@@ -58,32 +58,28 @@ public class ELinksServiceImpl implements ELinksService {
     @Override
     public ResponseEntity<Object> retrieveLocation() {
 
-        //Response lrdOrgInfoServiceResponse =
-                //locationReferenceDataFeignClient.getLocationRefServiceMapping(ccdServiceNames);
 
         Response locationsResponse = elinksFeignClient.getLocationDetails();
 
         HttpStatus httpStatus = HttpStatus.valueOf(locationsResponse.status());
         if (httpStatus.is2xxSuccessful()) {
-//            ResponseEntity<Object> responseEntity = JsonFeignResponseUtil.toResponseEntityWithListBody(locationsResponse,
-//                    Location.class);
             ResponseEntity<Object> responseEntity = JsonFeignResponseUtil.toELinksResponseEntity(locationsResponse,
-                   ElinkLocationResponse.class);
+                    ElinkLocationResponse.class);
 
 
             ElinkLocationResponse elinkLocationResponse = (ElinkLocationResponse) responseEntity.getBody();
 
-                    List<LocationResponse> locationResponseList = elinkLocationResponse.getResults();
+            List<LocationResponse> locationResponseList = elinkLocationResponse.getResults();
 
             List<Location> locations = locationResponseList.stream()
                     .map(locationRes -> new Location(locationRes.getId(), locationRes.getName(), StringUtils.EMPTY))
                     .toList();
 
-                 locationRepository.saveAll(locations);
+            locationRepository.saveAll(locations);
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(LOCATION_DATA_LOAD_SUCCESS);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(LOCATION_DATA_LOAD_SUCCESS);
 
         }
 

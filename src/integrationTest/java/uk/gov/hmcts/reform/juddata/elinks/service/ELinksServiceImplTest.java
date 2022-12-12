@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
@@ -35,21 +34,18 @@ import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.juddata.client.IdamClient;
 import uk.gov.hmcts.reform.juddata.configuration.EmailConfiguration;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.nio.charset.Charset.defaultCharset;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.LOCATION_DATA_LOAD_SUCCESS;
 
 @TestPropertySource(properties = {"spring.config.location=classpath:application-integration-test.yml,"
-        +"classpath:application-test.yml,"
+        + "classpath:application-test.yml,"
         + "classpath:application-leaf-integration-test.yml"})
 @MockEndpoints("log:*")
 
@@ -62,31 +58,19 @@ import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.LOCATION_DATA_LOA
 
         EmailConfiguration.class,
         ELinksServiceImpl.class,
-        ELinksServiceImplTestConfig.class
-
-},
+        ELinksServiceImplTestConfig.class},
         initializers = ConfigDataApplicationContextInitializer.class)
 
-//@EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class)
 
 @EnableAutoConfiguration
-//@ComponentScan(basePackages = {"uk.gov.hmcts.reform.elinks"})
 @EntityScan("uk.gov.hmcts.reform.elinks.domain")
 @EnableJpaRepositories("uk.gov.hmcts.reform.elinks.repository")
 
-//@ImportAutoConfiguration({FeignAutoConfiguration.class})
-//@EnableFeignClients(clients = {ElinksFeignClient.class, IdamClient.class, IdamApi.class})
-//@EnableFeignClients(basePackages = {"uk.gov.hmcts.reform.elinks.feign"})
-//@EnableTransactionManagement
-//@SqlConfig(dataSource = "dataSource", transactionManager = "txManager",
-//        transactionMode = SqlConfig.TransactionMode.ISOLATED)
-//@SpringBootTest
 @EnableFeignClients(clients = {ElinksFeignClient.class,IdamClient.class, IdamApi.class})
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-//(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Repository.class))
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@SuppressWarnings("all")
+@SuppressWarnings({"AbbreviationAsWordInName","MemberName"})
 public class ELinksServiceImplTest {
 
 
@@ -173,29 +157,29 @@ public class ELinksServiceImplTest {
 
     }
 
-    private List<LocationResponse> getLocationResponseData(){
+    private List<LocationResponse> getLocationResponseData() {
 
-        List<LocationResponse> locations = new ArrayList<>();
+
         LocationResponse locationOne = new LocationResponse();
         locationOne.setId("1");
         locationOne.setName("National");
-        locationOne.setCreated_at("2022-10-03T15:28:19Z");
-        locationOne.setUpdated_at("2022-10-03T15:28:19Z");
+        locationOne.setCreatedAt("2022-10-03T15:28:19Z");
+        locationOne.setUpdatedAt("2022-10-03T15:28:19Z");
 
         LocationResponse locationTwo = new LocationResponse();
         locationTwo.setId("2");
         locationTwo.setName("National England and Wales");
-        locationTwo.setCreated_at("2022-10-03T15:28:19Z");
-        locationTwo.setUpdated_at("2022-10-03T15:28:19Z");
+        locationTwo.setCreatedAt("2022-10-03T15:28:19Z");
+        locationTwo.setUpdatedAt("2022-10-03T15:28:19Z");
 
 
         LocationResponse locationThree = new LocationResponse();
         locationThree.setId("3");
         locationThree.setName("Taylor House (London)");
-        locationThree.setCreated_at("2022-10-03T15:28:19Z");
-        locationThree.setUpdated_at("2022-10-03T15:28:19Z");
+        locationThree.setCreatedAt("2022-10-03T15:28:19Z");
+        locationThree.setUpdatedAt("2022-10-03T15:28:19Z");
 
-
+        List<LocationResponse> locations = new ArrayList<>();
 
         locations.add(locationOne);
         locations.add(locationTwo);

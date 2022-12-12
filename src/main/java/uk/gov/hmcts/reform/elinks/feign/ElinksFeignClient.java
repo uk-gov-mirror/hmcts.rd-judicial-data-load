@@ -8,7 +8,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import uk.gov.hmcts.reform.elinks.configuration.ElinksFeignInterceptorConfiguration;
 import uk.gov.hmcts.reform.elinks.domain.BaseLocation;
-import uk.gov.hmcts.reform.elinks.domain.Location;
 
 import java.util.List;
 
