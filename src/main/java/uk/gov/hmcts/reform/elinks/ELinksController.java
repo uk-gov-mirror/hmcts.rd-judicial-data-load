@@ -73,7 +73,7 @@ public class ELinksController {
                     message = INTERNAL_SERVER_ERROR
             )
     })
-    @GetMapping (path = "/location",
+    @GetMapping (path = "/reference_data/location",
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> loadLocation(){
 
@@ -113,7 +113,7 @@ public class ELinksController {
                     message = INTERNAL_SERVER_ERROR
             )
     })
-    @GetMapping(  path = "/base_location",
+    @GetMapping(  path = "/reference_data/base_location",
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> loadBaseLocationType() {
 
