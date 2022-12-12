@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.elinks;
 import lombok.extern.slf4j.Slf4j;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +27,7 @@ class JudicialIdamElasticFunctionalTest extends AuthorizationFunctionalTest {
     @Test
     @ExtendWith(FeatureToggleConditionExtension.class)
     @ToggleEnable(mapKey = IDAM_ELASTIC_SEARCH, withFeature = true)
+    @Disabled
     void shouldReturn_200Status() {
         var response = judicialDataLoadApiClient.getIdamElasticSearch();
 
