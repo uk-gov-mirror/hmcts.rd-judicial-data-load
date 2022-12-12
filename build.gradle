@@ -227,7 +227,8 @@ sonarqube {
                 "src/main/java/uk/gov/hmcts/reform/elinks/configuration/**," +
                 "src/main/java/uk/gov/hmcts/reform/elinks/response/**," +
                 "src/main/java/uk/gov/hmcts/reform/elinks/domain/**," +
-                "src/main/java/uk/gov/hmcts/reform/elinks/util/**,"
+                "src/main/java/uk/gov/hmcts/reform/elinks/util/**,"   +
+                "src/main/java/uk/gov/hmcts/reform/elinks/controller/**,"
     }
 }
 
