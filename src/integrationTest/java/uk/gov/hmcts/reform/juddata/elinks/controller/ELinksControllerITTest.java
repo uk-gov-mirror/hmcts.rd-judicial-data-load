@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.juddata.elinks.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.Request;
+import feign.Response;
 import org.apache.camel.test.spring.junit5.MockEndpoints;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +28,8 @@ import uk.gov.hmcts.reform.elinks.configuration.FeignHeaderConfig;
 import uk.gov.hmcts.reform.elinks.domain.Location;
 import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient;
 import uk.gov.hmcts.reform.elinks.feign.IdamFeignClient;
+import uk.gov.hmcts.reform.elinks.response.ElinkLocationResponse;
+import uk.gov.hmcts.reform.elinks.response.LocationResponse;
 import uk.gov.hmcts.reform.elinks.service.IdamElasticSearchService;
 import uk.gov.hmcts.reform.elinks.service.impl.ELinksServiceImpl;
 import uk.gov.hmcts.reform.elinks.service.impl.IdamElasticSearchServiceImpl;
@@ -32,10 +37,15 @@ import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.juddata.client.IdamClient;
 import uk.gov.hmcts.reform.juddata.configuration.EmailConfiguration;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.nio.charset.Charset.defaultCharset;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.LOCATION_DATA_LOAD_SUCCESS;
 
@@ -110,11 +120,20 @@ public class ELinksControllerITTest {
     }
 
     @Test
-    void test_elinksService_load_location_return_staus_200() {
+    void test_elinksService_load_location_return_staus_200() throws IOException {
 
-        List<Location> locations = getLocationsData();
+        List<LocationResponse> locations = getLocationResponseData();
 
-        when(elinksFeignClientOne.getLocationDetails()).thenReturn(locations);
+        ElinkLocationResponse elinkLocationResponse = new ElinkLocationResponse();
+        elinkLocationResponse.setResults(locations);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        String body = mapper.writeValueAsString(elinkLocationResponse);
+
+        when(elinksFeignClientOne.getLocationDetails()).thenReturn(Response.builder()
+                .request(mock(Request.class)).body(body, defaultCharset()).status(HttpStatus.OK.value()).build());
+
 
         ResponseEntity<Object> responseEntity = eLinksController.loadLocation();
 
@@ -138,6 +157,38 @@ public class ELinksControllerITTest {
         Location locationThree = new Location();
         locationThree.setRegionId("3");
         locationThree.setRegionDescEn("Taylor House (London)");
+        locations.add(locationOne);
+        locations.add(locationTwo);
+        locations.add(locationThree);
+
+        return locations;
+
+    }
+
+    private List<LocationResponse> getLocationResponseData(){
+
+        List<LocationResponse> locations = new ArrayList<>();
+        LocationResponse locationOne = new LocationResponse();
+        locationOne.setId("1");
+        locationOne.setName("National");
+        locationOne.setCreated_at("2022-10-03T15:28:19Z");
+        locationOne.setUpdated_at("2022-10-03T15:28:19Z");
+
+        LocationResponse locationTwo = new LocationResponse();
+        locationTwo.setId("2");
+        locationTwo.setName("National England and Wales");
+        locationTwo.setCreated_at("2022-10-03T15:28:19Z");
+        locationTwo.setUpdated_at("2022-10-03T15:28:19Z");
+
+
+        LocationResponse locationThree = new LocationResponse();
+        locationThree.setId("3");
+        locationThree.setName("Taylor House (London)");
+        locationThree.setCreated_at("2022-10-03T15:28:19Z");
+        locationThree.setUpdated_at("2022-10-03T15:28:19Z");
+
+
+
         locations.add(locationOne);
         locations.add(locationTwo);
         locations.add(locationThree);
