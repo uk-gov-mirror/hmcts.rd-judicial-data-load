@@ -15,15 +15,15 @@ import java.util.List;
         configuration = ElinksFeignInterceptorConfiguration.class)
 public interface ElinksFeignClient {
 
-    @GetMapping(value = "/base_location")
-    @RequestLine("GET /base_location")
+    @GetMapping(value = "/reference_data/base_location")
+    @RequestLine("GET /reference_data/base_location")
     @Headers({"Authorization: {authorization}", "ServiceAuthorization: {serviceAuthorization}",
             "Content-Type: application/json"})
     List<BaseLocation> retrieveBaseLocations();
 
     //URL not tested , code is for developers reference
-    @GetMapping(value = "/location")
-    @RequestLine("GET /location")
+    @GetMapping(value = "/reference_data/location")
+    @RequestLine("GET /reference_data/location")
     @Headers({"Authorization: {authorization}",
             "Content-Type: application/json"})
     List<Location> getLocationDetails();
