@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.elinks.response.IdamResponse;
+import uk.gov.hmcts.reform.elinks.response.SchedulerJobStatusResponse;
 import uk.gov.hmcts.reform.elinks.service.IdamElasticSearchService;
+import uk.gov.hmcts.reform.elinks.service.PublishSidamIdService;
 
 import java.util.Set;
 
@@ -32,6 +34,9 @@ import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.UNAUTHORIZED_ERRO
 //@NoArgsConstructor
 @AllArgsConstructor
 public class ELinksController {
+
+    @Autowired
+    PublishSidamIdService publishSidamIdService;
 
     @Autowired
     IdamElasticSearchService idamElasticSearchService;
@@ -77,7 +82,6 @@ public class ELinksController {
                 .body("Test API");
     }
 
-
     @ApiResponses({
             @ApiResponse(
                     code = 200,
@@ -112,4 +116,44 @@ public class ELinksController {
                 .body(response);
     }
 
+
+    @ApiResponses({
+            @ApiResponse(
+                    code = 200,
+                    message = "Get all SIDAM id's to ASB",
+                    response = String.class
+            ),
+            @ApiResponse(
+                    code = 400,
+                    message = BAD_REQUEST
+            ),
+            @ApiResponse(
+                    code = 401,
+                    message = UNAUTHORIZED_ERROR
+            ),
+            @ApiResponse(
+                    code = 403,
+                    message = FORBIDDEN_ERROR
+            ),
+            @ApiResponse(
+                    code = 404,
+                    message = NO_DATA_FOUND
+            ),
+            @ApiResponse(
+                    code = 429,
+                    message = TOO_MANY_REQUESTS
+            ),
+            @ApiResponse(
+                    code = 500,
+                    message = INTERNAL_SERVER_ERROR
+            )
+    })
+    @GetMapping(path = "/asb/publish",
+            produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> publishSidamIdToAsb() throws Exception {
+        SchedulerJobStatusResponse response = publishSidamIdService.publishSidamIdToAsb();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
 }

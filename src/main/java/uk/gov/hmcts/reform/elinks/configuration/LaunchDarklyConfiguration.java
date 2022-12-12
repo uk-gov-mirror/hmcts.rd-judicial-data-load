@@ -28,7 +28,7 @@ public class LaunchDarklyConfiguration implements WebMvcConfigurer {
                 .addPathPatterns("/refdata/jinternal/elink/people")
                 .addPathPatterns("/refdata/jinternal/elink/leavers")
                 .addPathPatterns("/refdata/jinternal/elinks/idam/elastic/search")
-                .addPathPatterns("/refdata/jinternal/elinks/asb/publish");
+                .addPathPatterns("/refdata/jinternal/elink/asb/publish");
 
     }
 }

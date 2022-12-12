@@ -1,0 +1,96 @@
+package uk.gov.hmcts.reform.elinks.servicebus;
+
+import com.azure.messaging.servicebus.ServiceBusMessage;
+import com.azure.messaging.servicebus.ServiceBusMessageBatch;
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
+import com.azure.messaging.servicebus.ServiceBusTransactionContext;
+import org.apache.camel.CamelContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.*;
+
+import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.JOB_ID;
+
+@ExtendWith(MockitoExtension.class)
+class ElinkTopicPublisherTest {
+
+    private final ServiceBusSenderClient serviceBusSenderClient = mock(ServiceBusSenderClient.class);
+
+    private final ServiceBusTransactionContext transactionContext = mock(ServiceBusTransactionContext.class);
+
+    private final ServiceBusMessageBatch messageBatch = mock(ServiceBusMessageBatch.class);
+
+    List<String> sidamIdsList = new ArrayList<>();
+
+    List<ServiceBusMessage> serviceBusMessageList = new ArrayList<>();
+
+    @InjectMocks
+    ElinkTopicPublisher elinkTopicPublisher;
+
+    CamelContext camelContext = mock(CamelContext.class);
+
+    @BeforeEach
+    public void beforeTest() {
+        Map<String, String> options = new HashMap<>();
+        options.put(JOB_ID, "1");
+        for (int i = 0; i < 5; i++) {
+            sidamIdsList.add(UUID.randomUUID().toString());
+        }
+        elinkTopicPublisher.jrdMessageBatchSize = 2;
+        elinkTopicPublisher.loggingComponentName = "loggingComponent";
+        elinkTopicPublisher.topic = "dummyTopic";
+        when(camelContext.getGlobalOptions()).thenReturn(options);
+    }
+
+    @Test
+    @DisplayName("Postive scenario for sending message to Azure Sevice Bus")
+    void should_send_message_to_Asb() {
+        doReturn(true).when(messageBatch).tryAddMessage(any());
+        doReturn(1).when(messageBatch).getCount();
+        doReturn(messageBatch).when(serviceBusSenderClient).createMessageBatch();
+        when(messageBatch.getCount()).thenReturn(1);
+        elinkTopicPublisher.sendMessage(sidamIdsList, "1");
+        verify(messageBatch, times(3)).tryAddMessage(any());
+        verify(messageBatch).getCount();
+        verify(serviceBusSenderClient).sendMessages((ServiceBusMessageBatch) any(), any());
+        verify(serviceBusSenderClient, times(1)).commitTransaction(any());
+    }
+
+    @Test
+    @DisplayName("Throw Exception and Rollback Transaction for connection issue while sending message to Azure "
+            + "Sevice Bus")
+    void should_throwException_and_rollbackTranscation_forConnectionIssues() {
+        doReturn(transactionContext).when(serviceBusSenderClient).createTransaction();
+        doThrow(new RuntimeException("Some Exception")).when(serviceBusSenderClient).createMessageBatch();
+        assertThrows(Exception.class, () -> elinkTopicPublisher.sendMessage(sidamIdsList, "1"));
+        verify(serviceBusSenderClient, times(1)).rollbackTransaction(any());
+    }
+
+
+    @Test
+    @DisplayName("Throw NullPointerException when passing transactioncontext as NULL")
+    void should_throw_NullpointerException_when_transactionContext_is_null() {
+        doReturn(null).when(serviceBusSenderClient).createTransaction();
+        doThrow(new RuntimeException("NullpointerException")).when(serviceBusSenderClient).createMessageBatch();
+        assertThrows(Exception.class, () -> elinkTopicPublisher.sendMessage(sidamIdsList, "1"));
+    }
+    @Test
+    @DisplayName("Large message not able to add in message batch")
+    void not_able_to_add_large_message_in_message_bus() {
+        doReturn(false).when(messageBatch).tryAddMessage(any());
+        doReturn(1).when(messageBatch).getCount();
+        doReturn(messageBatch).when(serviceBusSenderClient).createMessageBatch();
+        when(messageBatch.getCount()).thenReturn(1);
+        elinkTopicPublisher.sendMessage(sidamIdsList, "1");
+        verify(serviceBusSenderClient, times(4))
+                .sendMessages((ServiceBusMessageBatch) any(), any());
+    }
+}

@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.elinks.util;
 
 
+import org.springframework.jdbc.core.RowMapper;
+
 public class RefDataConstants {
 
     private RefDataConstants() {
@@ -17,5 +19,13 @@ public class RefDataConstants {
     public static final String INTERNAL_SERVER_ERROR = "Internal Server Error";
 
     public static final String TOO_MANY_REQUESTS = "Too Many Requests";
+
+    public static final String JOB_ID = "JOB_ID";
+
+    public static final String ASB_PUBLISHING_STATUS = "ASB_PUBLISHING_STATUS";
+
+    public static final String CONTENT_TYPE_PLAIN = "text/plain";
+
+    public static final RowMapper<String> ROW_MAPPER = (rs, i) -> rs.getString(1);
 
 }

@@ -341,6 +341,11 @@ dependencies {
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: versions.logback
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
 
+    implementation group: 'org.springframework.security', name: 'spring-security-test'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.23.1'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.9.1'
+
+
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     testCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
