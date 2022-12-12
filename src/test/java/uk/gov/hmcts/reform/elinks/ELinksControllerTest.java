@@ -10,11 +10,13 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.elinks.service.ELinksService;
 import uk.gov.hmcts.reform.elinks.service.IdamElasticSearchService;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.BASE_LOCATION_DATA_LOAD_SUCCESS;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.LOCATION_DATA_LOAD_SUCCESS;
-import static org.assertj.core.api.Assertions.assertThat;
+
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings({"AbbreviationAsWordInName","MemberName"})
 public class ELinksControllerTest {
 
     @InjectMocks
