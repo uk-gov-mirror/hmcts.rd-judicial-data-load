@@ -21,19 +21,6 @@ class JudicialIdamElasticFunctionalTest extends AuthorizationFunctionalTest {
 
     public static final String IDAM_ELASTIC_SEARCH = "ELinksController.idamElasticSearch";
 
-
-
-    @Test
-    @ExtendWith(FeatureToggleConditionExtension.class)
-    @ToggleEnable(mapKey = IDAM_ELASTIC_SEARCH, withFeature = true)
-    void shouldReturn_200Status() {
-        var response = judicialDataLoadApiClient.getIdamElasticSearch();
-
-        assertNotNull(response);
-        assertThat(response.getStatusCode()).isEqualTo(200);
-    }
-
-
     @Test
     @ExtendWith(FeatureToggleConditionExtension.class)
     @ToggleEnable(mapKey = IDAM_ELASTIC_SEARCH, withFeature = false)
