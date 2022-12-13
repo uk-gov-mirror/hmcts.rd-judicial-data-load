@@ -7,7 +7,6 @@ job:
     POSTGRES_USERNAME: dbjuddata
     POSTGRES_PASSWORD: dbjuddata
     FLYWAY_ENABLED: true
-    ENV_NAME: preview
     CONTAINER_NAME: jud-ref-data
     JRD_MQ_TRUST_ALL_CERTS: false
     MAIL_FROM: no-reply@mail-rd-nonprod.platform.hmcts.net
