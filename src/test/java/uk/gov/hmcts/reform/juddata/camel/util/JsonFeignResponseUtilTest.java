@@ -39,5 +39,5 @@ class JsonFeignResponseUtilTest {
                 new TypeReference<List<IdamClient.User>>() {}));
     }
 
-    
+
 }
