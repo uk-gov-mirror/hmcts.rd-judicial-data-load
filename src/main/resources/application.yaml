@@ -13,7 +13,14 @@ management:
 spring:
   application:
     name: Judicial reference data blob store sync API
-
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
   batch:
     initialize-schema: always
     #run spring batch job manually as need to validate idempotent condition in code
