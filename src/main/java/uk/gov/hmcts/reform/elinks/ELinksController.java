@@ -32,7 +32,6 @@ import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.UNAUTHORIZED_ERRO
         path = "/refdata/jinternal/elink"
 )
 @Slf4j
-@NoArgsConstructor
 @AllArgsConstructor
 @SuppressWarnings("all")
 public class ELinksController {

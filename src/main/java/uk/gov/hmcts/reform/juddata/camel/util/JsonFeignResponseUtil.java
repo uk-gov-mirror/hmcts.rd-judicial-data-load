@@ -76,24 +76,6 @@ public class JsonFeignResponseUtil {
         return responseEntityHeaders;
     }
 
-    public static ResponseEntity<Object> toResponseEntityWithListBody(Response response, Object clazz) {
-        List<Object> payload = mapObjectToList(response, clazz);
 
-        return new ResponseEntity<>(
-                payload,
-                convertHeaders(response.headers()),
-                HttpStatus.valueOf(response.status()));
-    }
-
-    public static List<Object> mapObjectToList(Response response, Object clazz) {
-        try {
-            JavaType type = json.getTypeFactory().constructCollectionType(List.class, (Class<?>) clazz);
-            return json.readValue(response.body().asReader(Charset.defaultCharset()), type);
-        } catch (Exception e) {
-            throw new ElinksException(INTERNAL_SERVER_ERROR,
-                    String.format(ERROR_IN_PARSING_THE_FEIGN_RESPONSE, ((Class<?>) clazz).getSimpleName()),
-                    e.getLocalizedMessage());
-        }
-    }
 }
 
