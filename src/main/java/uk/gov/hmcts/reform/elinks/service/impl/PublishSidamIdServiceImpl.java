@@ -114,8 +114,7 @@ public class PublishSidamIdServiceImpl implements PublishSidamIdService {
 
             publishMessage(jobDetails.getRight(), sidamIds, jobDetails.getLeft());
 
-            log.info("{}:: completed Publish SidamId to ASB with JOB Id: {}  ", logComponentName,
-                    getJobDetails(SELECT_JOB_STATUS_SQL).getLeft());
+            log.info("{}:: completed Publish SidamId to ASB with JOB Id: {}  ", logComponentName, jobDetails.getLeft());
 
            /* We have to uncomment it when feature toggle button
 
