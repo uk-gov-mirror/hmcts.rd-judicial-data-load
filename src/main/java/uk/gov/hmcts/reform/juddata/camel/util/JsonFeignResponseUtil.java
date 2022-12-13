@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.juddata.camel.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import lombok.AccessLevel;
@@ -12,19 +11,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
-import uk.gov.hmcts.reform.elinks.exception.ElinksException;
 import uk.gov.hmcts.reform.juddata.exception.JudicialDataLoadException;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ERROR_IN_PARSING_THE_FEIGN_RESPONSE;
 
 
 @SuppressWarnings({"unchecked","HideUtilityClassConstructor"})
