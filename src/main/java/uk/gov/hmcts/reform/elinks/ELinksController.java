@@ -150,7 +150,7 @@ public class ELinksController {
     })
     @GetMapping(path = "/sidam/asb/publish",
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> publishSidamIdToAsb() throws Exception {
+    public ResponseEntity<Object> publishSidamIdToAsb() {
         SchedulerJobStatusResponse response = publishSidamIdService.publishSidamIdToAsb();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
