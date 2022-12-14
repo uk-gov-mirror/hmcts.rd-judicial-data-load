@@ -47,8 +47,6 @@ public class PublishSidamIdServiceImpl implements PublishSidamIdService {
 
     private static final String ZERO = "0";
 
-    private static final String JRD_ELINKS_ASB_FLAG = "rd_jud_elinks";
-
     @Autowired
     @Qualifier("springJdbcTemplate")
     JdbcTemplate jdbcTemplate;
@@ -84,27 +82,14 @@ public class PublishSidamIdServiceImpl implements PublishSidamIdService {
 
             log.info("{}::Total SIDAM Id count from JUD_Database: {}", logComponentName, sidamIdcount);
             if (isEmpty(sidamIds)) {
-                log.warn("{}:: No Sidam id exists in JRD for publishing in ASB for JOB id {}",
-                        logComponentName);
+                log.warn("{}:: No Sidam id exists in JRD for publishing in ASB for JOB id: {} ",
+                        logComponentName,jobDetails.getLeft());
                 updateAsbStatus(jobDetails.getLeft(),SUCCESS.getStatus());
             }
 
             publishMessage(jobDetails.getRight(), sidamIds, jobDetails.getLeft());
 
             log.info("{}:: completed Publish SidamId to ASB with JOB Id: {}  ", logComponentName, jobDetails.getLeft());
-
-            /* We have to uncomment it when feature toggle button
-
-           if (featureToggleService.isFlagEnabled(JRD_ELINKS_ASB_FLAG)) {
-                if (isEmpty(sidamIds)) {
-                    log.warn("{}:: No Sidam id exists in JRD  for publishing in ASB for JOB id {}",
-                            logComponentName);
-                    updateAsbStatus(jobDetails.getLeft(),SUCCESS.getStatus());
-                }
-                publishMessage(jobDetails.getRight(), sidamIds, jobDetails.getLeft());
-                log.info("{}:: completed Publish SidamId to ASB {} with JOB Id:", logComponentName,
-                        getJobDetails(SELECT_JOB_STATUS_SQL).getLeft());
-            }*/
 
             return SchedulerJobStatusResponse.builder()
                     .id(jobDetails.getLeft())
