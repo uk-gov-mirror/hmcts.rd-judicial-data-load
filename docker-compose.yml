@@ -12,7 +12,7 @@ services:
     environment:
       - POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-dbjuddata}"
     ports:
-      - 5456:5432
+      - 5457:5432
 
 volumes:
   rd-judicial-db-volume:
