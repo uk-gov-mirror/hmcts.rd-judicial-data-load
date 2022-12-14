@@ -11,13 +11,26 @@ job:
     CONTAINER_NAME: jud-ref-data
     JRD_MQ_TRUST_ALL_CERTS: false
     MAIL_FROM: no-reply@mail-rd-nonprod.platform.hmcts.net
+    postgresql:
+      enabled: true
+    image: 'hmctspublic.azurecr.io/rd/judicial-data-load:latest'
   keyVaults:
     rd:
       secrets:
         - judicial-api-POSTGRES-PASS
         - ApplicationInsightsInstrumentationKey
+        - name: ACCOUNT-NAME
+          alias: ACCOUNT_NAME
+        - name: ACCOUNT-KEY
+          alias: ACCOUNT_KEY
+        - name: CONTAINER-NAME
+          alias: CONTAINER_NAME
+        - name: judicial-topic-primary-connection-string
+          alias: JUDICIAL_TOPIC_PRIMARY_CONNECTION_STRING
         - name: LD-SDK-KEY
           alias: LD_SDK_KEY
+        - name: OAUTH2-CLIENT-SECRET
+          alias: OAUTH2_CLIENT_SECRET
         - name: OAUTH2-AUTH
           alias: OAUTH2_AUTH
         - name: OAUTH2-CLIENT-AUTH
