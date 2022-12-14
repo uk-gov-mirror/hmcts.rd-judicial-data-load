@@ -9,8 +9,8 @@ maintainers:
   - name: Reference Data Team
 dependencies:
   - name: job
-    version: ~0.7.5
-    repository: https://hmctspublic.azurecr.io/helm/v1/repo/
+    version: 0.7.3
+    repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
   - name: postgresql
     version: 11.6.10
     repository: https://charts.bitnami.com/bitnami

@@ -1,10 +1,15 @@
 job:
   applicationPort: 8094
+  image: 'hmctspublic.azurecr.io/rd/judicial-data-load:latest'
   ingressHost: rd-judicial-data-load-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   aadIdentityName: rd
+  kind: CronJob
+  global:
+    jobKind: CronJob
   environment:
     POSTGRES_HOST: rd-judicial-api-postgres-db-{{ .Values.global.environment }}.postgres.database.azure.com
     POSTGRES_USERNAME: dbjuddata@rd-judicial-api-postgres-db-{{ .Values.global.environment }}
+    POSTGRES_NAME: dbjuddata
     POSTGRES_PORT: 5432
     LOGBACK_REQUIRE_ALERT_LEVEL: 'false'
     LOGBACK_REQUIRE_ERROR_CODE: 'false'
@@ -16,13 +21,9 @@ job:
     IDAM_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
     OAUTH2_REDIRECT_URI: https://rd-professional-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/oauth2redirect
     ELINKS_URL: https://jo-staging.elinks.judiciary.uk
-  postgresql:
-    enabled: false
-  image: 'hmctspublic.azurecr.io/rd/judicial-data-load:latest'
-  kind: CronJob
-  schedule: "*/10 * * * *"
-  global:
-    jobKind: CronJob
+    postgresql:
+      enabled: false
+    image: 'hmctspublic.azurecr.io/rd/judicial-data-load:latest'
   keyVaults:
     "rd":
       resourceGroup: rd
