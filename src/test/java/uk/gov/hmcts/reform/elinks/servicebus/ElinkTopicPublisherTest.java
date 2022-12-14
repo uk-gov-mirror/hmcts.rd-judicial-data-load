@@ -12,11 +12,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.JOB_ID;
 
 @ExtendWith(MockitoExtension.class)
@@ -82,6 +91,7 @@ class ElinkTopicPublisherTest {
         doThrow(new RuntimeException("NullpointerException")).when(serviceBusSenderClient).createMessageBatch();
         assertThrows(Exception.class, () -> elinkTopicPublisher.sendMessage(sidamIdsList, "1"));
     }
+
     @Test
     @DisplayName("Large message not able to add in message batch")
     void not_able_to_add_large_message_in_message_bus() {

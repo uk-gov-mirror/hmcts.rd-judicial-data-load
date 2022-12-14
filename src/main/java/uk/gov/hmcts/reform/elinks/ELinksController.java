@@ -120,7 +120,7 @@ public class ELinksController {
     @ApiResponses({
             @ApiResponse(
                     code = 200,
-                    message = "Get all SIDAM id's to ASB",
+                    message = "Publish all SIDAM id's to ASB",
                     response = String.class
             ),
             @ApiResponse(
@@ -148,7 +148,7 @@ public class ELinksController {
                     message = INTERNAL_SERVER_ERROR
             )
     })
-    @GetMapping(path = "/asb/publish",
+    @GetMapping(path = "/sidam/asb/publish",
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> publishSidamIdToAsb() throws Exception {
         SchedulerJobStatusResponse response = publishSidamIdService.publishSidamIdToAsb();

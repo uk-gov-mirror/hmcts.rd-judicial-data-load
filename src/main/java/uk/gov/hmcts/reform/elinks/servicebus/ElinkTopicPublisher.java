@@ -9,18 +9,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.juddata.camel.util.PublishJudicialData;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 import static com.google.common.collect.Lists.partition;
 
 @Slf4j
-@Service
+@Component
 public class ElinkTopicPublisher {
 
     @Value("${logging-component-name}")

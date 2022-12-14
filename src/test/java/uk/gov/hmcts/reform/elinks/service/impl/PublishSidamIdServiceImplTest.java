@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import uk.gov.hmcts.reform.data.ingestion.camel.service.EmailServiceImpl;
@@ -20,14 +21,21 @@ import uk.gov.hmcts.reform.elinks.servicebus.ElinkTopicPublisher;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.elinks.util.JobStatus.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.elinks.util.JobStatus.FAILED;
+import static uk.gov.hmcts.reform.elinks.util.JobStatus.IN_PROGRESS;
+import static uk.gov.hmcts.reform.elinks.util.JobStatus.SUCCESS;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ROW_MAPPER;
-import static uk.gov.hmcts.reform.elinks.util.SqlContants.SELECT_JOB_STATUS_SQL;
 import static uk.gov.hmcts.reform.elinks.util.SqlContants.GET_DISTINCT_SIDAM_ID;
 
 
@@ -44,19 +52,17 @@ class PublishSidamIdServiceImplTest {
     @Mock
     ElinkTopicPublisher elinkTopicPublisher;
 
-    @Mock
-    SchedulerJobStatusResponse schedulerJobStatusResponse;
+    EmailServiceImpl emailService = mock(EmailServiceImpl.class);
 
     List<String> sidamIds = new ArrayList<>();
-
-    EmailServiceImpl emailService = mock(EmailServiceImpl.class);
 
     @BeforeEach
     public void beforeTest() throws Exception {
 
-        sidamIds.add(UUID.randomUUID().toString());
+        sidamIds.add("edc4190e-8e31-47d5-af56-cb7784bcd3a9");
         publishSidamIdService.logComponentName = "RD_Elink_Judicial_Ref_Data";
     }
+
     @SneakyThrows
     @Test
     @DisplayName("Positive Scenario: Pusblish message to ASb when job status is in progress")
@@ -65,20 +71,29 @@ class PublishSidamIdServiceImplTest {
         when(jdbcTemplate.queryForObject(anyString(), any(RowMapper.class)))
                 .thenReturn(Pair.of("2", IN_PROGRESS.getStatus()));
 
-        publishSidamIdService.publishSidamIdToAsb();
-        verify(elinkTopicPublisher, times(1)).sendMessage(any(), anyString());
+        SchedulerJobStatusResponse res = publishSidamIdService.publishSidamIdToAsb();
+
+        assertEquals("2",res.getId());
+        assertEquals("IN_PROGRESS", res.getJobStatus());
+        assertEquals(HttpStatus.OK.value(),res.getStatusCode());
+
     }
 
     @SneakyThrows
     @Test
     @DisplayName("Should retry when job status is_failed")
     void should_retry_when_job_status_is_failed() {
+
         when(jdbcTemplate.query(GET_DISTINCT_SIDAM_ID, ROW_MAPPER)).thenReturn(sidamIds);
         when(jdbcTemplate.queryForObject(anyString(), any(RowMapper.class)))
                 .thenReturn(Pair.of("1", FAILED.getStatus()));
 
-        publishSidamIdService.publishSidamIdToAsb();
-        verify(elinkTopicPublisher, times(1)).sendMessage(any(), anyString());
+        SchedulerJobStatusResponse res = publishSidamIdService.publishSidamIdToAsb();
+
+        assertEquals("FAILED",res.getJobStatus());
+        assertEquals("1",res.getId());
+        assertEquals(HttpStatus.OK.value(),res.getStatusCode());
+        assertEquals("edc4190e-8e31-47d5-af56-cb7784bcd3a9",res.getSidamIds().get(0));
 
     }
 
@@ -90,23 +105,16 @@ class PublishSidamIdServiceImplTest {
         List<String> sidamIds = new ArrayList<>();
         when(jdbcTemplate.queryForObject(anyString(), any(RowMapper.class)))
                 .thenReturn(Pair.of("2", SUCCESS.getStatus()));
-
         when(jdbcTemplate.query(GET_DISTINCT_SIDAM_ID, ROW_MAPPER)).thenReturn(sidamIds);
-        publishSidamIdService.publishSidamIdToAsb();
+
+        SchedulerJobStatusResponse res = publishSidamIdService.publishSidamIdToAsb();
+
+
+        assertEquals("SUCCESS",res.getJobStatus());
+        assertEquals(new ArrayList<>(),res.getSidamIds());
+        assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK.value());
         verify(jdbcTemplate).update(anyString(), any(), anyInt());
 
-    }
-
-    @SneakyThrows
-    @Test
-    @DisplayName("Negative Scenario: Should throw exception when job status is as FILE_LOAD_FAILED")
-    void should_throw_exception_for_status_as_file_load_failed() {
-        when(jdbcTemplate.queryForObject(anyString(), any(RowMapper.class)))
-                .thenReturn(Pair.of("2", FILE_LOAD_FAILED.getStatus()));
-        when(publishSidamIdService.publishSidamIdToAsb()).thenThrow(new RuntimeException("any exception"));
-
-        assertThrows(Exception.class, () -> publishSidamIdService.publishSidamIdToAsb());
-        verify(jdbcTemplate).update(anyString(), any(), anyInt());
     }
 
 
@@ -119,24 +127,27 @@ class PublishSidamIdServiceImplTest {
         Exception msg = assertThrows(Exception.class, () -> publishSidamIdService.publishSidamIdToAsb());
         assertEquals("any exception", msg.getMessage());
 
-        verify(jdbcTemplate).update(anyString(), any(), anyInt());
     }
 
     @SneakyThrows
     @Test
     @DisplayName("Negative Scenario: should throw exception for any issue during get job status")
     void test_when_get_job_details_runs_into_an_exception() {
-        when(jdbcTemplate.queryForObject(anyString(), any(RowMapper.class)))
-                .thenThrow(new EmptyResultDataAccessException(1));
-        publishSidamIdService.publishSidamIdToAsb();
 
-        verify(elinkTopicPublisher, times(0)).sendMessage(any(), anyString());
+        when(publishSidamIdService.publishSidamIdToAsb()).thenThrow(new EmptyResultDataAccessException(1));
+
+        Exception msg = assertThrows(EmptyResultDataAccessException.class, () ->
+                publishSidamIdService.publishSidamIdToAsb());
+        assertEquals("Incorrect result size: expected 1, actual 0", msg.getMessage());
     }
+
+
     @SneakyThrows
     @Test
-    @DisplayName("Negative Scenario: should throw exception when emailis not enabled")
-    void should_throw_exception_when_email_is_not_enabled() throws Exception{
-        when(jdbcTemplate.queryForObject(anyString(), any(RowMapper.class)))
+    @DisplayName("Negative Scenario: should throw exception when email is not enabled")
+    void should_throw_exception_when_email_is_not_enabled() {
+
+        when(publishSidamIdService.publishSidamIdToAsb())
                 .thenThrow(new RuntimeException("ASB Failure Root cause - {}"));
         ElinkEmailConfiguration.MailTypeConfig mailTypeConfig = new ElinkEmailConfiguration.MailTypeConfig();
         mailTypeConfig.setEnabled(false);
@@ -148,13 +159,9 @@ class PublishSidamIdServiceImplTest {
         emailConfiguration.setMailTypes(Map.of("asb", mailTypeConfig));
         publishSidamIdService.emailConfiguration = emailConfiguration;
 
-        Exception msg =assertThrows(Exception.class,
-                () -> publishSidamIdService.publishSidamIdToAsb());
-        System.out.println("Mesage: "+msg.getMessage());
+        Exception msg = assertThrows(Exception.class, () -> publishSidamIdService.publishSidamIdToAsb());
         assertTrue(msg.getMessage().contentEquals("ASB Failure Root cause - {}"));
-//        verify(elinkTopicPublisher).sendMessage(any(), anyString());
-//        verify(jdbcTemplate).update(anyString(), any(), anyInt());
-//        verify(emailService).sendEmail(any(Email.class));
+
     }
 
 }
