@@ -5,14 +5,14 @@ services:
   rd-judicial-db:
     build:
       context: database
-    image: hmcts/rd-judicial-db
-    container_name: rd-judicial-db
+    image: hmcts/rd-judicial-dataload-db
+    container_name: rd-judicial-dataload-db
     volumes:
-      - rd-judicial-db-volume:/var/lib/postgresql/data
+      - rd-judicial-dataload-db-volume:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-dbjuddata}"
     ports:
       - 5457:5432
 
 volumes:
-  rd-judicial-db-volume:
+  rd-judicial-dataload-db-volume:
