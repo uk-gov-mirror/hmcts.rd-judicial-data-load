@@ -159,13 +159,12 @@ public class IdamElasticSearchServiceImpl implements IdamElasticSearchService {
 
     public void updateSidamIds(Set<IdamResponse> sidamUsers) {
         List<Pair<String, String>> sidamObjectId = new ArrayList<>();
-        int[][] records;
         String updateSidamIds = "UPDATE dbjudicialdata.judicial_user_profile SET sidam_id = ? "
                 + "WHERE object_id = ? AND sidam_id IS NULL";
         sidamUsers.stream().filter(user -> nonNull(user.getSsoId())).forEach(s ->
                 sidamObjectId.add(Pair.of(s.getId(), s.getSsoId())));
         log.info("Insert Query batch Response from IDAM" + sidamObjectId.size());
-        records = jdbcTemplate.batchUpdate(
+        int[][] records = jdbcTemplate.batchUpdate(
                 updateSidamIds,
                 sidamObjectId,
                 10,
@@ -175,5 +174,7 @@ public class IdamElasticSearchServiceImpl implements IdamElasticSearchService {
                         ps.setString(2, argument.getRight());
                     }
                 });
+
+        log.info("Updated records Value: " + records);
     }
 }

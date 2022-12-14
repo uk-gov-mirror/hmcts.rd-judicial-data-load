@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.data.ingestion.camel.service.IEmailService;
 import uk.gov.hmcts.reform.data.ingestion.camel.service.dto.Email;
 import uk.gov.hmcts.reform.elinks.configuration.ElinkEmailConfiguration;
+import uk.gov.hmcts.reform.elinks.exception.JudicialDataLoadException;
 import uk.gov.hmcts.reform.elinks.response.SchedulerJobStatusResponse;
 import uk.gov.hmcts.reform.elinks.service.PublishSidamIdService;
 import uk.gov.hmcts.reform.elinks.servicebus.ElinkTopicPublisher;
@@ -68,7 +69,7 @@ public class PublishSidamIdServiceImpl implements PublishSidamIdService {
 
     private int sidamIdcount;
 
-    public SchedulerJobStatusResponse publishSidamIdToAsb() throws Exception {
+    public SchedulerJobStatusResponse publishSidamIdToAsb() throws JudicialDataLoadException {
 
         try {
             jobBeforePublishingMessageToAsb();
@@ -97,7 +98,7 @@ public class PublishSidamIdServiceImpl implements PublishSidamIdService {
                     .sidamIds(sidamIds)
                     .statusCode(HttpStatus.OK.value()).build();
 
-        } catch (Exception ex) {
+        } catch (JudicialDataLoadException ex) {
             String publishStatus = ASB_PUBLISHING_STATUS;
             publishStatus = (nonNull(publishStatus) && isNotTrue(publishStatus
                     .equalsIgnoreCase(IN_PROGRESS.getStatus())))

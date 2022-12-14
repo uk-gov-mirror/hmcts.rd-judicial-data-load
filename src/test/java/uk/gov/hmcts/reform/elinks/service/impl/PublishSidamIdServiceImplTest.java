@@ -124,7 +124,7 @@ class PublishSidamIdServiceImplTest {
     void should_throw_exception_when_any_issue_comes() {
         when(publishSidamIdService.publishSidamIdToAsb()).thenThrow(new RuntimeException("any exception"));
 
-        Exception msg = assertThrows(Exception.class, () -> publishSidamIdService.publishSidamIdToAsb());
+        Exception msg = assertThrows(RuntimeException.class, () -> publishSidamIdService.publishSidamIdToAsb());
         assertEquals("any exception", msg.getMessage());
 
     }
