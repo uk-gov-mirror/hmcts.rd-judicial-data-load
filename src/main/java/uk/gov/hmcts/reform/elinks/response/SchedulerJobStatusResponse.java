@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Builder
@@ -26,7 +24,7 @@ public class SchedulerJobStatusResponse {
     @JsonProperty("publishing_status")
     private String jobStatus;
 
-    @JsonProperty("sidam_id")
-    private List<String> sidamIds;
+    @JsonProperty
+    private int  sidamIdsCount;
 
 }

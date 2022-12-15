@@ -96,7 +96,7 @@ class PublishSidamIdServiceImplTest {
         assertEquals("FAILED",res.getJobStatus());
         assertEquals("1",res.getId());
         assertEquals(HttpStatus.OK.value(),res.getStatusCode());
-        assertEquals("edc4190e-8e31-47d5-af56-cb7784bcd3a9",res.getSidamIds().get(0));
+        assertEquals(sidamIds.size(),res.getSidamIdsCount());
 
     }
 
@@ -114,7 +114,7 @@ class PublishSidamIdServiceImplTest {
 
 
         assertEquals("SUCCESS",res.getJobStatus());
-        assertEquals(new ArrayList<>(),res.getSidamIds());
+        assertEquals(sidamIds.size(),res.getSidamIdsCount());
         assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK.value());
         verify(jdbcTemplate, times(1)).update(anyString(), any(), anyInt());
 

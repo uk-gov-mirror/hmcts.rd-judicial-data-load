@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.elinks.servicebus;
 
-import com.azure.messaging.servicebus.ServiceBusMessage;
 import com.azure.messaging.servicebus.ServiceBusMessageBatch;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.azure.messaging.servicebus.ServiceBusTransactionContext;
@@ -38,8 +37,6 @@ class ElinkTopicPublisherTest {
     private final ServiceBusMessageBatch messageBatch = mock(ServiceBusMessageBatch.class);
 
     List<String> sidamIdsList = new ArrayList<>();
-
-    List<ServiceBusMessage> serviceBusMessageList = new ArrayList<>();
 
     @InjectMocks
     ElinkTopicPublisher elinkTopicPublisher;
@@ -90,6 +87,7 @@ class ElinkTopicPublisherTest {
         doReturn(null).when(serviceBusSenderClient).createTransaction();
         doThrow(new RuntimeException("NullpointerException")).when(serviceBusSenderClient).createMessageBatch();
         assertThrows(Exception.class, () -> elinkTopicPublisher.sendMessage(sidamIdsList, "1"));
+
     }
 
     @Test

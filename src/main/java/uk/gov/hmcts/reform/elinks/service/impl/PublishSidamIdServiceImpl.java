@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.elinks.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -90,7 +89,7 @@ public class PublishSidamIdServiceImpl implements PublishSidamIdService {
         return SchedulerJobStatusResponse.builder()
                 .id(jobDetails.getLeft())
                 .jobStatus(jobDetails.getRight())
-                .sidamIds(sidamIds)
+                .sidamIdsCount(sidamIdcount)
                 .statusCode(HttpStatus.OK.value()).build();
 
     }
@@ -130,7 +129,6 @@ public class PublishSidamIdServiceImpl implements PublishSidamIdService {
                 elinkTopicPublisher.sendMessage(sidamIds, jobId);
                 updateAsbStatus(jobId, SUCCESS.getStatus());
                 log.info("{}:: Updated Total distinct Sidam Ids to ASB: {}", logComponentName, sidamIdcount);
-
             }
         } catch (Exception ex) {
             log.error("ASB Failure Root cause - {}", ex.getMessage());
@@ -154,11 +152,6 @@ public class PublishSidamIdServiceImpl implements PublishSidamIdService {
 
     private void updateAsbStatus(String jobId,String jobStatus) {
         //Update elinks DB with Publishing Status
-        String publishingStatus = StringUtils.isEmpty(jobStatus) ? SUCCESS.getStatus() : jobStatus;
-
-        jdbcTemplate.update(UPDATE_JOB_SQL, publishingStatus, Integer.valueOf(jobId));
-
+        jdbcTemplate.update(UPDATE_JOB_SQL, jobStatus, Integer.valueOf(jobId));
     }
-
-
 }
