@@ -37,11 +37,15 @@ def versions = [
         springBoot         : '2.6.6',
         springHystrix      : '2.2.8.RELEASE',
         springfoxSwagger   : '2.9.2',
-        jackson            : '2.13.1',
-        launchDarklySdk    : "5.8.1",
+        jackson            : '2.14.0-rc1',
+        launchDarklySdk    : "5.10.2",
         camel              : '3.8.0',
         log4j              : '2.17.1',
-        springVersion      : '5.3.20'
+        springVersion      : '5.3.20',
+        feign              : '3.8.0',
+        logback            : '1.2.10',
+        netty              : '1.0.6',
+        bytebuddy          : '1.12.7'
 ]
 
 mainClassName = 'uk.gov.hmcts.reform.juddata.JudicialApplication'
@@ -262,7 +266,7 @@ dependencies {
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.0.2'
 
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.0.5'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
     implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.13.2.20220324', ext: 'pom'
     implementation (group: 'com.fasterxml.jackson.core', name: 'jackson-core') {
         version {
@@ -278,8 +282,8 @@ dependencies {
     }
 
     implementation "io.github.openfeign:feign-httpclient:11.8"
-    implementation group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
-    implementation group: 'io.github.openfeign.form', name: 'feign-form-spring', version: '3.8.0'
+    implementation group: 'io.github.openfeign.form', name: 'feign-form', version: versions.feign
+    implementation group: 'io.github.openfeign.form', name: 'feign-form-spring', version: versions.feign
 
     implementation group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '3.0.2'
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
@@ -300,7 +304,7 @@ dependencies {
     testImplementation group: 'com.microsoft.azure', name: 'azure-storage-blob', version: '11.0.0'
 
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '5.2.4'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.3'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
 
     implementation group: 'com.google.guava', name: 'guava', version: '30.1-jre'
 
@@ -310,14 +314,15 @@ dependencies {
 
     implementation group: 'com.opencsv', name: 'opencsv', version: '5.5.2'
     implementation group: 'commons-lang', name: 'commons-lang', version: '2.6'
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
 
     implementation group: 'commons-configuration', name: 'commons-configuration', version: '1.10'
     implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk
 
     implementation group: 'com.azure', name: 'azure-core', version: '1.15.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.2.0'
-    implementation group: 'io.projectreactor.netty', name: 'reactor-netty-core', version: '1.0.6'
-    implementation group: 'io.projectreactor.netty', name: 'reactor-netty-http', version: '1.0.6'
+    implementation group: 'io.projectreactor.netty', name: 'reactor-netty-core', version: versions.netty
+    implementation group: 'io.projectreactor.netty', name: 'reactor-netty-http', version: versions.netty
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.14'
     
     implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: versions.log4j
@@ -325,8 +330,8 @@ dependencies {
     implementation group: 'org.apache.logging.log4j', name: 'log4j', version: versions.log4j
     implementation group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: versions.log4j
 
-    implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.10'
-    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.10'
+    implementation group: 'ch.qos.logback', name: 'logback-core', version: versions.logback
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: versions.logback
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
@@ -354,8 +359,8 @@ dependencies {
         exclude group: "net.bytebuddy", module: "byte-buddy"
         exclude group: "net.bytebuddy", module: "byte-buddy-agent"
     }
-    testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.7'
-    testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.12.7'
+    testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: versions.bytebuddy
+    testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: versions.bytebuddy
 
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '4.3.1'
 
@@ -391,26 +396,10 @@ dependencies {
     testImplementation group: 'org.apache.camel', name: 'camel-test-spring-junit5', version: versions.camel
     testImplementation group: 'org.apache.camel', name: 'camel-test-junit5', version: versions.camel
     testImplementation group: 'org.testcontainers', name: 'postgresql', version: '1.16.2'
-    testImplementation group: 'org.postgresql', name: 'postgresql', version: '42.3.3'
+    testImplementation group: 'org.postgresql', name: 'postgresql', version: '42.4.1'
     testImplementation 'com.github.hmcts:fortify-client:1.2.0:all'
 
-    testImplementation(group: 'org.yaml', name: 'snakeyaml') {
-        version {
-            strictly '1.23'
-        }
-    }
-
-    functionalTestImplementation(group: 'org.yaml', name: 'snakeyaml') {
-        version {
-            strictly '1.23'
-        }
-    }
-
-    integrationTestImplementation(group: 'org.yaml', name: 'snakeyaml') {
-        version {
-            strictly '1.23'
-        }
-    }
+	implementation group: 'org.yaml', name: 'snakeyaml', version: '1.33'
 
     functionalTestImplementation sourceSets.main.runtimeClasspath
     functionalTestImplementation sourceSets.test.runtimeClasspath
@@ -426,7 +415,7 @@ dependencyManagement {
 
     dependencies {
         // CVE-2021-42340
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.63') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.68') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-el'
             entry 'tomcat-embed-websocket'
@@ -479,6 +468,7 @@ configurations.all {
             details.useVersion "66.1"
         }
     }
+      exclude group: 'org.codehaus.jettison', module: 'jettison'
 }
 
 test {
