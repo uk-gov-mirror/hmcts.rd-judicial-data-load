@@ -17,8 +17,9 @@ job:
   keyVaults:
     rd:
       secrets:
-        - judicial-api-POSTGRES-PASS
         - ApplicationInsightsInstrumentationKey
+        - name: judicial-api-POSTGRES-PASS
+          alias: POSTGRES_PASSWORD
         - name: ACCOUNT-NAME
           alias: ACCOUNT_NAME
         - name: ACCOUNT-KEY
