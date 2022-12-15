@@ -179,4 +179,14 @@ class PublishSidamIdServiceImplTest {
         verify(jdbcTemplate, times(1)).update(anyString(), any(), anyInt());
     }
 
+    @SneakyThrows
+    @Test
+    @DisplayName("Positive scenario when status is in progress and sidam id is not null")
+    void whould_send_messages_when_sidam_id_not_null() {
+        publishSidamIdService.publishMessage(IN_PROGRESS.getStatus(),sidamIds,"2");
+
+        verify(elinkTopicPublisher).sendMessage(sidamIds,"2");
+        verify(jdbcTemplate, times(1)).update(anyString(), any(), anyInt());
+    }
+
 }

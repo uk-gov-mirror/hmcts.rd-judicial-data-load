@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.data.ingestion.camel.service.IEmailService;
 import uk.gov.hmcts.reform.data.ingestion.camel.service.dto.Email;
 import uk.gov.hmcts.reform.elinks.configuration.ElinkEmailConfiguration;
-import uk.gov.hmcts.reform.elinks.exception.JudicialDataLoadException;
 import uk.gov.hmcts.reform.elinks.response.SchedulerJobStatusResponse;
 import uk.gov.hmcts.reform.elinks.service.PublishSidamIdService;
 import uk.gov.hmcts.reform.elinks.servicebus.ElinkTopicPublisher;
@@ -25,15 +24,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.lang.System.currentTimeMillis;
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static uk.gov.hmcts.reform.elinks.util.JobStatus.FAILED;
 import static uk.gov.hmcts.reform.elinks.util.JobStatus.IN_PROGRESS;
 import static uk.gov.hmcts.reform.elinks.util.JobStatus.SUCCESS;
-import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ASB_PUBLISHING_STATUS;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.CONTENT_TYPE_PLAIN;
 import static uk.gov.hmcts.reform.elinks.util.SqlContants.GET_DISTINCT_SIDAM_ID;
 import static uk.gov.hmcts.reform.elinks.util.SqlContants.INSERT_AUDIT_JOB;
@@ -69,45 +65,34 @@ public class PublishSidamIdServiceImpl implements PublishSidamIdService {
 
     private int sidamIdcount;
 
-    public SchedulerJobStatusResponse publishSidamIdToAsb() throws JudicialDataLoadException {
+    public SchedulerJobStatusResponse publishSidamIdToAsb() {
 
-        try {
-            jobBeforePublishingMessageToAsb();
-            //Get the job details from dataload_schedular_job table
-            Pair<String, String>  jobDetails = getJobDetails(SELECT_JOB_STATUS_SQL);
+        jobBeforePublishingMessageToAsb();
+        //Get the job details from dataload_schedular_job table
+        Pair<String, String> jobDetails = getJobDetails(SELECT_JOB_STATUS_SQL);
 
-            // Get all sidam id's from the judicial_user_profile table
-            List<String> sidamIds = jdbcTemplate.query(GET_DISTINCT_SIDAM_ID, RefDataConstants.ROW_MAPPER);
+        // Get all sidam id's from the judicial_user_profile table
+        List<String> sidamIds = jdbcTemplate.query(GET_DISTINCT_SIDAM_ID, RefDataConstants.ROW_MAPPER);
 
-            sidamIdcount = sidamIds.size();
+        sidamIdcount = sidamIds.size();
 
-            log.info("{}::Total SIDAM Id count from JUD_Database: {}", logComponentName, sidamIdcount);
-            if (isEmpty(sidamIds)) {
-                log.warn("{}:: No Sidam id exists in JRD for publishing in ASB for JOB id: {} ",
-                        logComponentName,jobDetails.getLeft());
-                updateAsbStatus(jobDetails.getLeft(),SUCCESS.getStatus());
-            }
-
-            publishMessage(jobDetails.getRight(), sidamIds, jobDetails.getLeft());
-
-            log.info("{}:: completed Publish SidamId to ASB with JOB Id: {}  ", logComponentName, jobDetails.getLeft());
-
-            return SchedulerJobStatusResponse.builder()
-                    .id(jobDetails.getLeft())
-                    .jobStatus(jobDetails.getRight())
-                    .sidamIds(sidamIds)
-                    .statusCode(HttpStatus.OK.value()).build();
-
-        } catch (JudicialDataLoadException ex) {
-            String publishStatus = ASB_PUBLISHING_STATUS;
-            publishStatus = (nonNull(publishStatus) && isNotTrue(publishStatus
-                    .equalsIgnoreCase(IN_PROGRESS.getStatus())))
-                    ? publishStatus : FAILED.getStatus();
-
-            updateAsbStatus(getJobDetails(SELECT_JOB_STATUS_SQL).getLeft(), publishStatus);
-
-            throw ex;
+        log.info("{}::Total SIDAM Id count from JUD_Database: {}", logComponentName, sidamIdcount);
+        if (isEmpty(sidamIds)) {
+            log.warn("{}:: No Sidam id exists in JRD for publishing in ASB for JOB id: {} ",
+                    logComponentName, jobDetails.getLeft());
+            updateAsbStatus(jobDetails.getLeft(), SUCCESS.getStatus());
         }
+
+        publishMessage(jobDetails.getRight(), sidamIds, jobDetails.getLeft());
+
+        log.info("{}:: completed Publish SidamId to ASB with JOB Id: {}  ", logComponentName, jobDetails.getLeft());
+
+        return SchedulerJobStatusResponse.builder()
+                .id(jobDetails.getLeft())
+                .jobStatus(jobDetails.getRight())
+                .sidamIds(sidamIds)
+                .statusCode(HttpStatus.OK.value()).build();
+
     }
 
     private void jobBeforePublishingMessageToAsb() {
