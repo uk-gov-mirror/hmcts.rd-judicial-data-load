@@ -33,22 +33,22 @@ public class ElinkTopicPublisher {
     @Autowired
     CamelContext camelContext;
     @Autowired
-    private ServiceBusSenderClient serviceBusSenderClient;
+    private ServiceBusSenderClient elinkserviceBusSenderClient;
 
     public void sendMessage(@NotNull List<String> judicalIds, String jobId) {
-        ServiceBusTransactionContext transactionContext = null;
+        ServiceBusTransactionContext elinktransactionContext = null;
         try {
-            transactionContext = serviceBusSenderClient.createTransaction();
-            publishMessageToTopic(judicalIds, serviceBusSenderClient, transactionContext, jobId);
+            elinktransactionContext = elinkserviceBusSenderClient.createTransaction();
+            publishMessageToTopic(judicalIds, elinkserviceBusSenderClient, elinktransactionContext, jobId);
         } catch (Exception exception) {
             log.error("{}:: Publishing message to service bus topic failed with exception: {}:: Job Id {}",
                     loggingComponentName, exception.getMessage(), jobId);
-            if (Objects.nonNull(serviceBusSenderClient) && Objects.nonNull(transactionContext)) {
-                serviceBusSenderClient.rollbackTransaction(transactionContext);
+            if (Objects.nonNull(elinktransactionContext) && Objects.nonNull(elinkserviceBusSenderClient)) {
+                elinkserviceBusSenderClient.rollbackTransaction(elinktransactionContext);
             }
             throw exception;
         }
-        serviceBusSenderClient.commitTransaction(transactionContext);
+        elinkserviceBusSenderClient.commitTransaction(elinktransactionContext);
     }
 
     private void publishMessageToTopic(List<String> judicalIds,
@@ -56,7 +56,7 @@ public class ElinkTopicPublisher {
                                        ServiceBusTransactionContext transactionContext,
                                        String jobId) {
 
-        ServiceBusMessageBatch messageBatch = serviceBusSenderClient.createMessageBatch();
+        ServiceBusMessageBatch elinkmessageBatch = serviceBusSenderClient.createMessageBatch();
         List<ServiceBusMessage> serviceBusMessages = new ArrayList<>();
 
         partition(judicalIds, jrdMessageBatchSize)
@@ -67,22 +67,24 @@ public class ElinkTopicPublisher {
                 });
 
         for (ServiceBusMessage message : serviceBusMessages) {
-            if (messageBatch.tryAddMessage(message)) {
+
+            if (elinkmessageBatch.tryAddMessage(message)) {
                 continue;
             }
 
             // The batch is full, so we create a new batch and send the batch.
-            sendMessageToAsb(serviceBusSenderClient, transactionContext, messageBatch, jobId);
+            sendMessageToAsb(serviceBusSenderClient, transactionContext, elinkmessageBatch, jobId);
 
             // create a new batch
-            messageBatch = serviceBusSenderClient.createMessageBatch();
+            elinkmessageBatch = serviceBusSenderClient.createMessageBatch();
             // Add that message that we couldn't before.
-            if (!messageBatch.tryAddMessage(message)) {
+            if (!elinkmessageBatch.tryAddMessage(message)) {
                 log.error("{}:: Message is too large for an empty batch. Skipping. Max size: {}. Job id::{}",
-                        loggingComponentName, messageBatch.getMaxSizeInBytes(), jobId);
+                        loggingComponentName, elinkmessageBatch.getMaxSizeInBytes(), jobId);
             }
+
         }
-        sendMessageToAsb(serviceBusSenderClient, transactionContext, messageBatch, jobId);
+        sendMessageToAsb(serviceBusSenderClient, transactionContext, elinkmessageBatch, jobId);
     }
 
     private void sendMessageToAsb(ServiceBusSenderClient serviceBusSenderClient,

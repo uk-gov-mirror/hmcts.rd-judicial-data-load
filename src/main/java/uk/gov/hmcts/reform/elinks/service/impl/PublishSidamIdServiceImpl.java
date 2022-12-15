@@ -103,17 +103,17 @@ public class PublishSidamIdServiceImpl implements PublishSidamIdService {
     }
 
     private Pair<String, String> getJobDetails(String jobStatusQuery) {
-        Optional<Pair<String, String>> pair = getJobStatus(jobStatusQuery);
+        Optional<Pair<String, String>> pair = getElinkJobStatus(jobStatusQuery);
 
         final String jobId = pair.map(Pair::getLeft).orElse(ZERO);
         final String jobStatus = pair.map(Pair::getRight).orElse(EMPTY);
         return Pair.of(jobId, jobStatus);
     }
 
-    private Optional<Pair<String, String>> getJobStatus(String jobStatusQuery) {
+    private Optional<Pair<String, String>> getElinkJobStatus(String jobStatusQuery) {
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(jobStatusQuery, (rs, i) ->
-                    Pair.of(rs.getString(1), rs.getString(2))));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(jobStatusQuery, (resultSet, i) ->
+                    Pair.of(resultSet.getString(1), resultSet.getString(2))));
         } catch (EmptyResultDataAccessException ex) {
             log.info("No record found in table dataload_schedular_job");
             return Optional.empty();
