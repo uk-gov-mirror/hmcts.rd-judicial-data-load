@@ -25,10 +25,6 @@ spring:
     enabled: ${FLYWAY_ENABLED:true}
     locations: classpath:db/migration
 
-  cloud:
-    bootstrap:
-      enabled: true
-
   ### database configuration
   datasource:
     driverClassName: org.postgresql.Driver
