@@ -16,6 +16,7 @@ job:
     image: 'hmctspublic.azurecr.io/rd/judicial-data-load:latest'
   keyVaults:
     rd:
+      resourceGroup: rd
       secrets:
         - judicial-api-POSTGRES-PASS
         - ApplicationInsightsInstrumentationKey
