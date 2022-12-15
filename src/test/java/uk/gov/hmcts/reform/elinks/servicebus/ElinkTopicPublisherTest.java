@@ -22,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -91,6 +92,16 @@ class ElinkTopicPublisherTest {
     }
 
     @Test
+    @DisplayName("Throw NullPointerException when passing serviceBusClient as NULL")
+    void should_throw_NullpointerException_when_serviceBusClient_is_null() {
+        when(serviceBusSenderClient.createMessageBatch()).thenReturn(null);
+        doThrow(new RuntimeException("NullpointerException")).when(serviceBusSenderClient).createMessageBatch();
+        assertThrows(Exception.class, () -> elinkTopicPublisher.sendMessage(sidamIdsList, "1"));
+        verify(serviceBusSenderClient, never()).rollbackTransaction(any());
+
+    }
+
+    @Test
     @DisplayName("Large message not able to add in message batch")
     void not_able_to_add_large_message_in_message_bus() {
         doReturn(false).when(messageBatch).tryAddMessage(any());
@@ -99,6 +110,18 @@ class ElinkTopicPublisherTest {
         when(messageBatch.getCount()).thenReturn(1);
         elinkTopicPublisher.sendMessage(sidamIdsList, "1");
         verify(serviceBusSenderClient, times(4))
+                .sendMessages((ServiceBusMessageBatch) any(), any());
+    }
+
+    @Test
+    @DisplayName("Not able to send messsage when message batch is less than zero")
+    void not_able_to_send_message_when_message_batch_count_is_less_than_zero() {
+        doReturn(false).when(messageBatch).tryAddMessage(any());
+        doReturn(0).when(messageBatch).getCount();
+        doReturn(messageBatch).when(serviceBusSenderClient).createMessageBatch();
+        when(messageBatch.getCount()).thenReturn(0);
+        elinkTopicPublisher.sendMessage(sidamIdsList, "1");
+        verify(serviceBusSenderClient, never())
                 .sendMessages((ServiceBusMessageBatch) any(), any());
     }
 }
