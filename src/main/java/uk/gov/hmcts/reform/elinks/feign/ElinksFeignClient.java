@@ -21,7 +21,6 @@ public interface ElinksFeignClient {
             "Content-Type: application/json"})
     List<BaseLocation> retrieveBaseLocations();
 
-    //URL not tested , code is for developers reference
     @GetMapping(value = "/reference_data/location")
     @RequestLine("GET /reference_data/location")
     @Headers({"Authorization: {authorization}",

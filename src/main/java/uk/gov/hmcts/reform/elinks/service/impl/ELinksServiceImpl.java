@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.elinks.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
 import feign.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -64,49 +65,55 @@ public class ELinksServiceImpl implements ELinksService {
 
         log.info("Get location details ELinksService.retrieveLocation ");
 
-        Response locationsResponse = elinksFeignClient.getLocationDetails();
+        Response locationsResponse = null;
+        HttpStatus httpStatus = null;
+        try {
 
-        HttpStatus httpStatus = HttpStatus.valueOf(locationsResponse.status());
+            locationsResponse = elinksFeignClient.getLocationDetails();
 
-        log.info("Get location details response status ELinksService.retrieveLocation" + httpStatus.value());
-        if (httpStatus.is2xxSuccessful()) {
-            ResponseEntity<Object> responseEntity = JsonFeignResponseUtil.toELinksResponseEntity(locationsResponse,
-                    ElinkLocationResponse.class);
+            httpStatus = HttpStatus.valueOf(locationsResponse.status());
+
+            log.info("Get location details response status ELinksService.retrieveLocation" + httpStatus.value());
+            if (httpStatus.is2xxSuccessful()) {
+                ResponseEntity<Object> responseEntity = JsonFeignResponseUtil.toELinksResponseEntity(locationsResponse,
+                        ElinkLocationResponse.class);
 
 
-            ElinkLocationResponse elinkLocationResponse = (ElinkLocationResponse) responseEntity.getBody();
+                ElinkLocationResponse elinkLocationResponse = (ElinkLocationResponse) responseEntity.getBody();
 
-            List<LocationResponse> locationResponseList = elinkLocationResponse.getResults();
+                List<LocationResponse> locationResponseList = elinkLocationResponse.getResults();
 
-            List<Location> locations = locationResponseList.stream()
-                    .map(locationRes -> new Location(locationRes.getId(), locationRes.getName(), StringUtils.EMPTY))
-                    .toList();
+                List<Location> locations = locationResponseList.stream()
+                        .map(locationRes -> new Location(locationRes.getId(), locationRes.getName(), StringUtils.EMPTY))
+                        .toList();
 
-            locationRepository.saveAll(locations);
+                locationRepository.saveAll(locations);
 
-            ObjectMapper mapper = new ObjectMapper();
+                ObjectMapper mapper = new ObjectMapper();
 
-            try {
-                return ResponseEntity
-                        .status(HttpStatus.OK)
-                        .body(mapper.writeValueAsString(LOCATION_DATA_LOAD_SUCCESS));
-            } catch (JsonProcessingException jpe) {
-                log.error(jpe.getMessage());
+                try {
+                    return ResponseEntity
+                            .status(HttpStatus.OK)
+                            .body(mapper.writeValueAsString(LOCATION_DATA_LOAD_SUCCESS));
+                } catch (JsonProcessingException jpe) {
+                    log.error(jpe.getMessage());
+                }
+
             }
 
+            ResponseEntity<Object> responseEntity = JsonFeignResponseUtil.toELinksResponseEntity(locationsResponse,
+                    ErrorResponse.class);
+            Object responseBody = responseEntity.getBody();
+            if (nonNull(responseBody) && responseBody instanceof ErrorResponse errorResponse) {
+
+                throw new ElinksException(httpStatus, ELINKS_ACCESS_ERROR,
+                        ELINKS_ACCESS_ERROR);
+            } else {
+                throw new ElinksException(HttpStatus.FORBIDDEN, ELINKS_ACCESS_ERROR, ELINKS_ACCESS_ERROR);
+            }
+        } catch (FeignException ex) {
+            throw new ElinksException(HttpStatus.FORBIDDEN, ELINKS_ACCESS_ERROR, ELINKS_ACCESS_ERROR);
         }
-
-        ResponseEntity<Object> responseEntity = JsonFeignResponseUtil.toELinksResponseEntity(locationsResponse,
-                ErrorResponse.class);
-        Object responseBody = responseEntity.getBody();
-        if (nonNull(responseBody) && responseBody instanceof ErrorResponse errorResponse) {
-
-            throw new ElinksException(httpStatus, errorResponse.getErrorMessage(),
-                    errorResponse.getErrorDescription());
-        } else {
-            throw new ElinksException(httpStatus, ELINKS_ACCESS_ERROR, ELINKS_ACCESS_ERROR);
-        }
-
 
     }
 
