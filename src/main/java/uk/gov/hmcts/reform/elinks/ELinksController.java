@@ -74,7 +74,7 @@ public class ELinksController {
     })
     @GetMapping (path = "/reference_data/location",
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> loadLocation(){
+    public ResponseEntity<String> loadLocation(){
 
 
         return eLinksService.retrieveLocation();

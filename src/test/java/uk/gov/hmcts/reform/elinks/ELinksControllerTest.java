@@ -31,7 +31,7 @@ public class ELinksControllerTest {
     @Test
     void test_load_location_success() {
 
-        ResponseEntity<Object> responseEntity;
+        ResponseEntity<String> responseEntity;
 
         responseEntity = new ResponseEntity<>(
                 LOCATION_DATA_LOAD_SUCCESS,
@@ -41,10 +41,10 @@ public class ELinksControllerTest {
 
         when(eLinksService.retrieveLocation()).thenReturn(responseEntity);
 
-        ResponseEntity<Object> actual = eLinksController.loadLocation();
+        ResponseEntity<String> actual = eLinksController.loadLocation();
         assertThat(actual).isNotNull();
         assertThat(actual.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actual.getBody().toString()).isEqualTo(LOCATION_DATA_LOAD_SUCCESS);
+        assertThat(actual.getBody()).isEqualTo(LOCATION_DATA_LOAD_SUCCESS);
 
     }
 

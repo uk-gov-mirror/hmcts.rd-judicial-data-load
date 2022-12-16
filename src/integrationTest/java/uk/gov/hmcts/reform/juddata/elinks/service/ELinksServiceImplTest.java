@@ -117,7 +117,7 @@ public class ELinksServiceImplTest {
                 .request(mock(Request.class)).body(body, defaultCharset()).status(HttpStatus.OK.value()).build());
 
 
-        ResponseEntity<Object> responseEntity = eLinksServiceImpl.retrieveLocation();
+        ResponseEntity<String> responseEntity = eLinksServiceImpl.retrieveLocation();
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -141,7 +141,7 @@ public class ELinksServiceImplTest {
                 .request(mock(Request.class)).body(body, defaultCharset()).status(HttpStatus.OK.value()).build());
 
 
-        ResponseEntity<Object> responseEntity = eLinksServiceImpl.retrieveLocation();
+        ResponseEntity<String> responseEntity = eLinksServiceImpl.retrieveLocation();
 
         List<Location> result = locationRepository.findAllById(List.of("1","2","3"));
 

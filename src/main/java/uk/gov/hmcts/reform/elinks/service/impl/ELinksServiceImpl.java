@@ -1,6 +1,9 @@
 package uk.gov.hmcts.reform.elinks.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,7 @@ import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_ACCESS_ERR
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.LOCATION_DATA_LOAD_SUCCESS;
 
 @Service
+@Slf4j
 public class ELinksServiceImpl implements ELinksService {
 
     @Autowired
@@ -56,12 +60,15 @@ public class ELinksServiceImpl implements ELinksService {
     }
 
     @Override
-    public ResponseEntity<Object> retrieveLocation() {
+    public ResponseEntity<String> retrieveLocation() {
 
+        log.info("Get location details ELinksService.retrieveLocation ");
 
         Response locationsResponse = elinksFeignClient.getLocationDetails();
 
         HttpStatus httpStatus = HttpStatus.valueOf(locationsResponse.status());
+
+        log.info("Get location details response status ELinksService.retrieveLocation" + httpStatus.value());
         if (httpStatus.is2xxSuccessful()) {
             ResponseEntity<Object> responseEntity = JsonFeignResponseUtil.toELinksResponseEntity(locationsResponse,
                     ElinkLocationResponse.class);
@@ -77,9 +84,15 @@ public class ELinksServiceImpl implements ELinksService {
 
             locationRepository.saveAll(locations);
 
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(LOCATION_DATA_LOAD_SUCCESS);
+            ObjectMapper mapper = new ObjectMapper();
+
+            try {
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(mapper.writeValueAsString(LOCATION_DATA_LOAD_SUCCESS));
+            } catch (JsonProcessingException jpe) {
+                log.error(jpe.getMessage());
+            }
 
         }
 

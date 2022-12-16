@@ -119,7 +119,7 @@ public class ELinksControllerITTest {
                 .request(mock(Request.class)).body(body, defaultCharset()).status(HttpStatus.OK.value()).build());
 
 
-        ResponseEntity<Object> responseEntity = eLinksController.loadLocation();
+        ResponseEntity<String> responseEntity = eLinksController.loadLocation();
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
