@@ -110,31 +110,6 @@ class JudicialUserProfileProcessorTest {
     }
 
     @Test
-    void should_return_JudicialUserProfileRow_response() {
-
-        List<JudicialUserProfile> judicialUserProfiles = new ArrayList<>();
-        judicialUserProfiles.add(judicialUserProfileMock1);
-        judicialUserProfiles.add(judicialUserProfileMock2);
-        when(messageMock.getBody()).thenReturn(judicialUserProfiles);
-        judicialUserProfileProcessor.process(exchangeMock);
-        assertThat(((List) exchangeMock.getMessage().getBody()).size()).isEqualTo(2);
-        when(exchangeMock.getContext()).thenReturn(new DefaultCamelContext());
-
-    }
-
-    @Test
-    void should_return_JudicialUserProfileRow_with_single_record_response() {
-
-        when(messageMock.getBody()).thenReturn(judicialUserProfileMock1);
-
-        judicialUserProfileProcessor.process(exchangeMock);
-        List<JudicialUserProfile> judicialUserProfiles = new ArrayList<>();
-        judicialUserProfiles.add(judicialUserProfileMock1);
-
-        assertThat(((JudicialUserProfile) exchangeMock.getMessage().getBody())).isSameAs(judicialUserProfileMock1);
-    }
-
-    @Test
     @SuppressWarnings("unchecked")
     void should_return_JudicialUserProfileRow_with_single_record_with_per_id_nullresponse() {
 

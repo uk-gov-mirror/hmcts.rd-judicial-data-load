@@ -153,30 +153,6 @@ class JudicialOfficeAppointmentProcessorTest {
         doNothing().when(platformTransactionManager).commit(transactionStatus);
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    void should_return_JudicialOfficeAppointmentRow_response() throws Exception {
-
-        List<JudicialOfficeAppointment> judicialOfficeAppointments = new ArrayList<>();
-        judicialOfficeAppointments.add(judicialOfficeAppointmentMock1);
-        judicialOfficeAppointments.add(judicialOfficeAppointmentMock2);
-        judicialOfficeAppointments.add(judicialOfficeAppointmentMock3);
-
-        when(messageMock.getBody()).thenReturn(judicialOfficeAppointments);
-        judicialUserProfileProcessor = new JudicialUserProfileProcessor();
-        judicialOfficeAppointmentProcessor.process(exchangeMock);
-        assertThat(((List) exchangeMock.getMessage().getBody()).size()).isEqualTo(3);
-        assertThat(((List<JudicialOfficeAppointment>) exchangeMock.getMessage().getBody()))
-            .isSameAs(judicialOfficeAppointments);
-        verify(judicialOfficeAppointmentProcessor).filterInvalidUserProfileRecords(any(), any(), any(), any(), any());
-        verify(judicialOfficeAppointmentJsrValidatorInitializer)
-            .auditJsrExceptions(anyList(), anyString(), anyString(), any());
-        verify(judicialOfficeAppointmentProcessor).audit(any(), any());
-        verify(messageMock).setBody(any());
-        verify(exchangeMock, times(4)).getMessage();
-        verify(judicialOfficeAppointmentProcessor).filterInvalidUserProfileRecords(anyList(),
-            isNull(), any(), any(), isNull());
-    }
 
 
     @Test
@@ -228,58 +204,6 @@ class JudicialOfficeAppointmentProcessorTest {
         assertThat(((JudicialOfficeAppointment) exchangeMock.getMessage().getBody()))
             .isSameAs(judicialOfficeAppointmentMock1);
 
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void should_return_JudicialOfficeAppointmentRow_response_skip_invalidProfiles() throws Exception {
-
-        judicialOfficeAppointmentMock4.setPerId("perid_4");
-        List<JudicialOfficeAppointment> judicialOfficeAppointments = new ArrayList<>();
-        judicialOfficeAppointments.add(judicialOfficeAppointmentMock1);
-        judicialOfficeAppointments.add(judicialOfficeAppointmentMock2);
-        judicialOfficeAppointments.add(judicialOfficeAppointmentMock3);
-
-        RouteProperties routeProperties = new RouteProperties();
-        routeProperties.setFileName("test");
-
-        when(messageMock.getBody()).thenReturn(judicialOfficeAppointments);
-        judicialUserProfileProcessor = mock(JudicialUserProfileProcessor.class);
-
-        setField(judicialOfficeAppointmentProcessor, "judicialUserProfileProcessor",
-            judicialUserProfileProcessor);
-        JudicialUserProfile judicialUserProfileMock = createJudicialUserProfileMock(currentDate, dateTime, PERID_1);
-        JudicialUserProfile judicialUserProfileMock2 = createJudicialUserProfileMock(currentDate, dateTime, PERID_3);
-
-        List<JudicialUserProfile> judicialUserProfiles = new ArrayList<>();
-        judicialUserProfiles.add(judicialUserProfileMock);
-        judicialUserProfiles.add(judicialUserProfileMock2);
-
-        when(judicialUserProfileProcessor.getInvalidRecords()).thenReturn(judicialUserProfiles);
-        when(judicialUserProfileProcessor.getValidPerIdInUserProfile()).thenReturn(Collections.singleton(PERID_2));
-        setField(judicialOfficeAppointmentProcessor, "jsrThresholdLimit", 5);
-        setField(judicialOfficeAppointmentJsrValidatorInitializer, "camelContext", camelContext);
-        setField(judicialOfficeAppointmentJsrValidatorInitializer, "jdbcTemplate", jdbcTemplate);
-        setField(judicialOfficeAppointmentJsrValidatorInitializer,
-            "platformTransactionManager", platformTransactionManager);
-
-        int[][] intArray = new int[1][];
-        when(jdbcTemplate.batchUpdate(anyString(), anyList(), anyInt(), any())).thenReturn(intArray);
-        when(platformTransactionManager.getTransaction(any())).thenReturn(transactionStatus);
-        when(exchangeMock.getContext()).thenReturn(new DefaultCamelContext());
-        doNothing().when(platformTransactionManager).commit(transactionStatus);
-        when(exchangeMock.getIn().getHeader(ROUTE_DETAILS)).thenReturn(routeProperties);
-
-        judicialOfficeAppointmentProcessor.process(exchangeMock);
-
-        judicialOfficeAppointments = new ArrayList<>();
-        judicialOfficeAppointments.add(judicialOfficeAppointmentMock2);
-
-        assertThat(((List<JudicialOfficeAppointment>) exchangeMock.getMessage().getBody()))
-            .containsAll(judicialOfficeAppointments);
-        verify(judicialOfficeAppointmentProcessor).setFileStatus(any(), any());
-        verify(judicialOfficeAppointmentJsrValidatorInitializer)
-            .auditJsrExceptions(anyList(), anyString(), anyString(), any());
     }
 
     @Test
