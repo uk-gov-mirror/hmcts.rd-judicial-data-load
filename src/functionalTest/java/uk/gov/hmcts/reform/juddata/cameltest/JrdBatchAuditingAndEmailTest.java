@@ -29,7 +29,7 @@ import uk.gov.hmcts.reform.juddata.configuration.BatchConfig;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.SUCCESS;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.JUDICIAL_REF_DATA_ORCHESTRATION;
@@ -57,8 +57,8 @@ class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
     @Test
     void testParentOrchestrationSchedulerSuccess() throws Exception {
 
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, file);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, file);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
 
@@ -69,8 +69,8 @@ class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
     @Disabled("To be implemented when Email functionality is fully functional")
     void testParentOrchestrationFailureEmail() throws Exception {
 
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithError);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, fileWithError);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
         camelContext.getGlobalOptions().put(ORCHESTRATED_ROUTE, JUDICIAL_REF_DATA_ORCHESTRATION);
         setField(emailService, "mailEnabled", Boolean.FALSE);
@@ -81,8 +81,8 @@ class JrdBatchAuditingAndEmailTest extends JrdBatchIntegrationSupport {
 
     @Disabled("To be implemented when Email functionality is fully functional")
     void testParentOrchestrationSuccessEmail() throws Exception {
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, file);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, file);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
         camelContext.getGlobalOptions().put(ORCHESTRATED_ROUTE, JUDICIAL_REF_DATA_ORCHESTRATION);
 

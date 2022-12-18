@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.juddata.camel.util;
 
+import com.microsoft.azure.storage.StorageException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -19,6 +20,7 @@ import uk.gov.hmcts.reform.juddata.camel.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.juddata.client.IdamClient;
 import uk.gov.hmcts.reform.juddata.configuration.EmailConfiguration;
 
+import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ import static uk.gov.hmcts.reform.juddata.camel.util.JobStatus.FILE_LOAD_FAILED;
 import static uk.gov.hmcts.reform.juddata.camel.util.JobStatus.IN_PROGRESS;
 import static uk.gov.hmcts.reform.juddata.camel.util.JobStatus.SUCCESS;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.ASB_PUBLISHING_STATUS;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.CONTENT_TYPE_PLAIN;
 
 @Component
 @Slf4j
@@ -100,7 +103,7 @@ public class JrdDataIngestionLibraryRunner extends DataIngestionLibraryRunner {
             //After Job completes Publish message in ASB and toggle off for prod with launch Darkly & one
             //more explicit check to  avoid executing in prod Should be removed in prod release
             if (featureToggleService.isFlagEnabled(JRD_ASB_FLAG)
-                && Boolean.FALSE.equals(environment.startsWith("prod"))) {
+            ) {
                 if (shouldReturn()) {
                     return;
                 }
@@ -126,7 +129,7 @@ public class JrdDataIngestionLibraryRunner extends DataIngestionLibraryRunner {
     private boolean isLoadFailed(Pair<String, String> jobDetails) {
         int failedFileCount = jdbcTemplate.queryForObject(failedAuditFileCount, Integer.class);
         if (failedFileCount > 0) {
-            log.warn("{}:: JRD load failed, hence no publishing sidam id's to ASB", logComponentName,
+            log.warn("{}:: JRD load failed, hence no publishing sidam id's to ASB {}", logComponentName,
                 jobDetails.getLeft());
             camelContext.getGlobalOptions().put(ASB_PUBLISHING_STATUS, FILE_LOAD_FAILED.getStatus());
             updateAsbStatus(jobDetails.getLeft(), FILE_LOAD_FAILED.getStatus());
@@ -196,7 +199,7 @@ public class JrdDataIngestionLibraryRunner extends DataIngestionLibraryRunner {
             if ((IN_PROGRESS.getStatus().equals(status))
                 || (FAILED.getStatus()).equals(status) && isNotEmpty(sidamIds)) {
                 //Publish or retry Message in ASB
-                log.info("{}:: Publishing/Retrying JRD messages in ASB for Job Id ", logComponentName, jobId);
+                log.info("{}:: Publishing/Retrying JRD messages in ASB for Job Id {}", logComponentName, jobId);
                 topicPublisher.sendMessage(sidamIds, jobId);
                 updateAsbStatus(jobId, SUCCESS.getStatus());
             }
@@ -209,6 +212,7 @@ public class JrdDataIngestionLibraryRunner extends DataIngestionLibraryRunner {
             updateAsbStatus(jobId, FAILED.getStatus());
             if (mailTypeConfig.isEnabled()) {
                 Email email = Email.builder()
+                        .contentType(CONTENT_TYPE_PLAIN)
                         .from(mailTypeConfig.getFrom())
                         .to(mailTypeConfig.getTo())
                         .messageBody(String.format(mailTypeConfig.getBody(), jobId))
@@ -220,7 +224,7 @@ public class JrdDataIngestionLibraryRunner extends DataIngestionLibraryRunner {
         }
     }
 
-    private boolean shouldReturn() throws Exception {
+    private boolean shouldReturn() throws URISyntaxException, StorageException {
         return currentDayPublishingStatusIsSuccessOrFileLoadFailed()
                 || noFileUploadAfterSuccessfulDataIngestionOnPreviousDay();
     }
@@ -233,7 +237,7 @@ public class JrdDataIngestionLibraryRunner extends DataIngestionLibraryRunner {
                 || isLoadFailed(getJobDetails(selectJobStatus));
     }
 
-    public boolean noFileUploadAfterSuccessfulDataIngestionOnPreviousDay() throws Exception {
+    public boolean noFileUploadAfterSuccessfulDataIngestionOnPreviousDay() throws URISyntaxException, StorageException {
         Optional<Pair<String, String>> previousDayJobDetails = getJobStatus(selectPreviousDayJobStatus);
 
         return auditServiceImpl.hasDataIngestionRunAfterFileUpload(getFileTimestamp(fileName))
@@ -241,7 +245,7 @@ public class JrdDataIngestionLibraryRunner extends DataIngestionLibraryRunner {
                 pair.getRight().equals(SUCCESS.getStatus())).orElse(false);
     }
 
-    public boolean isAuditingCompletedPrevDayAndPublishingFailed() throws Exception {
+    public boolean isAuditingCompletedPrevDayAndPublishingFailed() throws URISyntaxException, StorageException {
         Optional<Pair<String, String>> previousDayJobDetails = getJobStatus(selectPreviousDayJobStatus);
 
         return auditServiceImpl.isAuditingCompletedPrevDay(getFileTimestamp(fileName))

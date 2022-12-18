@@ -4,6 +4,7 @@ import com.azure.core.amqp.AmqpRetryOptions;
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.launchdarkly.sdk.server.LDClient;
+import freemarker.cache.ClassTemplateLoader;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.bean.validator.HibernateValidationProviderResolver;
 import org.apache.camel.spring.SpringCamelContext;
@@ -46,6 +47,7 @@ import uk.gov.hmcts.reform.juddata.camel.processor.JudicialUserProfileProcessor;
 import uk.gov.hmcts.reform.juddata.camel.servicebus.TopicPublisher;
 import uk.gov.hmcts.reform.juddata.camel.task.LeafRouteTask;
 import uk.gov.hmcts.reform.juddata.camel.task.ParentRouteTask;
+import uk.gov.hmcts.reform.juddata.camel.util.EmailTemplate;
 import uk.gov.hmcts.reform.juddata.camel.util.FeatureToggleService;
 import uk.gov.hmcts.reform.juddata.camel.util.FeatureToggleServiceImpl;
 import uk.gov.hmcts.reform.juddata.camel.util.JrdDataIngestionLibraryRunner;
@@ -375,6 +377,19 @@ public class ParentCamelConfig {
     @Bean
     EmailConfiguration emailConfiguration() {
         return new EmailConfiguration();
+    }
+
+    @Bean(name = "emailConfigBean")
+    freemarker.template.Configuration configuration() {
+        freemarker.template.Configuration configuration =
+                new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_31);
+        configuration.setTemplateLoader(new ClassTemplateLoader(ParentCamelConfig.class, "/"));
+        return configuration;
+    }
+
+    @Bean
+    EmailTemplate emailTemplate() {
+        return new EmailTemplate();
     }
 
     @Bean

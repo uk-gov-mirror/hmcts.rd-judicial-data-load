@@ -5,17 +5,18 @@ import uk.gov.hmcts.reform.juddata.camel.binder.JudicialBaseLocationType;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudicialOfficeAppointmentMock;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudicialBaseLocationMock;
 
 class JudicialBaseLocationRowTypeMapperTest {
+
 
     @Test
     void should_return_JudicialBaseLocationType_response() {
 
         JudicialBaseLocationRowTypeMapper judicialBaseLocationRowTypeMapper = new JudicialBaseLocationRowTypeMapper();
 
-        JudicialBaseLocationType judicialBaseLocationType = createJudicialOfficeAppointmentMock();
+        JudicialBaseLocationType judicialBaseLocationType = createJudicialBaseLocationMock();
 
         Map<String, Object> response = judicialBaseLocationRowTypeMapper.getMap(judicialBaseLocationType);
         assertEquals("area", response.get("area_of_expertise"));

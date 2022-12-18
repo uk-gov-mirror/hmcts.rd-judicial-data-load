@@ -1,13 +1,5 @@
 package uk.gov.hmcts.reform.juddata.camel.processor;
 
-import static java.util.Collections.singletonList;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
-import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_PER_ID;
-import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.PER_ID;
-
-import java.util.List;
-import java.util.function.Predicate;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +9,16 @@ import uk.gov.hmcts.reform.data.ingestion.camel.processor.JsrValidationBaseProce
 import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserProfile;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserRoleType;
+
+import java.util.List;
+import java.util.function.Predicate;
+
+import static java.util.Collections.singletonList;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.FAILURE;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.PARTIAL_SUCCESS;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_PER_ID;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.PER_ID;
 
 @Component
 @Slf4j
@@ -64,7 +66,11 @@ public class JudicialUserRoleTypeProcessor
         filterAuthorizationsRecordsForForeignKeyViolation(filteredJudicialRoleTypes, exchange);
 
         if (judicialUserRoleTypes.size() != filteredJudicialRoleTypes.size()) {
-            setFileStatus(exchange, applicationContext);
+            String auditStatus = PARTIAL_SUCCESS;
+            if (filteredJudicialRoleTypes.isEmpty()) {
+                auditStatus = FAILURE;
+            }
+            setFileStatus(exchange, applicationContext, auditStatus);
         }
 
         log.info("{}:: Judicial Role type Records after JSR and foreign key Validation {}:: ",
@@ -74,7 +80,7 @@ public class JudicialUserRoleTypeProcessor
 
     private void filterAuthorizationsRecordsForForeignKeyViolation(List<JudicialUserRoleType> filteredJudicialRoleTypes,
                                                                    Exchange exchange) {
-
+        log.info("{} : starting filter Authorizations Records For Foreign Key Violation ", logComponentName);
         Predicate<JudicialUserRoleType> perViolations = c ->
                 isFalse(judicialUserProfileProcessor.getValidPerIdInUserProfile().contains(c.getPerId()));
 

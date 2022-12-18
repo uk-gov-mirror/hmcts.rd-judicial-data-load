@@ -22,6 +22,7 @@ import static org.apache.commons.lang.BooleanUtils.isNotTrue;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.DataLoadUtil.getFileDetails;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.FAILURE;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.CONTENT_TYPE_PLAIN;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.IS_PARENT;
 
 @Slf4j
@@ -66,6 +67,7 @@ public class JrdExecutor extends RouteExecutor {
                 EmailConfiguration.MailTypeConfig mailTypeConfig = emailConfiguration.getMailTypes().get("report");
                 if (mailTypeConfig.isEnabled()) {
                     emailService.sendEmail(Email.builder()
+                            .contentType(CONTENT_TYPE_PLAIN)
                             .from(mailTypeConfig.getFrom())
                             .to(mailTypeConfig.getTo())
                             .messageBody(String.format(mailTypeConfig.getBody(), StringUtils.join(fileStatuses, ",")))

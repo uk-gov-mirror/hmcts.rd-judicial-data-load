@@ -33,7 +33,7 @@ spring:
   ### database configuration
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5456}/${POSTGRES_NAME:dbjuddata}${POSTGRES_CONNECTION_OPTIONS:}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5456}/${POSTGRES_NAME:dbjuddata}${POSTGRES_CONNECTION_OPTIONS:}?currentSchema=dbjuddata
     username: ${POSTGRES_USERNAME:dbjuddata}
     password: ${POSTGRES_PASSWORD:dbjuddata}
     properties:
@@ -76,7 +76,32 @@ email:
         - pradipta.dey@hmcts.net
         - candyliyen.kuek@hmcts.net
       subject: "Official Sensitive: JRD - Incorrect JO Profile Configurations - %s"
-      body: "Following JO profiles were deleted : \n %s"
+      template: simple-template-userProfile.ftl
+    region:
+      enabled: true
+      from: ${MAIL_FROM}
+      to:
+        - pradipta.dey@hmcts.net
+        - candyliyen.kuek@hmcts.net
+      subject: "Official Sensitive: JRD - New Region ID in Appointment file - %s"
+      template: simple-template-regionId.ftl
+    baselocation:
+      enabled: true
+      from: ${MAIL_FROM}
+      to:
+        - pradipta.dey@hmcts.net
+        - candyliyen.kuek@hmcts.net
+      subject: "Official Sensitive: JRD - New Base Location in Appointment file - %s"
+      template: simple-template-baseLocationId.ftl
+    lowerLevelAuth:
+      enabled: true
+      from: ${MAIL_FROM}
+      to:
+        - pradipta.dey@hmcts.net
+        - candyliyen.kuek@hmcts.net
+      subject: "Official Sensitive: JRD - New Lower Level in Authorisations - %s"
+      template: lower-level-auth.ftl
+
 
 sendgrid:
   key: ${RD_SENDGRID_API_KEY}
@@ -100,3 +125,7 @@ idam:
     authorization: ${OAUTH2_AUTH:}
     client-authorization: ${OAUTH2_CLIENT_AUTH:}
 
+
+elinksApiKey: ${judicial_api_elinks_api_key:}
+#URL not tested , code is for developers reference
+elinksUrl: ${ELINKS_URL:https://jo-staging.elinks.judiciary.uk}

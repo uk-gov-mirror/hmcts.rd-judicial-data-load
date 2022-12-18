@@ -34,6 +34,8 @@ job:
           alias: OAUTH2_CLIENT_AUTH
         - name: rd-sendgrid-api-key
           alias: RD_SENDGRID_API_KEY
+        - name: judicial-api-elinks-api-key
+          alias: judicial_api_elinks_api_key
   secrets:
     SB_TOPIC_CONN_STRING:
       secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-jrd-aks-topic
@@ -53,12 +55,15 @@ global:
 postgresql:
   enabled: true
   image:
-    tag: '11.3.0'
-  postgresqlUsername: dbjuddata
-  postgresqlPassword: dbjuddata
-  postgresqlDatabase: dbjuddata
-  persistence:
-    enabled: false
+    tag: '11.16.0'
+  auth:
+    username: dbjuddata
+    password: dbjuddata
+    database: dbjuddata
+  ## Disable Postgres Persistence
+  primary:
+    persistence:
+      enabled: false
 
 servicebus:
   resourceGroup: rd-aks-pr-test

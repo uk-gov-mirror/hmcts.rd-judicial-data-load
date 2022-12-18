@@ -28,17 +28,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.ROUTE_DETAILS;
-import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudicialOfficeAppointmentMock;
+import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudicialBaseLocationMock;
 
 class JudicialBaseLocationProcessorTest {
+
+
 
     JudicialBaseLocationProcessor judicialBaseLocationProcessor = spy(new JudicialBaseLocationProcessor());
 
     List<JudicialBaseLocationType> judicialBaseLocationTypes = new ArrayList<>();
 
-    JudicialBaseLocationType judicialBaseLocationType1 = createJudicialOfficeAppointmentMock();
+    JudicialBaseLocationType judicialBaseLocationType1 = createJudicialBaseLocationMock();
 
-    JudicialBaseLocationType judicialBaseLocationType2 = createJudicialOfficeAppointmentMock();
+    JudicialBaseLocationType judicialBaseLocationType2 = createJudicialBaseLocationMock();
 
     JsrValidatorInitializer<JudicialBaseLocationType> judicialBaseLocationTypeJsrValidatorInitializer;
 
@@ -88,7 +90,7 @@ class JudicialBaseLocationProcessorTest {
         when(messageMock.getBody()).thenReturn(judicialBaseLocationTypes);
         judicialBaseLocationProcessor.process(exchangeMock);
 
-        assertThat(((List) exchangeMock.getMessage().getBody()).size()).isEqualTo(2);
+        assertThat(((List) exchangeMock.getMessage().getBody())).hasSize(2);
         verify(judicialBaseLocationProcessor).audit(judicialBaseLocationTypeJsrValidatorInitializer,exchangeMock);
         verify(messageMock).setBody(any());
         verify(exchangeMock, times(2)).getMessage();

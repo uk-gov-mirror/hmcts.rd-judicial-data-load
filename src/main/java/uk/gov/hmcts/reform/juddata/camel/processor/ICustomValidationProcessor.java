@@ -14,6 +14,8 @@ import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserRoleType;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -25,11 +27,12 @@ import static java.util.stream.Collectors.toSet;
 import static org.apache.camel.util.ObjectHelper.isNotEmpty;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.DataLoadUtil.getFileDetails;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.DataLoadUtil.registerFileStatusBean;
-import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.PARTIAL_SUCCESS;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.ROUTE_DETAILS;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.DATE_PATTERN;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.INVALID_JSR_PARENT_ROW;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.BASE_LOCATION_ID;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.LOCATION_ID;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.PER_ID;
-
 
 public interface ICustomValidationProcessor<T> {
 
@@ -49,7 +52,7 @@ public interface ICustomValidationProcessor<T> {
                 if (((Class) mySuperclass).getCanonicalName().equals(JudicialOfficeAppointment
                     .class.getCanonicalName())) {
                     filteredChildren.stream()
-                            .map(c -> (JudicialOfficeAppointment) c)
+                            .map(JudicialOfficeAppointment.class::cast)
                             .filter(app -> app.getPerId().equalsIgnoreCase(invalidRecords.getPerId()))
                             .forEach(filteredApp ->
                                     invalidPerIds.add(Pair.of(filteredApp.getPerId(), filteredApp.getRowId())));
@@ -60,7 +63,7 @@ public interface ICustomValidationProcessor<T> {
                 } else if (((Class) mySuperclass).getCanonicalName().equals(JudicialOfficeAuthorisation
                     .class.getCanonicalName())) {
                     filteredChildren.stream()
-                            .map(c -> (JudicialOfficeAuthorisation) c)
+                            .map(JudicialOfficeAuthorisation.class::cast)
                             .filter(auth -> auth.getPerId().equalsIgnoreCase(invalidRecords.getPerId()))
                             .forEach(filteredAuth ->
                                     invalidPerIds.add(Pair.of(filteredAuth.getPerId(), filteredAuth.getRowId())));
@@ -72,7 +75,7 @@ public interface ICustomValidationProcessor<T> {
                         .class.getCanonicalName())) {
 
                     filteredChildren.stream()
-                            .map(c -> (JudicialUserRoleType) c)
+                            .map(JudicialUserRoleType.class::cast)
                             .filter(roleType -> roleType.getPerId().equalsIgnoreCase(invalidRecords.getPerId()))
                             .forEach(filteredRoleType ->
                                     invalidPerIds.add(Pair.of(filteredRoleType.getPerId(),
@@ -99,7 +102,6 @@ public interface ICustomValidationProcessor<T> {
         }
     }
 
-
     default void removeForeignKeyElements(List<T> filteredJudicialAppointments,
                                           Predicate<T> predicate, String fieldInError, Exchange exchange,
                                           JsrValidatorInitializer<T> jsrValidatorInitializer, String errorMessage) {
@@ -114,16 +116,20 @@ public interface ICustomValidationProcessor<T> {
                 .class.getCanonicalName())) {
                 List<Pair<String, Long>> pair = new ArrayList<>();
                 missingForeignKeyRecords.stream()
-                        .map(i -> ((JudicialOfficeAppointment) i))
+                        .map(JudicialOfficeAppointment.class::cast)
                         .forEach(j -> pair.add(Pair.of(j.getPerId(), j.getRowId())));
                 //Auditing foreign key skipped rows of user profile for Appointment
                 jsrValidatorInitializer.auditJsrExceptions(pair,
                     fieldInError, errorMessage, exchange);
+                if (List.of(LOCATION_ID, BASE_LOCATION_ID).contains(fieldInError)) {
+                    sendEmail(missingForeignKeyRecords, fieldInError,
+                            LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_PATTERN)));
+                }
             } else if (((Class) mySuperclass).getCanonicalName().equals(JudicialOfficeAuthorisation
                 .class.getCanonicalName())) {
                 List<Pair<String, Long>> pair = new ArrayList<>();
                 missingForeignKeyRecords.stream()
-                        .map(i -> ((JudicialOfficeAuthorisation) i))
+                        .map(JudicialOfficeAuthorisation.class::cast)
                         .forEach(j -> pair.add(Pair.of(j.getPerId(), j.getRowId())));
                 //Auditing foreign key skipped rows of user profile for Authorization
                 jsrValidatorInitializer.auditJsrExceptions(pair,
@@ -132,7 +138,7 @@ public interface ICustomValidationProcessor<T> {
                     .class.getCanonicalName())) {
                 List<Pair<String, Long>> pair = new ArrayList<>();
                 missingForeignKeyRecords.stream()
-                        .map(i -> ((JudicialUserRoleType) i))
+                        .map(JudicialUserRoleType.class::cast)
                         .forEach(j -> pair.add(Pair.of(j.getPerId(), j.getRowId())));
                 //Auditing foreign key skipped rows of user profile for Authorization
                 jsrValidatorInitializer.auditJsrExceptions(pair,
@@ -141,15 +147,25 @@ public interface ICustomValidationProcessor<T> {
         }
     }
 
+    /**
+     * Has to be overridden when it needs.
+     * @param data data to prepare email body
+     * @param params data to build subject or any other dynamic data
+     * @return positive when email send success
+     */
+    default int sendEmail(Set<T> data, String type, Object... params) {
+        return -1;
+    }
+
     private Type getType() {
         ParameterizedType p = (ParameterizedType) getClass().getGenericSuperclass();
         return p.getActualTypeArguments()[0];
     }
 
-    default void setFileStatus(Exchange exchange, ApplicationContext applicationContext) {
+    default void setFileStatus(Exchange exchange, ApplicationContext applicationContext, String auditStatus) {
         RouteProperties routeProperties = (RouteProperties) exchange.getIn().getHeader(ROUTE_DETAILS);
         FileStatus fileStatus = getFileDetails(exchange.getContext(), routeProperties.getFileName());
-        fileStatus.setAuditStatus(PARTIAL_SUCCESS);
+        fileStatus.setAuditStatus(auditStatus);
         registerFileStatusBean(applicationContext, routeProperties.getFileName(), fileStatus,
             exchange.getContext());
     }

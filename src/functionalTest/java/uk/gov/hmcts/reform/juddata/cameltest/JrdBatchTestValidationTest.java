@@ -1,6 +1,7 @@
 
 package uk.gov.hmcts.reform.juddata.cameltest;
 
+import freemarker.template.Configuration;
 import org.apache.camel.CamelContext;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.CamelTestContextBootstrapper;
@@ -42,17 +43,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.DIRECT_JRD;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.PARTIAL_SUCCESS;
 import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.START_ROUTE;
-import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.DIRECT_JRD;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.INVALID_JSR_PARENT_ROW;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_BASE_LOCATION;
-import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_PER_ID;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_LOCATION;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_PER_ID;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.JUDICIAL_REF_DATA_ORCHESTRATION;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.LEAF_ROUTE;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.ORCHESTRATED_ROUTE;
@@ -60,14 +61,14 @@ import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegratio
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithAuthPerIdMissing;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithAuthorisationInvalidHeader;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithEmptyPerIdInAuth;
-import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidPerCodeObjectIds;
-import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithPerIdInvalidInParent;
-import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithPerIdMissing;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithForeignKeyViolations;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidAppointments;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidHeader;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidJsr;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidJsrExceedsThreshold;
-import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidAppointments;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithInvalidPerCodeObjectIds;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithPerIdInvalidInParent;
+import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.fileWithPerIdMissing;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.missingUserProfile;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.uploadBlobs;
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.validateDbRecordCountFor;
@@ -103,10 +104,13 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     @Mock
     EmailServiceImpl emailService;
 
+    @Mock
+    Configuration emailConfigBean;
+
     @Test
     void testTaskletException() throws Exception {
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithPerIdMissing);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, fileWithPerIdMissing);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
         validateDbRecordCountFor(jdbcTemplate, userProfileSql, 2);
@@ -116,8 +120,8 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     @Test
     void testAuthorisationPerMissing() throws Exception {
 
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithAuthPerIdMissing);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, fileWithAuthPerIdMissing);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
         validateDbRecordCountFor(jdbcTemplate, userProfileSql, 2);
@@ -126,8 +130,8 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
     @Test
     void testParentOrchestrationInvalidHeaderAppointmentsRollbackAppointments() throws Exception {
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithInvalidHeader);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, fileWithInvalidHeader);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
         validateDbRecordCountFor(jdbcTemplate, userProfileSql, 2);
@@ -137,8 +141,8 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
     @Test
     void testAuthorisationInvalidHeaderAuthorizationRollback() throws Exception {
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithAuthorisationInvalidHeader);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, fileWithAuthorisationInvalidHeader);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
         validateDbRecordCountFor(jdbcTemplate, userProfileSql, 2);
@@ -152,13 +156,13 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     void testLeafFailuresRollbackAndKeepExistingState() throws Exception {
         setField(jrdExecutor, "emailService", emailService);
         Mockito.when(emailService.sendEmail(ArgumentMatchers.any(Email.class))).thenReturn(200);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, file);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, file);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
 
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithAuthorisationInvalidHeader);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file_error);
+        uploadBlobs(jrdBlobSupport, parentFiles, fileWithAuthorisationInvalidHeader);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file_error);
 
         camelContext.getGlobalOptions().put(ORCHESTRATED_ROUTE, JUDICIAL_REF_DATA_ORCHESTRATION);
 
@@ -173,8 +177,8 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
     @Test
     void testParentOrchestrationJsrAuditTestAndPartialSuccess() throws Exception {
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithInvalidJsr);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, fileWithInvalidJsr);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
         jobLauncherTestUtils.launchJob();
 
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(userProfileSql);
@@ -201,8 +205,8 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
     @Test
     void testParentOrchestrationJsrExceedsThresholdAuditTest() throws Exception {
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithInvalidJsrExceedsThreshold);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, fileWithInvalidJsrExceedsThreshold);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
 
         jobLauncherTestUtils.launchJob();
@@ -217,8 +221,8 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
     @Test
     void testLeafFailuresInvalidJsr() throws Exception {
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, file);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file_jsr_error);
+        uploadBlobs(jrdBlobSupport, parentFiles, file);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file_jsr_error);
         jobLauncherTestUtils.launchJob();
 
         List<Map<String, Object>> judicialBaseLocationType = jdbcTemplate.queryForList(baseLocationSql);
@@ -248,8 +252,8 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
     @Test
     void testParentOrchestrationJsrSkipChildAppointmentRecordsForInvalidUserProfile() throws Exception {
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithPerIdInvalidInParent);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, fileWithPerIdInvalidInParent);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
         jobLauncherTestUtils.launchJob();
 
         List<Map<String, Object>> judicialUserProfileList = jdbcTemplate.queryForList(userProfileSql);
@@ -280,8 +284,8 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     @Test
     void testParentOrchestrationJsrSkipChildRecordsForeignKeyViolations() throws Exception {
 
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithForeignKeyViolations);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, fileWithForeignKeyViolations);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
         JobParameters params = new JobParametersBuilder()
             .addString(jobLauncherTestUtils.getJob().getName(), String.valueOf(System.currentTimeMillis()))
@@ -306,8 +310,8 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
     @Test
     void testUserProfileWithInvalidAppointmentValue() throws Exception {
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithInvalidAppointments);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, fileWithInvalidAppointments);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
         validateDbRecordCountFor(jdbcTemplate, userProfileSql, 6);
@@ -316,8 +320,8 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
 
     @Test
     void testChildSkipsOnParentFailure() throws Exception {
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, missingUserProfile);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, missingUserProfile);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
         JobParameters params = new JobParametersBuilder()
             .addString(jobLauncherTestUtils.getJob().getName(), String.valueOf(System.currentTimeMillis()))
@@ -331,8 +335,8 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     @Test
     void testRowIdInExceptionTable() throws Exception {
 
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithEmptyPerIdInAuth);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, fileWithEmptyPerIdInAuth);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
         validateExceptionDbRecordCount(jdbcTemplate, exceptionQuery, 3, false);
@@ -365,9 +369,10 @@ class JrdBatchTestValidationTest extends JrdBatchIntegrationSupport {
     void testUserProfileWithInvalidPersonalCodeObjectId() throws Exception {
         setField(jrdUserProfileUtil, "emailService", emailService);
         Mockito.when(emailService.sendEmail(ArgumentMatchers.any(Email.class))).thenReturn(200);
+        Mockito.when(emailConfigBean.getTemplate(ArgumentMatchers.anyString())).thenReturn(null);
 
-        uploadBlobs(jrdBlobSupport, archivalFileNames, true, fileWithInvalidPerCodeObjectIds);
-        uploadBlobs(jrdBlobSupport, archivalFileNames, false, LeafIntegrationTestSupport.file);
+        uploadBlobs(jrdBlobSupport, parentFiles, fileWithInvalidPerCodeObjectIds);
+        uploadBlobs(jrdBlobSupport, leafFiles, LeafIntegrationTestSupport.file);
 
         jobLauncherTestUtils.launchJob();
         validateDbRecordCountFor(jdbcTemplate, userProfileSql, 4);

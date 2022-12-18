@@ -8,21 +8,33 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.data.ingestion.camel.processor.JsrValidationBaseProcessor;
+import uk.gov.hmcts.reform.data.ingestion.camel.service.IEmailService;
+import uk.gov.hmcts.reform.data.ingestion.camel.service.dto.Email;
 import uk.gov.hmcts.reform.data.ingestion.camel.validator.JsrValidatorInitializer;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialOfficeAppointment;
 import uk.gov.hmcts.reform.juddata.camel.binder.JudicialUserProfile;
+import uk.gov.hmcts.reform.juddata.camel.util.EmailTemplate;
+import uk.gov.hmcts.reform.juddata.configuration.EmailConfiguration;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import static java.util.Collections.singletonList;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.FAILURE;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.PARTIAL_SUCCESS;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.BASE_LOCATION;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.CONTENT_TYPE_HTML;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_BASE_LOCATION;
-import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_PER_ID;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_LOCATION;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.MISSING_PER_ID;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdConstants.REGION;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.BASE_LOCATION_ID;
-import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.PER_ID;
 import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.LOCATION_ID;
+import static uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants.PER_ID;
+
 
 @Slf4j
 @Component
@@ -51,6 +63,18 @@ public class JudicialOfficeAppointmentProcessor
 
     @Value("${fetch-personal-per-id}")
     String loadPerId;
+
+    @Autowired
+    EmailConfiguration emailConfiguration;
+
+    @Autowired
+    IEmailService emailService;
+
+    @Autowired
+    EmailTemplate emailTemplate;
+    
+    private final Map<String, String> emailConfigMapping = Map.of(LOCATION_ID, REGION,
+            BASE_LOCATION_ID, BASE_LOCATION);
 
     @SuppressWarnings("unchecked")
     @Override
@@ -83,7 +107,11 @@ public class JudicialOfficeAppointmentProcessor
         audit(judicialOfficeAppointmentJsrValidatorInitializer, exchange);
 
         if (judicialOfficeAppointments.size() != filteredJudicialAppointments.size()) {
-            setFileStatus(exchange, applicationContext);
+            String auditStatus = PARTIAL_SUCCESS;
+            if (filteredJudicialAppointments.isEmpty()) {
+                auditStatus = FAILURE;
+            }
+            setFileStatus(exchange, applicationContext, auditStatus);
         }
 
         log.info("{}:: Judicial Appointment Records count  after JSR and foreign key Validation {}:: ",
@@ -96,6 +124,8 @@ public class JudicialOfficeAppointmentProcessor
     private void filterAppointmentsRecordsForForeignKeyViolation(List<JudicialOfficeAppointment>
                                                                      filteredJudicialAppointments,
                                                                  Exchange exchange) {
+        log.info("{}:: Before filter Appointments Records For Foreign Key Violation {}:: ",
+                logComponentName, filteredJudicialAppointments.size());
 
         Predicate<JudicialOfficeAppointment> perViolations = c ->
             isFalse(judicialUserProfileProcessor.getValidPerIdInUserProfile().contains(c.getPerId()));
@@ -107,7 +137,7 @@ public class JudicialOfficeAppointmentProcessor
         //remove & audit missing Locations
         List<String> locations = jdbcTemplate.queryForList(fetchLocations, String.class);
         Predicate<JudicialOfficeAppointment> locationsViolations = c -> isFalse(locations.contains(c.getRegionId()))
-            && isFalse(c.getRegionId().equalsIgnoreCase("0"));
+            && isFalse("0".equalsIgnoreCase(c.getRegionId()));
         removeForeignKeyElements(filteredJudicialAppointments, locationsViolations, LOCATION_ID, exchange,
             judicialOfficeAppointmentJsrValidatorInitializer, MISSING_LOCATION);
 
@@ -117,5 +147,27 @@ public class JudicialOfficeAppointmentProcessor
             c.getBaseLocationId())) && isFalse(c.getBaseLocationId().equalsIgnoreCase("0"));
         removeForeignKeyElements(filteredJudicialAppointments, baseLocationsViolations, BASE_LOCATION_ID, exchange,
             judicialOfficeAppointmentJsrValidatorInitializer, MISSING_BASE_LOCATION);
+
+        log.info("{}:: After filter Appointments Records For Foreign Key Violation {}:: ",
+                logComponentName, filteredJudicialAppointments.size());
     }
+
+    @Override
+    public int sendEmail(Set<JudicialOfficeAppointment> data, String type, Object... params) {
+        log.info("{} : send Email",logComponentName);
+        EmailConfiguration.MailTypeConfig config = emailConfiguration.getMailTypes()
+                .get(emailConfigMapping.get(type));
+        if (config != null && config.isEnabled()) {
+            Email email = Email.builder()
+                    .contentType(CONTENT_TYPE_HTML)
+                    .from(config.getFrom())
+                    .to(config.getTo())
+                    .subject(String.format(config.getSubject(), params))
+                    .messageBody(emailTemplate.getEmailBody(config.getTemplate(), Map.of("appointments", data)))
+                    .build();
+            return emailService.sendEmail(email);
+        }
+        return -1;
+    }
+
 }

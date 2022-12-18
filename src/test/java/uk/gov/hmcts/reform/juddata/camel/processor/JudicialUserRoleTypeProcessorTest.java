@@ -27,27 +27,28 @@ import java.util.List;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
+import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.springframework.test.util.ReflectionTestUtils.invokeMethod;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
+import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.ROUTE_DETAILS;
 import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.PERID_1;
 import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.PERID_2;
 import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.PERID_3;
-import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.ROUTE_DETAILS;
-import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudicialUserRoleType;
 import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudicialUserProfileMock;
+import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createJudicialUserRoleType;
 
 class JudicialUserRoleTypeProcessorTest {
 
@@ -135,7 +136,7 @@ class JudicialUserRoleTypeProcessorTest {
         when(messageMock.getBody()).thenReturn(judicialUserRoleTypes);
         judicialUserRoleTypeProcessor.process(exchangeMock);
 
-        assertThat(((List) exchangeMock.getMessage().getBody()).size()).isEqualTo(2);
+        assertThat(((List) exchangeMock.getMessage().getBody())).hasSize(2);
         verify(exchangeMock, times(2)).getMessage();
         verify(judicialUserRoleTypeProcessor).audit(judicialUserRoleTypeJsrValidatorInitializer, exchangeMock);
         verify(messageMock).setBody(any());
@@ -187,7 +188,7 @@ class JudicialUserRoleTypeProcessorTest {
 
         when(messageMock.getBody()).thenReturn(judicialUserRoleTypes);
         judicialUserRoleTypeProcessor.process(exchangeMock);
-        assertThat(((List) exchangeMock.getMessage().getBody()).size()).isEqualTo(2);
+        assertThat(((List) exchangeMock.getMessage().getBody())).hasSize(2);
         assertThat(((List<JudicialUserRoleType>) exchangeMock.getMessage().getBody()))
                 .isSameAs(judicialUserRoleTypes);
 

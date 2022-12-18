@@ -61,6 +61,8 @@ class JudicialUserProfileProcessorTest {
 
     private JsrValidatorInitializer<JudicialUserProfile> judicialUserProfileJsrValidatorInitializer;
 
+    final PlatformTransactionManager platformTransactionManager = mock(PlatformTransactionManager.class);
+
     private JrdUserProfileUtil judicialUserProfileUtil;
 
     private Validator validator;
@@ -92,6 +94,10 @@ class JudicialUserProfileProcessorTest {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
         setField(judicialUserProfileJsrValidatorInitializer, "validator", validator);
+        setField(judicialUserProfileJsrValidatorInitializer, "camelContext", camelContext);
+        setField(judicialUserProfileJsrValidatorInitializer, "jdbcTemplate", jdbcTemplate);
+        setField(judicialUserProfileJsrValidatorInitializer, "platformTransactionManager",
+            platformTransactionManager);
         messageMock = mock(Message.class);
         RouteProperties routeProperties = new RouteProperties();
         routeProperties.setFileName("test");
@@ -171,9 +177,8 @@ class JudicialUserProfileProcessorTest {
         doNothing().when(platformTransactionManager).commit(transactionStatus);
         when(exchangeMock.getIn().getHeader(ROUTE_DETAILS)).thenReturn(routeProperties);
 
-        Assertions.assertThrows(RouteFailedException.class, () -> {
-            judicialUserProfileProcessor.process(exchangeMock);
-        });
+        Assertions.assertThrows(RouteFailedException.class, () ->
+            judicialUserProfileProcessor.process(exchangeMock));
         assertThat(((JudicialUserProfile) exchangeMock.getMessage().getBody())).isSameAs(judicialUserProfileMock1);
     }
 
@@ -193,6 +198,6 @@ class JudicialUserProfileProcessorTest {
         when(jdbcTemplate.queryForList("dummysql", String.class))
             .thenReturn(ImmutableList.of(PERID_1, PERID_2, "0"));
         List<String> resultList = invokeMethod(judicialUserProfileProcessor, "loadPerId");
-        assertThat(resultList.size()).isEqualTo(3);
+        assertThat(resultList).hasSize(3);
     }
 }

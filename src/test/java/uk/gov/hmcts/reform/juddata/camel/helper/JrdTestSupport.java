@@ -60,7 +60,28 @@ public class JrdTestSupport {
         return judicialUserProfileMock;
     }
 
-    public static JudicialBaseLocationType createJudicialOfficeAppointmentMock() {
+    public static JudicialUserProfile createJudicialUserProfileInactiveMock(Date currentDate, LocalDateTime dateTime,
+                                                                    String perId) {
+
+        JudicialUserProfile judicialUserProfileMock = new JudicialUserProfile();
+        judicialUserProfileMock.setPerId(perId);
+        judicialUserProfileMock.setPersonalCode("personalCode_1");
+        judicialUserProfileMock.setKnownAs("knownAs");
+        judicialUserProfileMock.setSurName("surname");
+        judicialUserProfileMock.setFullName("fullName");
+        judicialUserProfileMock.setPostNominals("postNominals");
+        judicialUserProfileMock.setWorkPattern("workpatterns");
+        judicialUserProfileMock.setEjudiciaryEmail("some@hmcts.net");
+        judicialUserProfileMock.setJoiningDate(getDateWithFormat(currentDate, DATE_FORMAT));
+        judicialUserProfileMock.setLastWorkingDate(getDateWithFormat(currentDate, DATE_FORMAT));
+        judicialUserProfileMock.setActiveFlag(false);
+        judicialUserProfileMock.setExtractedDate(getDateTimeWithFormat(dateTime));
+        judicialUserProfileMock.setObjectId("779321b3-3170-44a0-bc7d-b4decc2aea10");
+        return judicialUserProfileMock;
+    }
+
+    public static JudicialBaseLocationType createJudicialBaseLocationMock() {
+
         JudicialBaseLocationType judicialBaseLocationType = new JudicialBaseLocationType();
 
         judicialBaseLocationType.setArea("area");

@@ -2,17 +2,16 @@ package uk.gov.hmcts.reform.juddata.camel.binder;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static uk.gov.hmcts.reform.juddata.camel.helper.JrdTestSupport.createCurrentLocalDate;
 
 class JudicialBaseLocationTypeTest {
 
     @Test
-    @SuppressWarnings("unchecked")
     void  test_objects_JudicialBaseLocationType_correctly() {
 
         String currentDateInString = createCurrentLocalDate();
-        JudicialBaseLocationType judicialBaseLocationType = createJudicialOfficeAppointmentMock();
+        JudicialBaseLocationType judicialBaseLocationType = createJudicialBaseLocationTypeMock();
         assertEquals("area", judicialBaseLocationType.getArea());
         assertEquals("baseLocationId", judicialBaseLocationType.getBaseLocationId());
         assertEquals("circuit", judicialBaseLocationType.getCircuit());
@@ -20,7 +19,7 @@ class JudicialBaseLocationTypeTest {
         assertEquals("courtType", judicialBaseLocationType.getCourtType());
     }
 
-    public  JudicialBaseLocationType createJudicialOfficeAppointmentMock() {
+    public  JudicialBaseLocationType createJudicialBaseLocationTypeMock() {
         JudicialBaseLocationType judicialBaseLocationType = new JudicialBaseLocationType();
 
         judicialBaseLocationType.setArea("area");
