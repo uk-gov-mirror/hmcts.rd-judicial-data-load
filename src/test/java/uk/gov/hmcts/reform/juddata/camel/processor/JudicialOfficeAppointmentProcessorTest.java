@@ -27,9 +27,6 @@ import uk.gov.hmcts.reform.juddata.camel.util.JrdConstants;
 import uk.gov.hmcts.reform.juddata.camel.util.JrdMappingConstants;
 import uk.gov.hmcts.reform.juddata.configuration.EmailConfiguration;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +35,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
