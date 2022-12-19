@@ -36,6 +36,7 @@ import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_DATA_STORE
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.LOCATION_DATA_LOAD_SUCCESS;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings({"AbbreviationAsWordInName","MemberName"})
 class ELinksServiceImplTest {
 
     @Mock
@@ -80,7 +81,8 @@ class ELinksServiceImplTest {
 
 
     @Test
-    void elinksService_load_location_should_return_elinksException_when_DataAccessException() throws JsonProcessingException {
+    void elinksService_load_location_should_return_elinksException_when_DataAccessException()
+            throws JsonProcessingException {
 
         List<LocationResponse> locations = getLocationResponseData();
 
@@ -112,7 +114,8 @@ class ELinksServiceImplTest {
     }
 
     @Test
-    void elinksService_load_location_should_return_elinksException_when_FeignException() throws JsonProcessingException {
+    void elinksService_load_location_should_return_elinksException_when_FeignException()
+            throws JsonProcessingException {
 
         List<LocationResponse> locations = getLocationResponseData();
 

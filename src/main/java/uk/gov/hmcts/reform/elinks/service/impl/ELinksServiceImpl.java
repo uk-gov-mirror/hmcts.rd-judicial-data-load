@@ -23,7 +23,6 @@ import uk.gov.hmcts.reform.elinks.response.LocationResponse;
 import uk.gov.hmcts.reform.elinks.service.ELinksService;
 import uk.gov.hmcts.reform.juddata.camel.util.JsonFeignResponseUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -50,14 +49,9 @@ public class ELinksServiceImpl implements ELinksService {
     public ResponseEntity<Object> retrieveBaseLocation() {
 
 
-        List<BaseLocation> baseLocations = new ArrayList<>();
-        baseLocations = elinksFeignClient.retrieveBaseLocations();
-
-
-
+        List<BaseLocation> baseLocations = elinksFeignClient.retrieveBaseLocations();
 
         baseLocationRepository.saveAll(baseLocations);
-
 
         return null;
     }
@@ -88,22 +82,7 @@ public class ELinksServiceImpl implements ELinksService {
                 List<Location> locations = locationResponseList.stream()
                         .map(locationRes -> new Location(locationRes.getId(), locationRes.getName(), StringUtils.EMPTY))
                         .toList();
-                try {
-                locationRepository.saveAll(locations);
-
-                ObjectMapper mapper = new ObjectMapper();
-
-
-                    return ResponseEntity
-                            .status(HttpStatus.OK)
-                            .body(mapper.writeValueAsString(LOCATION_DATA_LOAD_SUCCESS));
-                } catch (JsonProcessingException jpe) {
-                    log.error(jpe.getMessage());
-                } catch (DataAccessException dae) {
-
-                    throw new ElinksException(HttpStatus.INTERNAL_SERVER_ERROR, ELINKS_DATA_STORE_ERROR,
-                            ELINKS_DATA_STORE_ERROR);
-                }
+                return loadLocationData(locations);
 
             }
 
@@ -121,6 +100,29 @@ public class ELinksServiceImpl implements ELinksService {
             throw new ElinksException(HttpStatus.FORBIDDEN, ELINKS_ACCESS_ERROR, ELINKS_ACCESS_ERROR);
         }
 
+    }
+
+    private ResponseEntity<String> loadLocationData(List<Location> locations) {
+        ResponseEntity<String> result = null;
+        try {
+
+            locationRepository.saveAll(locations);
+
+            ObjectMapper mapper = new ObjectMapper();
+
+
+            result =  ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(mapper.writeValueAsString(LOCATION_DATA_LOAD_SUCCESS));
+        } catch (JsonProcessingException jpe) {
+            log.error(jpe.getMessage());
+        } catch (DataAccessException dae) {
+
+            throw new ElinksException(HttpStatus.INTERNAL_SERVER_ERROR, ELINKS_DATA_STORE_ERROR,
+                    ELINKS_DATA_STORE_ERROR);
+        }
+
+        return result;
     }
 
 
