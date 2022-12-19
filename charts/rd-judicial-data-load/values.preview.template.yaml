@@ -2,11 +2,11 @@ job:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-    POSTGRES_HOST: "rd-judicial-api-pr-394-postgresql"
+    POSTGRES_HOST: "{{ .Release.Name }}-postgresql"
     POSTGRES_NAME: "{{ .Values.postgresql.auth.database}}"
     POSTGRES_USERNAME: "{{ .Values.postgresql.auth.username}}"
     POSTGRES_PASSWORD: "{{ .Values.postgresql.auth.password}}"
-    FLYWAY_ENABLED: false
+    FLYWAY_ENABLED: true
     ENV_NAME: preview
     CONTAINER_NAME: jud-ref-data
     JRD_MQ_TRUST_ALL_CERTS: false
@@ -49,13 +49,17 @@ job:
     BLOB_SERVICE_ENDPOINT:
       secretRef: storage-secret-{{ .Release.Name }}
       key: primaryBlobServiceEndPoint
+global:
+  jobKind: CronJob
 
-  postgresql:
-    enabled: true
-    auth:
-      username: dbjuddata
-      password: dbjuddata
-      database: dbjuddata
+postgresql:
+  enabled: true
+  image:
+    tag: '11.16.0'
+  auth:
+    username: dbjuddata
+    password: dbjuddata
+    database: dbjuddata
   ## Disable Postgres Persistence
   primary:
     persistence:

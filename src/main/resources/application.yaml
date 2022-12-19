@@ -22,7 +22,7 @@ spring:
       enabled: false
   jackson.date-format: yyyy-MM-dd
   flyway:
-    enabled: ${FLYWAY_ENABLED:false}
+    enabled: ${FLYWAY_ENABLED:true}
     locations: classpath:db/migration
     schemas: dbjuddata
 
@@ -129,3 +129,18 @@ idam:
 elinksApiKey: ${judicial_api_elinks_api_key:}
 #URL not tested , code is for developers reference
 elinksUrl: ${ELINKS_URL:https://jo-staging.elinks.judiciary.uk}
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core: TRACE
+
+
+org:
+  flywaydb:
+    core:
+      internal:
+        dbsupport:
+          SqlScript: DEBUG
