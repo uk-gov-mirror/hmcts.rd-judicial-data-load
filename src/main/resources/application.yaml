@@ -22,7 +22,7 @@ spring:
       enabled: false
   jackson.date-format: yyyy-MM-dd
   flyway:
-    enabled: ${FLYWAY_ENABLED:true}
+    enabled: ${FLYWAY_ENABLED:false}
     locations: classpath:db/migration,classpath:db/postgres
     schemas: dbjuddata
 

@@ -6,7 +6,7 @@ job:
     POSTGRES_NAME: dbjuddata
     POSTGRES_USERNAME: dbjuddata
     POSTGRES_PASSWORD: dbjuddata
-    FLYWAY_ENABLED: true
+    FLYWAY_ENABLED: false
     ENV_NAME: preview
     CONTAINER_NAME: jud-ref-data
     JRD_MQ_TRUST_ALL_CERTS: false
