@@ -151,13 +151,6 @@ task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verificatio
     classpath = sourceSets.smokeTest.runtimeClasspath
 }
 
-task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
-    baselineOnMigrate = true
-    if (project.hasProperty("dburl")) {
-        url = "jdbc:postgresql://${dburl}"
-    }
-}
-
 task fortifyScan(type: JavaExec)  {
   main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
   classpath += sourceSets.test.runtimeClasspath
