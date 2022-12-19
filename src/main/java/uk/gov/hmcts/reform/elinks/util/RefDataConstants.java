@@ -22,6 +22,7 @@ public class RefDataConstants {
     public static final String BASE_LOCATION_DATA_LOAD_SUCCESS = "Base Location data load successfully.";
 
     public static final String ELINKS_ACCESS_ERROR = "An error occurred while retrieving data from Elinks";
+    public static final String ELINKS_DATA_STORE_ERROR = "An error occurred while storing data from Elinks";
     public static final String ERROR_IN_PARSING_THE_FEIGN_RESPONSE = "Error in parsing %s Feign Response";
 
 

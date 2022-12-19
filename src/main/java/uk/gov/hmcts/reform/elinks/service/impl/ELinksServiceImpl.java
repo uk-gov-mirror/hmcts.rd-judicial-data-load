@@ -7,6 +7,7 @@ import feign.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import static java.util.Objects.nonNull;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_ACCESS_ERROR;
+import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_DATA_STORE_ERROR;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.LOCATION_DATA_LOAD_SUCCESS;
 
 @Service
@@ -86,17 +88,21 @@ public class ELinksServiceImpl implements ELinksService {
                 List<Location> locations = locationResponseList.stream()
                         .map(locationRes -> new Location(locationRes.getId(), locationRes.getName(), StringUtils.EMPTY))
                         .toList();
-
+                try {
                 locationRepository.saveAll(locations);
 
                 ObjectMapper mapper = new ObjectMapper();
 
-                try {
+
                     return ResponseEntity
                             .status(HttpStatus.OK)
                             .body(mapper.writeValueAsString(LOCATION_DATA_LOAD_SUCCESS));
                 } catch (JsonProcessingException jpe) {
                     log.error(jpe.getMessage());
+                } catch (DataAccessException dae) {
+
+                    throw new ElinksException(HttpStatus.INTERNAL_SERVER_ERROR, ELINKS_DATA_STORE_ERROR,
+                            ELINKS_DATA_STORE_ERROR);
                 }
 
             }
