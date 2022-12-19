@@ -24,7 +24,7 @@ import static uk.gov.hmcts.reform.data.ingestion.camel.util.MappingConstants.STA
 @Slf4j
 @EnableFeignClients(basePackages = {
     "uk.gov.hmcts.reform.juddata"}, basePackageClasses = {IdamApi.class})
-public class JudicialApplication{
+public class JudicialApplication {
 
     @Autowired
     JobLauncher jobLauncher;
