@@ -17,7 +17,6 @@ plugins {
     id 'info.solidsoft.pitest' version '1.7.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.sonarqube' version '2.8'
-    id "org.flywaydb.flyway" version "6.2.0"
     id 'uk.gov.hmcts.java' version '0.12.12'
 }
 
@@ -149,13 +148,6 @@ task functional(type: Test) {
 task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
     testClassesDirs = sourceSets.smokeTest.output.classesDirs
     classpath = sourceSets.smokeTest.runtimeClasspath
-}
-
-task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
-    baselineOnMigrate = true
-    if (project.hasProperty("dburl")) {
-        url = "jdbc:postgresql://${dburl}"
-    }
 }
 
 task fortifyScan(type: JavaExec)  {

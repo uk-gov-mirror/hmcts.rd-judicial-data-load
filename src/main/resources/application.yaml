@@ -21,10 +21,6 @@ spring:
     job:
       enabled: false
   jackson.date-format: yyyy-MM-dd
-  flyway:
-    enabled: ${FLYWAY_ENABLED:false}
-    locations: classpath:db/migration,classpath:db/postgres
-    schemas: dbjuddata
 
   cloud:
     bootstrap:
