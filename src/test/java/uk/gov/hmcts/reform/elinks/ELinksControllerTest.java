@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.elinks.response.ElinkBaseLocationWrapperResponse;
 import uk.gov.hmcts.reform.elinks.response.ElinkLocationWrapperResponse;
 import uk.gov.hmcts.reform.elinks.service.ELinksService;
 import uk.gov.hmcts.reform.elinks.service.IdamElasticSearchService;
@@ -57,20 +58,24 @@ public class ELinksControllerTest {
     @Test
     void test_load_base_location_success() {
 
-        ResponseEntity<Object> responseEntity;
+        ResponseEntity<ElinkBaseLocationWrapperResponse> responseEntity;
+
+        ElinkBaseLocationWrapperResponse elinkLocationWrapperResponse = new ElinkBaseLocationWrapperResponse();
+        elinkLocationWrapperResponse.setMessage(BASE_LOCATION_DATA_LOAD_SUCCESS);
+
 
         responseEntity = new ResponseEntity<>(
-                BASE_LOCATION_DATA_LOAD_SUCCESS,
+                elinkLocationWrapperResponse,
                 null,
                 HttpStatus.OK
         );
 
         when(eLinksService.retrieveBaseLocation()).thenReturn(responseEntity);
 
-        ResponseEntity<Object> actual = eLinksController.loadBaseLocationType();
+        ResponseEntity<ElinkBaseLocationWrapperResponse> actual = eLinksController.loadBaseLocationType();
         assertThat(actual).isNotNull();
         assertThat(actual.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
-        assertThat(actual.getBody().toString()).isEqualTo(BASE_LOCATION_DATA_LOAD_SUCCESS);
+        assertThat(actual.getBody().getMessage()).isEqualTo(BASE_LOCATION_DATA_LOAD_SUCCESS);
 
     }
 

@@ -19,7 +19,7 @@ public interface ElinksFeignClient {
     @RequestLine("GET /reference_data/base_location")
     @Headers({"Authorization: {authorization}", "ServiceAuthorization: {serviceAuthorization}",
             "Content-Type: application/json"})
-    List<BaseLocation> retrieveBaseLocations();
+    Response getBaseLocationDetails();
 
     @GetMapping(value = "/reference_data/location")
     @RequestLine("GET /reference_data/location")

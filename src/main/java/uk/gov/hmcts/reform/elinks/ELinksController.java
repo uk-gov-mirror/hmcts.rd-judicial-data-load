@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.elinks.response.ElinkBaseLocationWrapperResponse;
 import uk.gov.hmcts.reform.elinks.response.ElinkLocationWrapperResponse;
 import uk.gov.hmcts.reform.elinks.response.IdamResponse;
 import uk.gov.hmcts.reform.elinks.service.ELinksService;
@@ -86,7 +87,7 @@ public class ELinksController {
             @ApiResponse(
                     code = 200,
                     message = "Get list of Base locations and populate base location type.",
-                    response = String.class
+                    response = ElinkBaseLocationWrapperResponse.class
             ),
             @ApiResponse(
                     code = 400,
@@ -115,12 +116,10 @@ public class ELinksController {
     })
     @GetMapping(  path = "/reference_data/base_location",
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> loadBaseLocationType() {
+    public ResponseEntity<ElinkBaseLocationWrapperResponse> loadBaseLocationType() {
 
-    eLinksService.retrieveBaseLocation();
-    return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(BASE_LOCATION_DATA_LOAD_SUCCESS);
+        return eLinksService.retrieveBaseLocation();
+
     }
 
 

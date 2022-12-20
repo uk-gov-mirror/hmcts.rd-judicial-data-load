@@ -16,6 +16,9 @@ import uk.gov.hmcts.reform.elinks.exception.ElinksException;
 import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient;
 import uk.gov.hmcts.reform.elinks.repository.BaseLocationRepository;
 import uk.gov.hmcts.reform.elinks.repository.LocationRepository;
+import uk.gov.hmcts.reform.elinks.response.BaseLocationResponse;
+import uk.gov.hmcts.reform.elinks.response.ElinkBaseLocationResponse;
+import uk.gov.hmcts.reform.elinks.response.ElinkBaseLocationWrapperResponse;
 import uk.gov.hmcts.reform.elinks.response.ElinkLocationResponse;
 import uk.gov.hmcts.reform.elinks.response.ElinkLocationWrapperResponse;
 import uk.gov.hmcts.reform.elinks.response.LocationResponse;
@@ -24,6 +27,7 @@ import uk.gov.hmcts.reform.juddata.camel.util.JsonFeignResponseUtil;
 
 import java.util.List;
 
+import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.BASE_LOCATION_DATA_LOAD_SUCCESS;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_ACCESS_ERROR;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_DATA_STORE_ERROR;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_ERROR_RESPONSE_BAD_REQUEST;
@@ -49,14 +53,43 @@ public class ELinksServiceImpl implements ELinksService {
     ElinksFeignClient elinksFeignClient;
 
     @Override
-    public ResponseEntity<Object> retrieveBaseLocation() {
+    public ResponseEntity<ElinkBaseLocationWrapperResponse> retrieveBaseLocation() {
+
+        log.info("Get location details ELinksService.retrieveBaseLocation ");
+
+        Response baseLocationsResponse = null;
+        HttpStatus httpStatus = null;
+        ResponseEntity<ElinkBaseLocationWrapperResponse> result = null;
+        try {
+
+            baseLocationsResponse = elinksFeignClient.getBaseLocationDetails();
+
+            httpStatus = HttpStatus.valueOf(baseLocationsResponse.status());
+
+            log.info("Get location details response status ELinksService.retrieveBaseLocation" + httpStatus.value());
+            if (httpStatus.is2xxSuccessful()) {
+                ResponseEntity<Object> responseEntity = JsonFeignResponseUtil.toELinksResponseEntity(baseLocationsResponse,
+                        ElinkBaseLocationResponse.class);
 
 
-        List<BaseLocation> baseLocations = elinksFeignClient.retrieveBaseLocations();
+                ElinkBaseLocationResponse elinkLocationResponse = (ElinkBaseLocationResponse) responseEntity.getBody();
 
-        baseLocationRepository.saveAll(baseLocations);
+                List<BaseLocationResponse> locationResponseList = elinkLocationResponse.getResults();
 
-        return null;
+                List<BaseLocation> baselocations = locationResponseList.stream()
+                        .map(BaseLocationResponse::toBaseLocationEntity)
+                        .toList();
+                result =  loadBaseLocationData(baselocations);
+
+            } else {
+                handleELinksErrorResponse(baseLocationsResponse, httpStatus);
+            }
+
+
+        } catch (FeignException ex) {
+            throw new ElinksException(HttpStatus.FORBIDDEN, ELINKS_ACCESS_ERROR, ELINKS_ACCESS_ERROR);
+        }
+        return result;
     }
 
     @Override
@@ -128,6 +161,28 @@ public class ELinksServiceImpl implements ELinksService {
         } else {
             throw new ElinksException(HttpStatus.FORBIDDEN, ELINKS_ACCESS_ERROR, ELINKS_ACCESS_ERROR);
         }
+    }
+
+    private ResponseEntity<ElinkBaseLocationWrapperResponse> loadBaseLocationData(List<BaseLocation> baselocations) {
+        ResponseEntity<ElinkBaseLocationWrapperResponse> result = null;
+        try {
+
+            baseLocationRepository.saveAll(baselocations);
+
+            ElinkBaseLocationWrapperResponse elinkLocationWrapperResponse = new ElinkBaseLocationWrapperResponse();
+            elinkLocationWrapperResponse.setMessage(BASE_LOCATION_DATA_LOAD_SUCCESS);
+
+
+            result =  ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(elinkLocationWrapperResponse);
+        } catch (DataAccessException dae) {
+
+            throw new ElinksException(HttpStatus.INTERNAL_SERVER_ERROR, ELINKS_DATA_STORE_ERROR,
+                    ELINKS_DATA_STORE_ERROR);
+        }
+
+        return result;
     }
 
     private ResponseEntity<ElinkLocationWrapperResponse> loadLocationData(List<Location> locations) {
