@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.elinks.response.ElinkLocationWrapperResponse;
 import uk.gov.hmcts.reform.elinks.response.IdamResponse;
 import uk.gov.hmcts.reform.elinks.service.ELinksService;
 import uk.gov.hmcts.reform.elinks.service.IdamElasticSearchService;
@@ -74,7 +75,7 @@ public class ELinksController {
     })
     @GetMapping (path = "/reference_data/location",
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> loadLocation(){
+    public ResponseEntity<ElinkLocationWrapperResponse> loadLocation(){
 
 
         return eLinksService.retrieveLocation();

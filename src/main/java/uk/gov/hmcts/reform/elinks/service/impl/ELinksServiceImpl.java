@@ -19,6 +19,7 @@ import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient;
 import uk.gov.hmcts.reform.elinks.repository.BaseLocationRepository;
 import uk.gov.hmcts.reform.elinks.repository.LocationRepository;
 import uk.gov.hmcts.reform.elinks.response.ElinkLocationResponse;
+import uk.gov.hmcts.reform.elinks.response.ElinkLocationWrapperResponse;
 import uk.gov.hmcts.reform.elinks.response.LocationResponse;
 import uk.gov.hmcts.reform.elinks.service.ELinksService;
 import uk.gov.hmcts.reform.juddata.camel.util.JsonFeignResponseUtil;
@@ -57,7 +58,7 @@ public class ELinksServiceImpl implements ELinksService {
     }
 
     @Override
-    public ResponseEntity<String> retrieveLocation() {
+    public ResponseEntity<ElinkLocationWrapperResponse> retrieveLocation() {
 
         log.info("Get location details ELinksService.retrieveLocation ");
 
@@ -102,20 +103,19 @@ public class ELinksServiceImpl implements ELinksService {
 
     }
 
-    private ResponseEntity<String> loadLocationData(List<Location> locations) {
-        ResponseEntity<String> result = null;
+    private ResponseEntity<ElinkLocationWrapperResponse> loadLocationData(List<Location> locations) {
+        ResponseEntity<ElinkLocationWrapperResponse> result = null;
         try {
 
             locationRepository.saveAll(locations);
 
-            ObjectMapper mapper = new ObjectMapper();
+            ElinkLocationWrapperResponse elinkLocationWrapperResponse = new ElinkLocationWrapperResponse();
+            elinkLocationWrapperResponse.setMessage(LOCATION_DATA_LOAD_SUCCESS);
 
 
             result =  ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(mapper.writeValueAsString(LOCATION_DATA_LOAD_SUCCESS));
-        } catch (JsonProcessingException jpe) {
-            log.error(jpe.getMessage());
+                    .body(elinkLocationWrapperResponse);
         } catch (DataAccessException dae) {
 
             throw new ElinksException(HttpStatus.INTERNAL_SERVER_ERROR, ELINKS_DATA_STORE_ERROR,

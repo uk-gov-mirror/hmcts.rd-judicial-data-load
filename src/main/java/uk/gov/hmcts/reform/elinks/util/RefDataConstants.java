@@ -18,7 +18,7 @@ public class RefDataConstants {
 
     public static final String TOO_MANY_REQUESTS = "You have exceeded the request limit (20 requests in 20 seconds)";
 
-    public static final String LOCATION_DATA_LOAD_SUCCESS = "Location data load successfully.";
+    public static final String LOCATION_DATA_LOAD_SUCCESS = "Location(RegionType) Loaded successfully";
     public static final String BASE_LOCATION_DATA_LOAD_SUCCESS = "Base Location data load successfully.";
 
     public static final String ELINKS_ACCESS_ERROR = "An error occurred while retrieving data from Elinks";
