@@ -46,7 +46,7 @@ public class ELinksController {
             @ApiResponse(
                     code = 200,
                     message = "Get list of location and populate region type.",
-                    response = String.class
+                    response = ElinkLocationWrapperResponse.class
             ),
             @ApiResponse(
                     code = 400,

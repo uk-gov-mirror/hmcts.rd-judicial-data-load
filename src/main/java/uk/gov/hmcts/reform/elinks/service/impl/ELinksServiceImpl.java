@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.elinks.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import feign.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +24,13 @@ import uk.gov.hmcts.reform.juddata.camel.util.JsonFeignResponseUtil;
 
 import java.util.List;
 
-import static java.util.Objects.nonNull;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_ACCESS_ERROR;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_DATA_STORE_ERROR;
+import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_ERROR_RESPONSE_BAD_REQUEST;
+import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_ERROR_RESPONSE_FORBIDDEN;
+import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_ERROR_RESPONSE_NOT_FOUND;
+import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_ERROR_RESPONSE_TOO_MANY_REQUESTS;
+import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.ELINKS_ERROR_RESPONSE_UNAUTHORIZED;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.LOCATION_DATA_LOAD_SUCCESS;
 
 @Service
@@ -64,6 +66,7 @@ public class ELinksServiceImpl implements ELinksService {
 
         Response locationsResponse = null;
         HttpStatus httpStatus = null;
+        ResponseEntity<ElinkLocationWrapperResponse> result = null;
         try {
 
             locationsResponse = elinksFeignClient.getLocationDetails();
@@ -83,24 +86,48 @@ public class ELinksServiceImpl implements ELinksService {
                 List<Location> locations = locationResponseList.stream()
                         .map(locationRes -> new Location(locationRes.getId(), locationRes.getName(), StringUtils.EMPTY))
                         .toList();
-                return loadLocationData(locations);
+                result =  loadLocationData(locations);
 
-            }
-
-            ResponseEntity<Object> responseEntity = JsonFeignResponseUtil.toELinksResponseEntity(locationsResponse,
-                    ErrorResponse.class);
-            Object responseBody = responseEntity.getBody();
-            if (nonNull(responseBody) && responseBody instanceof ErrorResponse errorResponse) {
-
-                throw new ElinksException(httpStatus, ELINKS_ACCESS_ERROR,
-                        ELINKS_ACCESS_ERROR);
             } else {
-                throw new ElinksException(HttpStatus.FORBIDDEN, ELINKS_ACCESS_ERROR, ELINKS_ACCESS_ERROR);
+                handleELinksErrorResponse(locationsResponse, httpStatus);
             }
+
+
         } catch (FeignException ex) {
             throw new ElinksException(HttpStatus.FORBIDDEN, ELINKS_ACCESS_ERROR, ELINKS_ACCESS_ERROR);
         }
+        return result;
+    }
 
+    private void handleELinksErrorResponse(Response locationsResponse, HttpStatus httpStatus) {
+        ResponseEntity<Object> responseEntity = JsonFeignResponseUtil.toELinksResponseEntity(locationsResponse,
+                ErrorResponse.class);
+        Object responseBody = responseEntity.getBody();
+
+
+        if (HttpStatus.BAD_REQUEST.value() == httpStatus.value()) {
+
+            throw new ElinksException(httpStatus, ELINKS_ERROR_RESPONSE_BAD_REQUEST,
+                    ELINKS_ERROR_RESPONSE_BAD_REQUEST);
+        } else if (HttpStatus.UNAUTHORIZED.value() == httpStatus.value()) {
+
+            throw new ElinksException(httpStatus, ELINKS_ERROR_RESPONSE_UNAUTHORIZED,
+                    ELINKS_ERROR_RESPONSE_UNAUTHORIZED);
+        } else if (HttpStatus.FORBIDDEN.value() == httpStatus.value()) {
+
+            throw new ElinksException(httpStatus, ELINKS_ERROR_RESPONSE_FORBIDDEN,
+                    ELINKS_ERROR_RESPONSE_FORBIDDEN);
+        } else if (HttpStatus.NOT_FOUND.value() == httpStatus.value()) {
+
+            throw new ElinksException(httpStatus, ELINKS_ERROR_RESPONSE_NOT_FOUND,
+                    ELINKS_ERROR_RESPONSE_NOT_FOUND);
+        } else if (HttpStatus.TOO_MANY_REQUESTS.value() == httpStatus.value()) {
+
+            throw new ElinksException(httpStatus, ELINKS_ERROR_RESPONSE_TOO_MANY_REQUESTS,
+                    ELINKS_ERROR_RESPONSE_TOO_MANY_REQUESTS);
+        } else {
+            throw new ElinksException(HttpStatus.FORBIDDEN, ELINKS_ACCESS_ERROR, ELINKS_ACCESS_ERROR);
+        }
     }
 
     private ResponseEntity<ElinkLocationWrapperResponse> loadLocationData(List<Location> locations) {

@@ -28,6 +28,7 @@ import uk.gov.hmcts.reform.elinks.domain.Location;
 import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient;
 import uk.gov.hmcts.reform.elinks.repository.LocationRepository;
 import uk.gov.hmcts.reform.elinks.response.ElinkLocationResponse;
+import uk.gov.hmcts.reform.elinks.response.ElinkLocationWrapperResponse;
 import uk.gov.hmcts.reform.elinks.response.LocationResponse;
 import uk.gov.hmcts.reform.elinks.service.impl.ELinksServiceImpl;
 import uk.gov.hmcts.reform.idam.client.IdamApi;
@@ -117,11 +118,11 @@ public class ELinksServiceImplTest {
                 .request(mock(Request.class)).body(body, defaultCharset()).status(HttpStatus.OK.value()).build());
 
 
-        ResponseEntity<String> responseEntity = eLinksServiceImpl.retrieveLocation();
+        ResponseEntity<ElinkLocationWrapperResponse> responseEntity = eLinksServiceImpl.retrieveLocation();
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
-        assertThat(responseEntity.getBody()).isEqualTo(LOCATION_DATA_LOAD_SUCCESS);
+        assertThat(responseEntity.getBody().getMessage()).isEqualTo(LOCATION_DATA_LOAD_SUCCESS);
     }
 
     @Test
@@ -141,7 +142,7 @@ public class ELinksServiceImplTest {
                 .request(mock(Request.class)).body(body, defaultCharset()).status(HttpStatus.OK.value()).build());
 
 
-        ResponseEntity<String> responseEntity = eLinksServiceImpl.retrieveLocation();
+        ResponseEntity<ElinkLocationWrapperResponse> responseEntity = eLinksServiceImpl.retrieveLocation();
 
         List<Location> result = locationRepository.findAllById(List.of("1","2","3"));
 

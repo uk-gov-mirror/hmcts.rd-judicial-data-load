@@ -25,6 +25,18 @@ public class RefDataConstants {
     public static final String ELINKS_DATA_STORE_ERROR = "An error occurred while storing data from Elinks";
     public static final String ERROR_IN_PARSING_THE_FEIGN_RESPONSE = "Error in parsing %s Feign Response";
 
+    public static final String ELINKS_ERROR_RESPONSE_BAD_REQUEST = "Syntax error or Bad request";
+    public static final String ELINKS_ERROR_RESPONSE_UNAUTHORIZED =
+            "A valid access token hasn't been provided in the right form";
+    public static final String ELINKS_ERROR_RESPONSE_FORBIDDEN = "Your source IP address is not whitelisted";
+    public static final String ELINKS_ERROR_RESPONSE_NOT_FOUND
+            = "The given attribute name does not exist in the reference data";
+
+    public static final String ELINKS_ERROR_RESPONSE_TOO_MANY_REQUESTS
+            = "You have exceeded the request limit (20 requests in 20 seconds)";
+
+
+
 
 
 }

@@ -29,6 +29,7 @@ import uk.gov.hmcts.reform.elinks.domain.Location;
 import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient;
 import uk.gov.hmcts.reform.elinks.feign.IdamFeignClient;
 import uk.gov.hmcts.reform.elinks.response.ElinkLocationResponse;
+import uk.gov.hmcts.reform.elinks.response.ElinkLocationWrapperResponse;
 import uk.gov.hmcts.reform.elinks.response.LocationResponse;
 import uk.gov.hmcts.reform.elinks.service.IdamElasticSearchService;
 import uk.gov.hmcts.reform.elinks.service.impl.ELinksServiceImpl;
@@ -119,11 +120,11 @@ public class ELinksControllerITTest {
                 .request(mock(Request.class)).body(body, defaultCharset()).status(HttpStatus.OK.value()).build());
 
 
-        ResponseEntity<String> responseEntity = eLinksController.loadLocation();
+        ResponseEntity<ElinkLocationWrapperResponse> responseEntity = eLinksController.loadLocation();
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
-        assertThat(responseEntity.getBody()).isEqualTo(LOCATION_DATA_LOAD_SUCCESS);
+        assertThat(responseEntity.getBody().getMessage()).isEqualTo(LOCATION_DATA_LOAD_SUCCESS);
     }
 
     private List<Location> getLocationsData() {
