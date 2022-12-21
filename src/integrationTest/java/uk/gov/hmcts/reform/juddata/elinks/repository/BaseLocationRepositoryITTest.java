@@ -17,8 +17,6 @@ import uk.gov.hmcts.reform.data.ingestion.configuration.AzureBlobConfig;
 import uk.gov.hmcts.reform.elinks.domain.BaseLocation;
 import uk.gov.hmcts.reform.elinks.domain.Location;
 import uk.gov.hmcts.reform.elinks.repository.BaseLocationRepository;
-import uk.gov.hmcts.reform.elinks.repository.LocationRepository;
-import uk.gov.hmcts.reform.elinks.response.BaseLocationResponse;
 import uk.gov.hmcts.reform.juddata.configuration.EmailConfiguration;
 import uk.gov.hmcts.reform.juddata.configuration.FeignConfiguration;
 

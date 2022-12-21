@@ -37,14 +37,13 @@ public class BaseLocationResponse implements Serializable {
     @JsonProperty("updated_at")
     private String updatedAt;
 
-    public static BaseLocation toBaseLocationEntity(BaseLocationResponse baseLocationResponse){
+    public static BaseLocation toBaseLocationEntity(BaseLocationResponse baseLocationResponse) {
         BaseLocation baseLocation = new BaseLocation();
         baseLocation.setBaseLocationId(baseLocationResponse.getId());
         baseLocation.setCourtName(baseLocationResponse.getName());
         baseLocation.setCourtType(baseLocationResponse.getCourtType());
         baseLocation.setCircuit(baseLocationResponse.getCircuit());
         baseLocation.setAreaOfExpertise(baseLocationResponse.getAreaOfExpertise());
-                //courtType,circuit,areaOfExpertise
         return baseLocation;
     }
 

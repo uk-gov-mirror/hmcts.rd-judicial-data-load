@@ -68,7 +68,8 @@ public class ELinksServiceImpl implements ELinksService {
 
             log.info("Get location details response status ELinksService.retrieveBaseLocation" + httpStatus.value());
             if (httpStatus.is2xxSuccessful()) {
-                ResponseEntity<Object> responseEntity = JsonFeignResponseUtil.toELinksResponseEntity(baseLocationsResponse,
+                ResponseEntity<Object> responseEntity = JsonFeignResponseUtil
+                        .toELinksResponseEntity(baseLocationsResponse,
                         ElinkBaseLocationResponse.class);
 
 

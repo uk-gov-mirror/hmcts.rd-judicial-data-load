@@ -157,7 +157,7 @@ public class ELinksBaseLocationServiceImplTest {
             throws JsonProcessingException {
 
 
-        when(elinksFeignClient.getLocationDetails()).thenReturn(Response.builder()
+        when(elinksFeignClient.getBaseLocationDetails()).thenReturn(Response.builder()
                 .request(mock(Request.class))
                 .body("", defaultCharset()).status(HttpStatus.BAD_REQUEST.value()).build());
 
@@ -181,7 +181,7 @@ public class ELinksBaseLocationServiceImplTest {
             throws JsonProcessingException {
 
 
-        when(elinksFeignClient.getLocationDetails()).thenReturn(Response.builder()
+        when(elinksFeignClient.getBaseLocationDetails()).thenReturn(Response.builder()
                 .request(mock(Request.class))
                 .body("", defaultCharset()).status(HttpStatus.UNAUTHORIZED.value()).build());
 
@@ -205,7 +205,7 @@ public class ELinksBaseLocationServiceImplTest {
     void elinksService_load_location_should_return_elinksException_when_http_FORBIDDEN()
             throws JsonProcessingException {
 
-        when(elinksFeignClient.getLocationDetails()).thenReturn(Response.builder()
+        when(elinksFeignClient.getBaseLocationDetails()).thenReturn(Response.builder()
                 .request(mock(Request.class))
                 .body("", defaultCharset()).status(HttpStatus.FORBIDDEN.value()).build());
 
@@ -228,7 +228,7 @@ public class ELinksBaseLocationServiceImplTest {
     void elinksService_load_location_should_return_elinksException_when_http_NOT_FOUND()
             throws JsonProcessingException {
 
-        when(elinksFeignClient.getLocationDetails()).thenReturn(Response.builder()
+        when(elinksFeignClient.getBaseLocationDetails()).thenReturn(Response.builder()
                 .request(mock(Request.class))
                 .body("", defaultCharset()).status(HttpStatus.NOT_FOUND.value()).build());
 
@@ -250,7 +250,7 @@ public class ELinksBaseLocationServiceImplTest {
     void elinksService_load_location_should_return_elinksException_when_http_TOO_MANY_REQUESTS()
             throws JsonProcessingException {
 
-        when(elinksFeignClient.getLocationDetails()).thenReturn(Response.builder()
+        when(elinksFeignClient.getBaseLocationDetails()).thenReturn(Response.builder()
                 .request(mock(Request.class))
                 .body("", defaultCharset()).status(HttpStatus.TOO_MANY_REQUESTS.value()).build());
 

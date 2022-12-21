@@ -25,7 +25,6 @@ import uk.gov.hmcts.reform.data.ingestion.configuration.AzureBlobConfig;
 import uk.gov.hmcts.reform.elinks.ELinksController;
 import uk.gov.hmcts.reform.elinks.configuration.ElinksFeignInterceptorConfiguration;
 import uk.gov.hmcts.reform.elinks.configuration.FeignHeaderConfig;
-import uk.gov.hmcts.reform.elinks.domain.Location;
 import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient;
 import uk.gov.hmcts.reform.elinks.feign.IdamFeignClient;
 import uk.gov.hmcts.reform.elinks.response.BaseLocationResponse;

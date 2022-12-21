@@ -7,9 +7,6 @@ import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import uk.gov.hmcts.reform.elinks.configuration.ElinksFeignInterceptorConfiguration;
-import uk.gov.hmcts.reform.elinks.domain.BaseLocation;
-
-import java.util.List;
 
 @FeignClient(name = "ElinksFeignClient", url = "${elinksUrl}",
         configuration = ElinksFeignInterceptorConfiguration.class)
