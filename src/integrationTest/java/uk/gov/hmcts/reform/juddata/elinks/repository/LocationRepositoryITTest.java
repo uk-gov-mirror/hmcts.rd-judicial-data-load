@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SuppressWarnings("AbbreviationAsWordInName")
-public class LocationRepositoryITTest  {
+public class LocationRepositoryITTest {
 
     @Autowired
     LocationRepository locationRepository;

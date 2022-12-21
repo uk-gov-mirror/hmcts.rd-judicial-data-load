@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.juddata.elinks.controller;
+package uk.gov.hmcts.reform.juddata.elinks.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Request;
@@ -22,19 +22,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.data.ingestion.configuration.AzureBlobConfig;
-import uk.gov.hmcts.reform.elinks.ELinksController;
 import uk.gov.hmcts.reform.elinks.configuration.ElinksFeignInterceptorConfiguration;
 import uk.gov.hmcts.reform.elinks.configuration.FeignHeaderConfig;
-import uk.gov.hmcts.reform.elinks.domain.Location;
+import uk.gov.hmcts.reform.elinks.domain.BaseLocation;
 import uk.gov.hmcts.reform.elinks.feign.ElinksFeignClient;
-import uk.gov.hmcts.reform.elinks.feign.IdamFeignClient;
+import uk.gov.hmcts.reform.elinks.repository.BaseLocationRepository;
 import uk.gov.hmcts.reform.elinks.response.BaseLocationResponse;
 import uk.gov.hmcts.reform.elinks.response.ElinkBaseLocationResponse;
 import uk.gov.hmcts.reform.elinks.response.ElinkBaseLocationWrapperResponse;
-import uk.gov.hmcts.reform.elinks.response.ElinkLocationResponse;
-import uk.gov.hmcts.reform.elinks.response.ElinkLocationWrapperResponse;
-import uk.gov.hmcts.reform.elinks.response.LocationResponse;
-import uk.gov.hmcts.reform.elinks.service.IdamElasticSearchService;
 import uk.gov.hmcts.reform.elinks.service.impl.ELinksServiceImpl;
 import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.juddata.client.IdamClient;
@@ -49,7 +44,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.BASE_LOCATION_DATA_LOAD_SUCCESS;
-import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.LOCATION_DATA_LOAD_SUCCESS;
 
 @TestPropertySource(properties = {"spring.config.location=classpath:application-integration-test.yml,"
         + "classpath:application-test.yml,"
@@ -65,36 +59,30 @@ import static uk.gov.hmcts.reform.elinks.util.RefDataConstants.LOCATION_DATA_LOA
 
         EmailConfiguration.class,
         ELinksServiceImpl.class,
-        ELinksControllerTestConfig.class,
-        ELinksController.class}, initializers = ConfigDataApplicationContextInitializer.class)
+        ELinksServiceImplTestConfig.class},
+        initializers = ConfigDataApplicationContextInitializer.class)
 
 
 @EnableAutoConfiguration
 @EntityScan("uk.gov.hmcts.reform.elinks.domain")
 @EnableJpaRepositories("uk.gov.hmcts.reform.elinks.repository")
 
-@EnableFeignClients(clients = {
-        ElinksFeignClient.class,
-        IdamClient.class,
-        IdamApi.class,
-        IdamFeignClient.class})
+@EnableFeignClients(clients = {ElinksFeignClient.class,IdamClient.class, IdamApi.class})
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SuppressWarnings({"AbbreviationAsWordInName","MemberName"})
-public class ELinksControllerITTest {
+public class ELinksServiceImplBaseLocationTest {
+
 
     @Autowired
-    ELinksController eLinksController;
+    BaseLocationRepository baseLocationRepository;
 
     @Mock
     ElinksFeignClient elinksFeignClientOne;
 
     @Autowired
     ELinksServiceImpl eLinksServiceImpl;
-
-    @Mock
-    IdamElasticSearchService idamElasticSearchService;
 
     @BeforeEach
     void setUp() {
@@ -104,32 +92,12 @@ public class ELinksControllerITTest {
     }
 
     @Test
-    void test_elinksController_loaded() {
-        assertThat(eLinksController).isNotNull();
+    void test_elinksService_loaded() {
+        assertThat(baseLocationRepository).isNotNull();
+        assertThat(eLinksServiceImpl).isNotNull();
     }
 
-    @Test
-    void test_elinksService_load_location_return_staus_200() throws IOException {
 
-        List<LocationResponse> locations = getLocationResponseData();
-
-        ElinkLocationResponse elinkLocationResponse = new ElinkLocationResponse();
-        elinkLocationResponse.setResults(locations);
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        String body = mapper.writeValueAsString(elinkLocationResponse);
-
-        when(elinksFeignClientOne.getLocationDetails()).thenReturn(Response.builder()
-                .request(mock(Request.class)).body(body, defaultCharset()).status(HttpStatus.OK.value()).build());
-
-
-        ResponseEntity<ElinkLocationWrapperResponse> responseEntity = eLinksController.loadLocation();
-
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
-        assertThat(responseEntity.getBody().getMessage()).isEqualTo(LOCATION_DATA_LOAD_SUCCESS);
-    }
 
     @Test
     void test_elinksService_load_baseLocation_return_staus_200() throws IOException {
@@ -157,37 +125,47 @@ public class ELinksControllerITTest {
         assertThat(responseEntity.getBody().getMessage()).contains(BASE_LOCATION_DATA_LOAD_SUCCESS);
     }
 
+    @Test
+    void test_elinksService_load_baseLocation_return_staus_200_validate_data() throws IOException {
+
+        List<BaseLocationResponse> baseLocations = getBaseLocationResponseData();
 
 
-    private List<LocationResponse> getLocationResponseData() {
+        ElinkBaseLocationResponse elinkBaseLocationResponse = new ElinkBaseLocationResponse();
+        elinkBaseLocationResponse.setResults(baseLocations);
 
 
-        LocationResponse locationOne = new LocationResponse();
-        locationOne.setId("1");
-        locationOne.setName("National");
-        locationOne.setCreatedAt("2022-10-03T15:28:19Z");
-        locationOne.setUpdatedAt("2022-10-03T15:28:19Z");
+        ObjectMapper mapper = new ObjectMapper();
 
-        LocationResponse locationTwo = new LocationResponse();
-        locationTwo.setId("2");
-        locationTwo.setName("National England and Wales");
-        locationTwo.setCreatedAt("2022-10-03T15:28:19Z");
-        locationTwo.setUpdatedAt("2022-10-03T15:28:19Z");
+        String body = mapper.writeValueAsString(elinkBaseLocationResponse);
 
 
-        LocationResponse locationThree = new LocationResponse();
-        locationThree.setId("3");
-        locationThree.setName("Taylor House (London)");
-        locationThree.setCreatedAt("2022-10-03T15:28:19Z");
-        locationThree.setUpdatedAt("2022-10-03T15:28:19Z");
+        when(elinksFeignClientOne.getBaseLocationDetails()).thenReturn(Response.builder()
+                .request(mock(Request.class)).body(body, defaultCharset()).status(HttpStatus.OK.value()).build());
 
-        List<LocationResponse> locations = new ArrayList<>();
 
-        locations.add(locationOne);
-        locations.add(locationTwo);
-        locations.add(locationThree);
+        ResponseEntity<ElinkBaseLocationWrapperResponse> responseEntity = eLinksServiceImpl.retrieveBaseLocation();
 
-        return locations;
+        List<BaseLocation> result = baseLocationRepository.findAllById(List.of("1","2"));
+
+        assertThat(result.size()).isEqualTo(2);
+
+        BaseLocation baseLocationOne = getBaseLocationEntityList().get(0);
+        BaseLocation baseLocationTwo = getBaseLocationEntityList().get(1);
+
+
+        assertThat(result.get(0).getBaseLocationId()).isEqualTo(baseLocationOne.getBaseLocationId());
+        assertThat(result.get(0).getCourtName()).isEqualTo(baseLocationOne.getCourtName());
+        assertThat(result.get(0).getCourtType()).isEqualTo(baseLocationOne.getCourtType());
+        assertThat(result.get(0).getCircuit()).isEqualTo(baseLocationOne.getCircuit());
+        assertThat(result.get(0).getAreaOfExpertise()).isEqualTo(baseLocationOne.getAreaOfExpertise());
+
+
+        assertThat(result.get(1).getBaseLocationId()).isEqualTo(baseLocationTwo.getBaseLocationId());
+        assertThat(result.get(1).getCourtName()).isEqualTo(baseLocationTwo.getCourtName());
+        assertThat(result.get(1).getCourtType()).isEqualTo(baseLocationTwo.getCourtType());
+        assertThat(result.get(1).getCircuit()).isEqualTo(baseLocationTwo.getCircuit());
+        assertThat(result.get(1).getAreaOfExpertise()).isEqualTo(baseLocationTwo.getAreaOfExpertise());
 
     }
 
@@ -225,4 +203,34 @@ public class ELinksControllerITTest {
         return baseLocations;
 
     }
+
+    private List<BaseLocation> getBaseLocationEntityList() {
+
+
+        BaseLocation baseLocationOne = new BaseLocation();
+        baseLocationOne.setBaseLocationId("1");
+        baseLocationOne.setCourtName("National");
+        baseLocationOne.setCourtType("Old Gwynedd");
+        baseLocationOne.setCircuit("Gwynedd");
+        baseLocationOne.setAreaOfExpertise("LJA");
+
+
+        BaseLocation baseLocationTwo = new BaseLocation();
+        baseLocationTwo.setBaseLocationId("2");
+        baseLocationTwo.setCourtName("Aldridge and Brownhills");
+        baseLocationTwo.setCourtType("Nottinghamshire");
+        baseLocationTwo.setCircuit("Nottinghamshire");
+        baseLocationTwo.setAreaOfExpertise("LJA");
+
+
+
+        List<BaseLocation> baseLocations = new ArrayList<>();
+
+        baseLocations.add(baseLocationOne);
+        baseLocations.add(baseLocationTwo);
+
+        return baseLocations;
+
+    }
+
 }
