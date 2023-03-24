@@ -67,6 +67,7 @@ postgresql:
       enabled: false
 
 servicebus:
+  releaseNameOverride: {{ .Release.Name }}
   resourceGroup: rd-aso-preview-rg
   teamName: "RD"
   location: ukwest
