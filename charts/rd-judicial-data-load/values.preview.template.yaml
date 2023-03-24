@@ -39,7 +39,7 @@ job:
           alias: judicial_api_elinks_api_key
   secrets:
     SB_TOPIC_CONN_STRING:
-      secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-jrd-aks-topic
+      secretRef: rd-sb-preview
       key: connectionString
     BLOB_ACCOUNT_NAME:
       secretRef: storage-secret-{{ .Release.Name }}
@@ -67,7 +67,7 @@ postgresql:
       enabled: false
 
 servicebus:
-  resourceGroup: rd-aks-pr-test
+  resourceGroup: rd-aso-preview-rg
   teamName: "RD"
   location: ukwest
   serviceplan: standard
