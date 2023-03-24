@@ -71,6 +71,7 @@ servicebus:
   teamName: "RD"
   location: ukwest
   serviceplan: standard
+  sbNamespace: rd
   setup:
     topics:
       - name: jrd-aks-topic
