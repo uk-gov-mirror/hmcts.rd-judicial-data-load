@@ -12,7 +12,6 @@ job:
     CONTAINER_NAME: jud-ref-data
     JRD_MQ_TRUST_ALL_CERTS: false
     MAIL_FROM: no-reply@mail-rd-nonprod.platform.hmcts.net
-    JUDICIAL_TOPIC_PRIMARY_CONNECTION_STRING: "$(SB_CONN_STRING);EntityPath=${SERVICE_NAME}-jrd-aks-topic"
     JRD_MQ_TOPIC_NAME: ${SERVICE_NAME}-jrd-aks-topic
   keyVaults:
     rd:
@@ -38,7 +37,7 @@ job:
         - name: judicial-api-elinks-api-key
           alias: judicial_api_elinks_api_key
   secrets:
-    SB_CONN_STRING:
+    JUDICIAL_TOPIC_PRIMARY_CONNECTION_STRING:
       secretRef: rd-sb-preview
       key: connectionString
     BLOB_ACCOUNT_NAME:
