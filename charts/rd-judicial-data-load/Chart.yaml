@@ -16,7 +16,7 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
   - name: servicebus
-    version: 1.7.0-alpha
+    version: 1.0.1-alpha
     repository: https://hmctspublic.azurecr.io/helm/v1/repo/
     condition: servicebus.enabled
   - name: blobstorage
