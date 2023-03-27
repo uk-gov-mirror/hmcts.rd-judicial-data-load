@@ -12,7 +12,7 @@ job:
     CONTAINER_NAME: jud-ref-data
     JRD_MQ_TRUST_ALL_CERTS: false
     MAIL_FROM: no-reply@mail-rd-nonprod.platform.hmcts.net
-    JUDICIAL_TOPIC_PRIMARY_CONNECTION_STRING: $(SB_CONN_STRING);EntityPath=${SERVICE_NAME}-jrd-aks-topic
+    JUDICIAL_TOPIC_PRIMARY_CONNECTION_STRING: "$(SB_CONN_STRING);EntityPath=${SERVICE_NAME}-jrd-aks-topic"
     JRD_MQ_TOPIC_NAME: ${SERVICE_NAME}-jrd-aks-topic
   keyVaults:
     rd:
