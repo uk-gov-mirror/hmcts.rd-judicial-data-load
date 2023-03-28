@@ -69,7 +69,7 @@ servicebus:
   releaseNameOverride: "{{ .Release.Name }}"
   resourceGroup: rd-aso-preview-rg
   teamName: "RD"
-  location: ukwest
+  location: uksouth
   serviceplan: standard
   sbNamespace: rd
   setup:
@@ -81,7 +81,7 @@ servicebus:
 blobstorage:
   resourceGroup: rd-aks-pr-test
   teamName: "RD"
-  location: ukwest
+  location: uksouth
   setup:
     containers:
       - jud-ref-data
