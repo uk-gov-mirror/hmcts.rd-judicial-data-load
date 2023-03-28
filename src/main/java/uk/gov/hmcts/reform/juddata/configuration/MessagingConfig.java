@@ -21,7 +21,7 @@ public class MessagingConfig {
     @Bean
     public ServiceBusSenderClient getServiceBusSenderClient() {
 
-        log.info("connectionString and topic ", accessConnectionString, topic);
+        log.info("connectionString {} and topic {} ", accessConnectionString, topic);
 
         return new ServiceBusClientBuilder()
             .connectionString(accessConnectionString)
