@@ -64,7 +64,7 @@ public class JudicialUserProfile extends CommonCsvField implements Serializable 
 
     @DataField(pos = 12)
     @DatePattern(isNullAllowed = "false", regex = DATE_PATTERN,
-            message = "date pattern should be " + DATE_TIME_FORMAT)
+            message = "date pattern should be " + DATE_PATTERN)
     String extractedDate;
 
     @DataField(pos = 13, columnName = "object_id")

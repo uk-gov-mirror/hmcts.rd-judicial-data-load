@@ -49,7 +49,7 @@ public class JudicialOfficeAppointment extends CommonCsvField implements Seriali
 
     @DataField(pos = 8)
     @DatePattern(isNullAllowed = "false", regex = DATE_PATTERN,
-            message = "date pattern should be " + DATE_TIME_FORMAT)
+            message = "date pattern should be " + DATE_PATTERN)
     String extractedDate;
 
     @DataField(pos = 9, columnName = "personal_code")
