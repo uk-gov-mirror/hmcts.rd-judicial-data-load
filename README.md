@@ -26,6 +26,7 @@ The files are decrypted and then scanned and if everything is okay then trusted 
 # Data Transformation and Load - This is achieved through a K8S scheduler and Apache Camel.
 Kubernetes scheduler triggers Apache Camel routes which process files stored in Azure blob storage and persists it JRD database.
 
+
 # Building and deploying the application
 Building the application
 The project uses Gradle as a build tool. It already contains ./gradlew wrapper script, so there's no need to install gradle.
