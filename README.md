@@ -181,3 +181,4 @@ To build the project execute the following command:
 
 The application exposes health endpoint (http://localhost:8094/health) and metrics endpoint
 (http://localhost:8094/metrics).
+--Test
