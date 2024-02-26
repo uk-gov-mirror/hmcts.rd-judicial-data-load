@@ -122,3 +122,4 @@ REFERENCES judicial_user_profile (elinks_Id);
 
 ALTER TABLE judicial_office_authorisation ADD CONSTRAINT authorisation_Id_fk1 FOREIGN KEY (authorisation_Id)
 REFERENCES authorisation_type (authorisation_Id);
+--Commit Test
