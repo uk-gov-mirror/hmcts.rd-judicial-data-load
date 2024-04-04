@@ -18,6 +18,8 @@ job:
     ELINKS_URL: https://jo-staging.elinks.judiciary.uk
   postgresql:
     enabled: false
+  spotInstances:
+    enabled: true
   image: 'hmctspublic.azurecr.io/rd/judicial-data-load:latest'
   kind: CronJob
   schedule: "*/10 * * * *"
