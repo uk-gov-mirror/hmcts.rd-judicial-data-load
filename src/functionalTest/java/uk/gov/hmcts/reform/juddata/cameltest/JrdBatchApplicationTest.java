@@ -53,7 +53,7 @@ import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegratio
 import static uk.gov.hmcts.reform.juddata.cameltest.testsupport.ParentIntegrationTestSupport.validateUserProfileFile;
 
 @TestPropertySource(properties = {"spring.config.location=classpath:application-integration.yml,"
-    + "classpath:application-leaf-integration.yml"})
+        + "classpath:application-leaf-integration.yml"})
 @MockEndpoints("log:*")
 @ContextConfiguration(classes = {ParentCamelConfig.class, LeafCamelConfig.class,
     JobLauncherTestUtils.class, BatchConfig.class, AzureBlobConfig.class, BlobStorageCredentials.class,

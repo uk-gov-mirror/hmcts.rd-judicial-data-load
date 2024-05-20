@@ -61,7 +61,7 @@ import static uk.gov.hmcts.reform.juddata.support.ParentIntegrationTestSupport.s
 
 
 @TestPropertySource(properties = {"spring.config.location=classpath:application-integration-test.yml,"
-    + "classpath:application-leaf-integration-test.yml"})
+        + "classpath:application-leaf-integration-test.yml"})
 @MockEndpoints("log:*")
 @ContextConfiguration(classes = {ParentConfig.class, LeafConfig.class,
     JobLauncherTestUtils.class, BatchConfig.class, AzureBlobConfig.class, BlobStorageCredentials.class,

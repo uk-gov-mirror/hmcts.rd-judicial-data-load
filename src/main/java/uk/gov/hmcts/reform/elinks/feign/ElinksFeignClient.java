@@ -16,7 +16,7 @@ public interface ElinksFeignClient {
     @GetMapping(value = "/api/v4/reference_data/location")
     @RequestLine("GET /api/v4/reference_data/location")
     @Headers({"Authorization: {authorization}",
-            "Content-Type: application/json"})
+        "Content-Type: application/json"})
     Response getLocationDetails();
 
 
