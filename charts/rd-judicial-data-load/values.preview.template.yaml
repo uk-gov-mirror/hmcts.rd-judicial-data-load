@@ -76,7 +76,7 @@ servicebus:
       - name: jrd
         subscriptionNeeded: yes
   enabled: true
-  sbNamespace: rd-sb-preview
+  sbNamespace: rd-servicebus-preview
 
 blobstorage:
   resourceGroup: rd-aso-preview-rg
